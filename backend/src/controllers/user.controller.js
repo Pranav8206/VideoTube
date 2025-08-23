@@ -9,11 +9,12 @@ import mongoose from "mongoose";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
+console.log("in the function",accessToken, refreshToken);
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -130,6 +131,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
+  console.log('generated tokens', accessToken, refreshToken);
+
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -191,23 +194,25 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
   console.log("3", req);
+  const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(400, "Unauthorized request 2");
   }
-  console.log("3", incomingRefreshToken);
+  console.log("4", incomingRefreshToken);
   try {
     const decodedToken = jwt.verify(
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
+    console.log("verify", incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+    
 
     const user = await User.findById(decodedToken._id);
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
-    console.log("4 user", user);
+    console.log("4 user:", user);
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
