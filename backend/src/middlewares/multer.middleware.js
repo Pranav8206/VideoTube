@@ -9,6 +9,17 @@ const storage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true); 
+  } else {
+    cb(new Error("Only .png, .jpg, .jpeg, .webp formats are allowed!"), false); 
+  }
+};
+
 export const upload = multer({
   storage,
+  fileFilter,
 });

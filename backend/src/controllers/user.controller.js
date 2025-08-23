@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password must be different from username");
   } else if (password === email) {
     throw new ApiError(400, "Password must be different from email");
-  } 
+  }
 
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
@@ -284,13 +284,16 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Current user fetched successfully"));
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
+  console.log("here----", req.body);
+  console.log(req.user);
+
   const { username, email, fullName } = req.body;
 
-  if (!username || !email) {
+  if (!username && !email && !fullName) {
     throw new ApiError(400, "All field are required");
   }
 
@@ -300,6 +303,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
       $set: {
         fullName,
         email,
+        username: username.toLowerCase(),
       },
     },
     { new: true }
