@@ -14,7 +14,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
-console.log("in the function",accessToken, refreshToken);
+    console.log("in the function", accessToken, refreshToken);
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -40,7 +40,13 @@ const registerUser = asyncHandler(async (req, res) => {
     [fullName, username, email, password].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All field are required");
-  }
+  } else if (password.length < 6) {
+    throw new ApiError(400, "Password must be at least 6 characters long");
+  } else if (password === username) {
+    throw new ApiError(400, "Password must be different from username");
+  } else if (password === email) {
+    throw new ApiError(400, "Password must be different from email");
+  } 
 
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
@@ -115,6 +121,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!email && !username) {
     throw new ApiError(400, "Username or Email is required!");
+  } else if (password.length < 6) {
+    throw new ApiError(400, "Password must be at least 6 characters long");
   }
 
   const user = await User.findOne({ $or: [{ username }, { email }] });
@@ -131,8 +139,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
-  console.log('generated tokens', accessToken, refreshToken);
-
+  console.log("generated tokens", accessToken, refreshToken);
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -205,8 +212,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    console.log("verify", incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
-    
+    console.log(
+      "verify",
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
 
     const user = await User.findById(decodedToken._id);
     if (!user) {
@@ -246,6 +256,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Please enter password.");
+  } else if (oldPassword === newPassword) {
+    throw new ApiError(
+      400,
+      "New password must be different from old password."
+    );
+  } else if (oldPassword.length < 6 || newPassword.length < 6) {
+    throw new ApiError(400, "Password must be at least 6 characters long.");
+  }
+
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
@@ -254,8 +275,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   }
 
   user.password = newPassword;
-  await user.save({ validateBeforeSave: save });
-
+  await user.save({ validateBeforeSave: false });
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Password changed successfully."));
