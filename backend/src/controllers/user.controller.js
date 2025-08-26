@@ -14,7 +14,6 @@ const generateAccessAndRefreshToken = async (userId) => {
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
-    console.log("in the function", accessToken, refreshToken);
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -55,11 +54,6 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User already exist.");
   }
 
-  // console.log("req:- ", req);
-  // console.log("req.texts:- ", req.texts);
-  // console.log("req.files:- ", req.files);
-  // console.log("avatar req.files:- ", req.files.avatar);
-  // console.log("coverImage req.files:- ", req.files.coverImage);
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
@@ -74,18 +68,15 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImageLocalPath = req.files.coverImage[0].path;
   }
   if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
+    throw new ApiError(400, "Avatar file is missing!");
   }
-  // console.log(avatarLocalPath, "abc");
 
   const avatar = await uploadeOnCloudinary(avatarLocalPath);
   const coverImage = await uploadeOnCloudinary(coverImageLocalPath);
-  // console.log(avatar, "avatar");
 
   if (!avatar) {
-    throw new ApiError(400, "Avatar file is required2");
+    throw new ApiError(400, "Failed to upload avatar to cloud storage!");
   }
-  // console.log(avatar, "avatar3999");
 
   const user = await User.create({
     username: username.toLowerCase(),
@@ -101,7 +92,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while registering the user");
+    throw new ApiError(500, "Something went wrong while registering the user!");
   }
 
   return res
@@ -139,7 +130,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
-  console.log("generated tokens", accessToken, refreshToken);
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -150,11 +140,6 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   };
-
-  console.log("login successfully");
-  console.log("accessToken", accessToken);
-  console.log("refreshToken", refreshToken);
-
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -173,7 +158,6 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  console.log("logout start, req is ", req, "req end");
 
   await User.findByIdAndUpdate(
     req.user._id,
@@ -201,32 +185,27 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  console.log("3", req);
+  
   const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
-    throw new ApiError(400, "Unauthorized request 2");
+    throw new ApiError(400, "Unauthorized refresh token request");
   }
-  console.log("4", incomingRefreshToken);
+ 
   try {
     const decodedToken = jwt.verify(
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    console.log(
-      "verify",
-      incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
-
+    
     const user = await User.findById(decodedToken._id);
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
-    console.log("4 user:", user);
+    
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
-    console.log("5", user);
+    
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -235,7 +214,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken: newrefreshToken } =
       await generateAccessAndRefreshToken(user._id);
-    console.log("6", accessToken, newrefreshToken);
 
     return res
       .status(200)
@@ -288,8 +266,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  console.log("here----", req.body);
-  console.log(req.user);
 
   const { username, email, fullName } = req.body;
 
@@ -429,7 +405,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       },
     },
   ]);
-  console.log(channel);
 
   if (!channel?.length) {
     throw new ApiError(404, "channel does not exist");
