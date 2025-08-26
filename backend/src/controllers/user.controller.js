@@ -197,7 +197,9 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
+  console.log(req.cookie, req.body, req);
+  
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(400, "Unauthorized refresh token request");
   }
@@ -329,6 +331,8 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
+  console.log(req.file);
+  
   const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {

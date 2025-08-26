@@ -29,10 +29,18 @@ const getAllVideos = asyncHandler(async (req, res) => {
   // return array of videos
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
 
-  const videos = await Video.find()
+  const filter = {};
+  if (query) {
+    filter.title = { $regex: query, $options: "i" };
+  }
+  if (userId) {
+    filter.owner = userId;
+  }
+
+  const videos = await Video.find(filter)
     .skip(page - 1 * limit)
     .limit(limit)
-    ?.sort(([sortBy] = sortType));
+    .sort({ [sortBy]: sortType });
 
   return res
     .status(201)
@@ -40,48 +48,55 @@ const getAllVideos = asyncHandler(async (req, res) => {
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-   const { title, description} = req.body
-   console.log(req.files);
-   
-   const VideoFilePath = req.files?.video?.[0]?.path
-   const ThumbnailFilePath = req.files?.thumbnail?.[0]?.path
+  const { title, description } = req.body;
+  console.log(req.files);
 
-  if (!title || !description){
-    throw new ApiError(400, "Title and description cannot be empty.")
+  //check title is available
+  const existingVideo = await Video.findOne({ title });
+  if (existingVideo) {
+    throw new ApiError(400, "That title is already taken. Choose another one.");
+  }
+
+  const VideoFilePath = req.files?.video?.[0]?.path;
+  const ThumbnailFilePath = req.files?.thumbnail?.[0]?.path;
+
+  if (!title || !description) {
+    throw new ApiError(400, "Title and description cannot be empty.");
   } else if (title.length < 10) {
-    throw new ApiError(400, "Title must be at least 10 characters long.")
+    throw new ApiError(400, "Title must be at least 10 characters long.");
   }
 
   if (!VideoFilePath || !ThumbnailFilePath) {
-    throw new ApiError(400, "Both a video and a thumbnail are required to proceed!")
+    throw new ApiError(
+      400,
+      "Both a video and a thumbnail are required to proceed!"
+    );
   }
 
-  const videoInfo = await uploadeOnCloudinary(VideoFilePath)
-  const thumbnail = await uploadeOnCloudinary(ThumbnailFilePath)
+  const videoInfo = await uploadeOnCloudinary(VideoFilePath);
+  const thumbnail = await uploadeOnCloudinary(ThumbnailFilePath);
 
-
-  if (!videoUrl || !thumbnailUrl){
-    throw new ApiError(500, "Failed to  upload media to cloud storage!")
+  if (!videoInfo || !thumbnail) {
+    throw new ApiError(500, "Failed to  upload media to cloud storage!");
   }
- 
+
   const video = await Video.create({
-    videoFile : videoInfo.url,
-    thumbnail : thumbnail.url,
-    owner : req.user?._id,
-    title : title ,
-    description : description,
-    duration : videoInfo.duration || 0,
-    // view : 
-  })
+    videoFile: videoInfo.url,
+    thumbnail: thumbnail.url,
+    owner: req.user?._id,
+    title: title,
+    description: description,
+    duration: videoInfo.duration || 0,
+    // view :
+  });
 
   if (!video) {
-    throw new ApiError(500, "Failed to  upload video info to DB!")
+    throw new ApiError(500, "Failed to  upload video info to DB!");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, video, "Video published successfully!"))
-
+    .json(new ApiResponse(200, video, "Video published successfully!"));
 });
 
 export { getAllVideos, publishAVideo };
