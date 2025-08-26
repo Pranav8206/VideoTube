@@ -10,7 +10,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      throw new ApiError(400, "Unauthorized request.");
+      throw new ApiError(400, "User is not logged in, so token is missing");
     }
 
     

@@ -24,15 +24,13 @@ const uploadeOnCloudinary = async (localFilePath) => {
       if (err) throw err;
       console.log("path/file.txt was deleted");
     });
-
-    return response.url;
+    
+    return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); // remove locally saved temporary
     // file as upload operation got failed
     return null;
   }
 };
-
-console.log(uploadeOnCloudinary, "printing the function uploadeOnCloudinary");
 
 export { uploadeOnCloudinary };

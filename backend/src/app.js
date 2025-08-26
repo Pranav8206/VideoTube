@@ -23,5 +23,9 @@ app.use("/api/v1/users", userRouter) //this follows in production
 //http://localhost:3000//api/v1/users/register
 //routes declaration
 
+import videoRouter from "./routes/video.routes.js"
+app.use("/api/v1/videos", videoRouter)
+
+
 
 export { app };
