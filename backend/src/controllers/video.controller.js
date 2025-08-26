@@ -38,13 +38,13 @@ const getAllVideos = asyncHandler(async (req, res) => {
   }
 
   const videos = await Video.find(filter)
-    .skip(page - 1 * limit)
+    .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ [sortBy]: sortType });
+    .sort({ [sortBy]: sortType === "desc" ? -1 : 1 });
 
   return res
-    .status(201)
-    .json(new ApiResponse(201, videos, "Videos fetched successfully"));
+    .status(200)
+    .json(new ApiResponse(200, videos, "Videos fetched successfully"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
