@@ -1,31 +1,52 @@
+import { Video } from "../models/video.modles.js";
+import { User } from "../models/user.models.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadeOnCloudinary } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
+// getAllVideos,
+// publishAVideo,
+// getVideoById,
+// updateVideo,
+// deleteVideo,
+// togglePublishStatus
 
+//ai uploadVideo,
+//   getVideoById,
+//   listVideos,
+//   updateVideo,
+//   deleteVideo,
+//   togglePublishStatus,
+//   incrementViews,
 
+const getAllVideos = asyncHandler(async (req, res) => {
 
+    //get the number of videos to list
+    // get limit from req
+    // fetch video from db
+    // return array of videos
+    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
 
+    const videos = await Video.find()
+      .skip(page - 1 * limit)
+      .limit(limit)
+      .sort(([sortBy] = sortType));
 
+    return res
+      .status(201)
+      .json(new ApiResponse(201, videos, "Videos fetched successfully"));
+  
+});
 
+const publishAVideo = asyncHandler(async (req, res) => {
 
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
+});
 
 // import { asyncHandler } from "../utils/asyncHandler.js";
 // import { ApiError } from "../utils/ApiError.js";
