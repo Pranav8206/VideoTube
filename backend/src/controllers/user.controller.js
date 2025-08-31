@@ -55,7 +55,7 @@ console.log("🔍 User exist check:", userExist);
   if (userExist) {
     throw new ApiError(400, "User already exist.");
   }
-
+  console.log(req.files);
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 console.log("📷 Avatar local path:", avatarLocalPath);
@@ -331,7 +331,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
-  console.log(req.file);
+  console.log(req, req.file);
   
   const coverImageLocalPath = req.file?.path;
 
@@ -356,8 +356,8 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
   ).select("-password");
 
   return res
-    .status(200)
-    .json(new ApiResponse(200, user, "Cover Image updated successfully"));
+    .status(201)
+    .json(new ApiResponse(201, user, "Cover Image updated successfully"));
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {

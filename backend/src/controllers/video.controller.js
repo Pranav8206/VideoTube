@@ -1,4 +1,4 @@
-import { Video } from "../models/video.modles.js";
+import { Video } from "../models/video.models.js";
 import { User } from "../models/user.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -157,25 +157,30 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "Video deleted successfully."))
+    .json(new ApiResponse(200, null, "Video deleted successfully."));
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
-  const {videoId} = req.params
+  const { videoId } = req.params;
 
-  const video = await Video.findByIdAndUpdate(videoId,
-    {
-      isPublished : !Video.isPublished
-    },
-    {new : true}
-  )
+  const video = await Video.findById(videoId);
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+  video.isPublished = !video.isPublished;
+  await video.save();
 
-  return res
-    .status(200)
-    .json(200, video, "Publish mode toggled successfully")
-})
+  return res.status(200).json(200, video, "Publish mode toggled successfully");
+});
 // updateVideo,
 // deleteVideo,
 // togglePublishStatus
 
-export { getAllVideos, publishAVideo, updateVideo, getVideoById , deleteVideo};
+export {
+  getAllVideos,
+  publishAVideo,
+  updateVideo,
+  getVideoById,
+  deleteVideo,
+  togglePublishStatus,
+};

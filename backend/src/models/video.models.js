@@ -31,7 +31,7 @@ const videoSchema = new Schema(
       type: Number, //cloudinary also gives the time of video
       required: true,
     },
-    view: {
+    views: {
       type: Number,
       default: 0,
     },

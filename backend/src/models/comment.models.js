@@ -9,7 +9,7 @@ const commentSchema = new Schema(
       required: true,
       unique: true,
     },
-    videol: {
+    video: {
       type: mongoose.Types.ObjectId,
       ref: "Video",
     },
