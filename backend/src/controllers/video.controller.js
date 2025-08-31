@@ -99,4 +99,83 @@ const publishAVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, video, "Video published successfully!"));
 });
 
-export { getAllVideos, publishAVideo };
+const getVideoById = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  const video = await Video.findById(videoId).populate(
+    "owner",
+    "name email avatar coverImage"
+  );
+
+  if (!video) {
+    throw new ApiError(
+      400,
+      "The requested video is not available or may have been removed."
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video fetched successfully."));
+});
+
+const updateVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  const { title, description } = req.body;
+  const thumbnail = req.file?.path;
+
+  if (!title || !description) {
+    throw new ApiError(400, "Title and description cannot be empty.");
+  } else if (title.length < 10) {
+    throw new ApiError(400, "Title must be at least 10 characters long.");
+  }
+
+  if (thumbnail) {
+    // upload new thumbnail to cloudinary
+    const uploadedThumbnail = await uploadeOnCloudinary(thumbnail);
+    if (!uploadedThumbnail) {
+      throw new ApiError(500, "Failed to upload thumbnail to cloud storage!");
+    }
+  }
+
+  await Video.findByIdAndUpdate(
+    videoId,
+    { title, description, thumbnail: uploadedThumbnail?.url },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Video updated successfully."));
+});
+
+const deleteVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  await Video.findByIdAndDelete(videoId);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Video deleted successfully."))
+});
+
+const togglePublishStatus = asyncHandler(async (req, res) => {
+  const {videoId} = req.params
+
+  const video = await Video.findByIdAndUpdate(videoId,
+    {
+      isPublished : !Video.isPublished
+    },
+    {new : true}
+  )
+
+  return res
+    .status(200)
+    .json(200, video, "Publish mode toggled successfully")
+})
+// updateVideo,
+// deleteVideo,
+// togglePublishStatus
+
+export { getAllVideos, publishAVideo, updateVideo, getVideoById , deleteVideo};
