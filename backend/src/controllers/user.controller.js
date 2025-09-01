@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //remove password and refresh token field from response
   //   check for user creation
   // return response
-console.log("📩 Incoming body:", req.body); 
+  console.log("📩 Incoming body:", req.body);
   const { fullName, username, email, password } = req.body;
 
   if (
@@ -50,63 +50,75 @@ console.log("📩 Incoming body:", req.body);
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
   });
-console.log("🔍 User exist check:", userExist);
+  console.log("🔍 User exist check:", userExist);
 
   if (userExist) {
-    throw new ApiError(400, "User already exist.");
+    if (userExist.username === username) {
+      throw new ApiError(
+        400,
+        "Username is already taken. Please choose another."
+      );
+    }
+
+    if (userExist.email === email) {
+      throw new ApiError(
+        400,
+        "This email is already registered. Please login instead."
+      );
+    }
   }
+  console.log("🔍 User exist check:", userExist);
+
   console.log(req.files);
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  const avatarLocalPath = req.files?.avatar?.[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
-console.log("📷 Avatar local path:", avatarLocalPath);
+  console.log("📷 Avatar local path:", avatarLocalPath);
 
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
+  console.log("🖼️ Cover image local path:", coverImageLocalPath);
 
-let coverImageLocalPath;
-if (
-  req.files &&
-  Array.isArray(req.files.coverImage) &&
-  req.files.coverImage.length > 0
-) {
-  coverImageLocalPath = req.files.coverImage[0].path;
-}
-console.log("🖼️ Cover image local path:", coverImageLocalPath);
+  if (!avatarLocalPath) {
+    console.log("❌ Missing avatar file");
+    throw new ApiError(400, "Avatar file is missing!");
+  }
 
-if (!avatarLocalPath) {
-  console.log("❌ Missing avatar file");
-  throw new ApiError(400, "Avatar file is missing!");
-}
+  const avatar = await uploadeOnCloudinary(avatarLocalPath);
+  const coverImage = await uploadeOnCloudinary(coverImageLocalPath);
+  console.log("☁️ Cloudinary upload:", { avatar, coverImage });
 
-const avatar = await uploadeOnCloudinary(avatarLocalPath);
-const coverImage = await uploadeOnCloudinary(coverImageLocalPath);
-console.log("☁️ Cloudinary upload:", { avatar, coverImage });
+  if (!avatar) {
+    console.log("❌ Avatar upload failed");
+    throw new ApiError(400, "Failed to upload avatar to cloud storage!");
+  }
 
-if (!avatar) {
-  console.log("❌ Avatar upload failed");
-  throw new ApiError(400, "Failed to upload avatar to cloud storage!");
-}
+  const user = await User.create({
+    username: username.toLowerCase(),
+    email,
+    fullName,
+    avatar: avatar.url,
+    coverImage: coverImage.url || "",
+    password,
+  });
+  console.log("✅ User created in DB:", user);
 
-const user = await User.create({
-  username: username.toLowerCase(),
-  email,
-  fullName,
-  avatar: avatar.url,
-  coverImage: coverImage.url || "",
-  password,
-});
-console.log("✅ User created in DB:", user);
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+  console.log("📦 Created user (sanitized):", createdUser);
 
-const createdUser = await User.findById(user._id).select(
-  "-password -refreshToken"
-);
-console.log("📦 Created user (sanitized):", createdUser);
+  if (!createdUser) {
+    console.log("❌ User not found after creation");
+    throw new ApiError(500, "Something went wrong while registering the user!");
+  }
 
-if (!createdUser) {
-  console.log("❌ User not found after creation");
-  throw new ApiError(500, "Something went wrong while registering the user!");
-}
-
-console.log("🎉 Registration success for:", createdUser.username);
-
+  console.log("🎉 Registration success for:", createdUser.username);
 
   return res
     .status(201)
@@ -198,8 +210,9 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   console.log(req.cookie, req.body, req);
-  
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(400, "Unauthorized refresh token request");
   }
@@ -319,7 +332,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        avatar:avatar.url,
+        avatar: avatar.url,
       },
     },
     { new: true }
@@ -332,7 +345,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
   console.log(req, req.file);
-  
+
   const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {
