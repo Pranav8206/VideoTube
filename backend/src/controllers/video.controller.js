@@ -1,26 +1,9 @@
 import { Video } from "../models/video.models.js";
-import { User } from "../models/user.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadeOnCloudinary } from "../utils/cloudinary.js";
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
 
-// getAllVideos,
-// publishAVideo,
-// getVideoById,
-// updateVideo,
-// deleteVideo,
-// togglePublishStatus
-
-//ai uploadVideo,
-//   getVideoById,
-//   listVideos,
-//   updateVideo,
-//   deleteVideo,
-//   togglePublishStatus,
-//   incrementViews,
 
 const getAllVideos = asyncHandler(async (req, res) => {
   //get the number of videos to list
@@ -104,7 +87,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
   const video = await Video.findById(videoId).populate(
     "owner",
-    "name email avatar coverImage"
+    "username fullName email avatar coverImage"
   );
 
   if (!video) {
