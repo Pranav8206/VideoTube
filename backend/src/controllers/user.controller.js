@@ -32,7 +32,6 @@ const registerUser = asyncHandler(async (req, res) => {
   //remove password and refresh token field from response
   //   check for user creation
   // return response
-  console.log("📩 Incoming body:", req.body);
   const { fullName, username, email, password } = req.body;
 
   if (
@@ -50,7 +49,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
   });
-  console.log("🔍 User exist check:", userExist);
 
   if (userExist) {
     if (userExist.username === username) {
@@ -67,12 +65,9 @@ const registerUser = asyncHandler(async (req, res) => {
       );
     }
   }
-  console.log("🔍 User exist check:", userExist);
 
-  console.log(req.files);
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
-  console.log("📷 Avatar local path:", avatarLocalPath);
 
   let coverImageLocalPath;
   if (
@@ -82,19 +77,15 @@ const registerUser = asyncHandler(async (req, res) => {
   ) {
     coverImageLocalPath = req.files.coverImage[0].path;
   }
-  console.log("🖼️ Cover image local path:", coverImageLocalPath);
 
   if (!avatarLocalPath) {
-    console.log("❌ Missing avatar file");
     throw new ApiError(400, "Avatar file is missing!");
   }
 
   const avatar = await uploadeOnCloudinary(avatarLocalPath);
   const coverImage = await uploadeOnCloudinary(coverImageLocalPath);
-  console.log("☁️ Cloudinary upload:", { avatar, coverImage });
 
   if (!avatar) {
-    console.log("❌ Avatar upload failed");
     throw new ApiError(400, "Failed to upload avatar to cloud storage!");
   }
 
@@ -106,19 +97,14 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImage: coverImage.url || "",
     password,
   });
-  console.log("✅ User created in DB:", user);
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-  console.log("📦 Created user (sanitized):", createdUser);
 
   if (!createdUser) {
-    console.log("❌ User not found after creation");
     throw new ApiError(500, "Something went wrong while registering the user!");
   }
-
-  console.log("🎉 Registration success for:", createdUser.username);
 
   return res
     .status(201)
@@ -140,7 +126,11 @@ const loginUser = asyncHandler(async (req, res) => {
   } else if (password.length < 6) {
     throw new ApiError(400, "Password must be at least 6 characters long");
   }
-
+  
+  if (req.cookies.accessToken) {
+    throw new ApiError(400, "You are already login.")
+  }
+  
   const user = await User.findOne({ $or: [{ username }, { email }] });
 
   if (!user) {
@@ -209,7 +199,6 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  console.log(req.cookie, req.body, req);
 
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
@@ -344,8 +333,6 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
-  console.log(req, req.file);
-
   const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {
