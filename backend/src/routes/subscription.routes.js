@@ -8,8 +8,11 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/:channelId").post(verifyJWT, toggleSubscription).get(verifyJWT, getUserChannelSubscribers)
+router
+  .route("/:channelId")
+  .post(verifyJWT, toggleSubscription)
+  .get(verifyJWT, getUserChannelSubscribers);
 
-router.route("/:subscriberId").get(verifyJWT, getSubscribedChannels)
+router.route("/").get(verifyJWT, getSubscribedChannels);
 
 export default router;
