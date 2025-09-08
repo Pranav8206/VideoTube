@@ -29,4 +29,7 @@ app.use("/api/v1/videos", videoRouter)
 import tweetRouter from "./routes/tweet.routes.js"
 app.use("/api/v1/tweets", tweetRouter)
 
+import subscriptionRouter from "./routes/subscription.routes.js"
+app.use("/api/v1/subscription", subscriptionRouter)
+
 export { app };
