@@ -4,7 +4,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadeOnCloudinary } from "../utils/cloudinary.js";
 
-
 const getAllVideos = asyncHandler(async (req, res) => {
   //get the number of videos to list
   // get limit from req
@@ -124,7 +123,7 @@ const updateVideo = asyncHandler(async (req, res) => {
 
   await Video.findByIdAndUpdate(
     videoId,
-    { title, description, thumbnail: uploadedThumbnail?.url },
+    { $set: { title, description, thumbnail: uploadedThumbnail?.url } },
     { new: true }
   );
 

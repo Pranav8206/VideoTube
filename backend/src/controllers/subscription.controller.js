@@ -85,7 +85,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     .select("channel")
     .skip(skip)
     .limit(parseInt(limit))
-    .lean(); // Better performance
+    .lean();
 
   const totalCount = await Subscription.countDocuments({
     subscriber: subscriberId,

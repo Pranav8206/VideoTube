@@ -126,11 +126,11 @@ const loginUser = asyncHandler(async (req, res) => {
   } else if (password.length < 6) {
     throw new ApiError(400, "Password must be at least 6 characters long");
   }
-  
+
   if (req.cookies.accessToken) {
-    throw new ApiError(400, "You are already login.")
+    throw new ApiError(400, "You are already login.");
   }
-  
+
   const user = await User.findOne({ $or: [{ username }, { email }] });
 
   if (!user) {
@@ -149,7 +149,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-  console.log(loggedInUser.username, "You looged in successfully!")
+  console.log(loggedInUser.username, "You looged in successfully!");
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -199,7 +199,6 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
