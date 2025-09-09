@@ -7,170 +7,82 @@ import { Video } from "../models/video.models.js";
 import { Comment } from "../models/comment.models.js";
 import { Tweet } from "../models/tweet.models.js";
 
-const toggleVideoLike = asyncHandler(async (req, res) => {
-  const { videoId } = req.params;
+const toggleLike = (Model, field) =>
+  asyncHandler(async (req, res) => {
+    const id = req.params[`${field}Id`];
 
-  if (!videoId || !mongoose.isValidObjectId(videoId)) {
-    throw new ApiError(400, "Invalid video Id");
-  }
+    if (!id || !mongoose.isValidObjectId(id)) {
+      throw new ApiError(400, `Invalid ${field} Id`);
+    }
 
-  const video = await Video.findById(videoId);
-  if (!video) {
-    throw new ApiError(404, "Video is not exist or deleted");
-  }
+    const doc = await Model.findById(id);
+    if (!doc) {
+      throw new ApiError(404, `${field} does not exist or has been deleted`);
+    }
 
-  const likeExist = await Like.findOneAndDelete({
-    likedBy: req.user._id,
-    video: videoId,
-  });
-  if (likeExist) {
+    const filter = { likedBy: req.user._id, [field]: id };
+
+    const likeExist = await Like.findOneAndDelete(filter);
+    if (likeExist) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            { [`${field}Id`]: id },
+            `${field} unliked successfully`
+          )
+        );
+    }
+
+    const like = await Like.create(filter);
+
     return res
-      .status(200)
-      .json(new ApiResponse(200, { videoId }, "Video unliked successfully"));
-  }
-
-  const like = await Like.create({
-    likedBy: req.user._id,
-    video: videoId,
+      .status(201)
+      .json(new ApiResponse(201, like, `${field} liked successfully`));
   });
+
+const toggleVideoLike = toggleLike(Video, "video");
+const toggleCommentLike = toggleLike(Comment, "comment");
+const toggleTweetLike = toggleLike(Tweet, "tweet");
+
+const getLikedVideos = asyncHandler(async (req, res) => {
+  const likedVideos = await Like.find({
+    likedBy: req.user._id,
+    video: { $exists: true },
+  }).populate("video", "title thumbnail views owner createdAt");
 
   return res
-    .status(201)
-    .json(new ApiResponse(201, like, "Video liked successfully"));
+    .status(200)
+    .json(
+      new ApiResponse(200, likedVideos, "Liked videos fetched successfully")
+    );
 });
 
-const toggleCommentLike = asyncHandler(async (req, res) => {
-  const { commentId } = req.params;
-  if (!commentId || !mongoose.isValidObjectId(commentId)) {
-    throw new ApiError(400, "Invalid comment Id");
-  }
+const getLikeCount = (field) =>
+  asyncHandler(async (req, res) => {
+    const id = req.params[`${field}Id`];
 
-  const comment = await Comment.findById(commentId);
-  if (!comment) {
-    throw new ApiError(400, "Comment not exist or deleted");
-  }
+    if (!id || !mongoose.isValidObjectId(id)) {
+      throw new ApiError(400, `Invalid ${field} Id`);
+    }
 
-  const likeExist = await Like.findOneAndDelete({
-    likedBy: req.user._id,
-    comment: commentId,
-  });
-  if (likeExist) {
+    const likeCount = await Like.countDocuments({ [field]: id });
+
     return res
       .status(200)
       .json(
-        new ApiResponse(200, { commentId }, "Comment unliked successfully")
+        new ApiResponse(
+          200,
+          { like: likeCount },
+          `${field} like count fetched successfully`
+        )
       );
-  }
-
-  const like = await Like.create({
-    likedBy: req.user._id,
-    comment: commentId,
-  });
-  return res
-    .status(201)
-    .json(new ApiResponse(201, like, "Comment liked successfully"));
-});
-
-const toggleTweetLike = asyncHandler(async (req, res) => {
-  const { tweetId } = req.params;
-  if (!tweetId || !mongoose.isValidObjectId(tweetId)) {
-    throw new ApiError(400, "Invalid tweet Id");
-  }
-
-  const tweet = await Tweet.findById(tweetId);
-  if (!tweet) {
-    throw new ApiError(404, "Tweet not exist or deleted");
-  }
-
-  const likeExist = await Like.findOneAndDelete({
-    likedBy: req.user._id,
-    tweet: tweetId,
-  });
-  if (likeExist) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, { tweetId }, "Tweet unliked successfully"));
-  }
-
-  const like = await Like.create({
-    likedBy: req.user._id,
-    tweet: tweetId,
-  });
-  return res
-    .status(201)
-    .json(new ApiResponse(201, like, "Tweet like successfully"));
-});
-
-const getLikedVideos = asyncHandler(async (req, res) => {
-  const likedVideo = await Like.find({
-    likedBy: req.user._id,
-    video: { $exists: true },
-  }).populate("video");
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, likedVideo, "Liked video fetch successfully"));
-});
-
-const getCommentLikeCount = asyncHandler(async (req, res) => {
-  const { commentId } = req.params;
-  if (!commentId || !mongoose.isValidObjectId(commentId)) {
-    throw new ApiError(400, "Invalid comment Id");
-  }
-  const likeCount = await Like.countDocuments({
-    comment: commentId,
   });
 
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { like: likeCount },
-        "Comment like fetched successfully"
-      )
-    );
-});
-
-const getTweetLikeCount = asyncHandler(async (req, res) => {
-  const { tweetId } = req.params;
-  if (!tweetId || !mongoose.isValidObjectId(tweetId)) {
-    throw new ApiError(400, "Invalid tweet Id");
-  }
-  const likeCount = await Like.countDocuments({
-    tweet: tweetId,
-  });
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { like: likeCount },
-        "Tweet like fetched successfully"
-      )
-    );
-});
-
-const getVideoLikeCount = asyncHandler(async (req, res) => {
-  const { videoId } = req.params;
-  if (!videoId || !mongoose.isValidObjectId(videoId)) {
-    throw new ApiError(400, "Invalid video Id");
-  }
-  const likeCount = await Like.countDocuments({
-    video: videoId,
-  });
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { like: likeCount },
-        "Video like fetched successfully"
-      )
-    );
-});
+const getCommentLikeCount = getLikeCount("comment");
+const getTweetLikeCount = getLikeCount("tweet");
+const getVideoLikeCount = getLikeCount("video");
 
 export {
   toggleCommentLike,
