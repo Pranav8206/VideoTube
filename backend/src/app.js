@@ -40,4 +40,10 @@ app.use("/api/v1/playlist", playlistRouter);
 import likeRouter from "./routes/like.routes.js";
 app.use("/api/v1/like", likeRouter);
 
+import commentRouter from "./routes/comment.routes.js";
+app.use("/api/v1/comment", commentRouter);
+
+import dashboardRouter from "./routes/dashboard.routes.js";
+app.use("/api/v1/d", dashboardRouter);
+
 export { app };
