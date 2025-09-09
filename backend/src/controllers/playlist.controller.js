@@ -82,7 +82,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Playlist not exist or deleted");
   }
 
-  if (playlist.videos.includes(videoId)) {
+  if (playlist.videos.some((id) => id.toString() === videoId)) {
     throw new ApiError(404, "Video already exist in playlist");
   }
 
@@ -91,12 +91,10 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
   if (!video) {
     throw new ApiError(404, "Video not available or deleted");
   }
-  console.log("playlist.videos=>", playlist.videos);
 
   playlist.videos.push(video._id);
   await playlist.save();
 
-  console.log(playlist.videos);
   return res
     .status(200)
     .json(new ApiResponse(200, playlist, "Video added to playlist."));
