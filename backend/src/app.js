@@ -32,19 +32,19 @@ import tweetRouter from "./routes/tweet.routes.js";
 app.use("/api/v1/tweets", tweetRouter);
 
 import subscriptionRouter from "./routes/subscription.routes.js";
-app.use("/api/v1/subscription", subscriptionRouter);
+app.use("/api/v1/subscriptions", subscriptionRouter);
 
 import playlistRouter from "./routes/playlist.routes.js";
-app.use("/api/v1/playlist", playlistRouter);
+app.use("/api/v1/playlists", playlistRouter);
 
 import likeRouter from "./routes/like.routes.js";
-app.use("/api/v1/like", likeRouter);
+app.use("/api/v1/likes", likeRouter);
 
 import commentRouter from "./routes/comment.routes.js";
-app.use("/api/v1/comment", commentRouter);
+app.use("/api/v1/comments", commentRouter);
 
 import dashboardRouter from "./routes/dashboard.routes.js";
-app.use("/api/v1/d", dashboardRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 app.use("/api/v1/healthcheck", healthcheckRouter);
