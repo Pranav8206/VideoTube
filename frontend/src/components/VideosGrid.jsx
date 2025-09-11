@@ -1,11 +1,10 @@
-import React from 'react'
+import React from "react";
 
 const VideosGrid = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return 
+  <div>
+    lkk
+  </div>;
+};
 
-export default VideosGrid
+export default VideosGrid;

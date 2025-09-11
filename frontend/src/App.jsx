@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Home from "./pages/Home.jsx"
+import Navbar from "./components/Navbar.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-      <div className=''>Hi i am pranav</div>
+      <Navbar/>
+      <Home />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

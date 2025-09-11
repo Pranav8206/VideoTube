@@ -1,11 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
+import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
 
 const VideoPlayer = ({ src, poster }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const videoRef = useRef(null);
-  
+
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -16,16 +17,16 @@ const VideoPlayer = ({ src, poster }) => {
       setIsPlaying(!isPlaying);
     }
   };
-  
+
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
-  
+
   return (
-    <div 
+    <div
       className="relative bg-black rounded-xl overflow-hidden group"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
@@ -38,15 +39,21 @@ const VideoPlayer = ({ src, poster }) => {
       >
         <source src={src} type="video/mp4" />
       </video>
-      
+
       {showControls && (
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
           <div className="absolute bottom-4 left-4 right-4">
             <div className="flex items-center gap-4 text-white">
-              <button onClick={togglePlay} className="hover:scale-110 transition-transform">
+              <button
+                onClick={togglePlay}
+                className="hover:scale-110 transition-transform"
+              >
                 {isPlaying ? <Pause size={24} /> : <Play size={24} />}
               </button>
-              <button onClick={toggleMute} className="hover:scale-110 transition-transform">
+              <button
+                onClick={toggleMute}
+                className="hover:scale-110 transition-transform"
+              >
                 {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
               </button>
               <div className="flex-1 h-1 bg-white/30 rounded-full">
@@ -63,4 +70,4 @@ const VideoPlayer = ({ src, poster }) => {
   );
 };
 
-export default VideoPlayer
+export default VideoPlayer;

@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useState } from "react";
+import { Play } from "lucide-react";
 
-
-const VideoCard = ({ video, layout = 'grid' }) => {
+const VideoCard = ({ video, layout = "grid" }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
-  if (layout === 'list') {
+
+  if (layout === "list") {
     return (
       <div className="flex gap-4 p-4 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-xl transition-colors">
         <div className="relative flex-shrink-0">
-          <img 
-            src={video.thumbnail} 
+          <img
+            src={video.thumbnail}
             alt={video.title}
             className="w-40 h-24 object-cover rounded-lg"
           />
@@ -21,22 +21,26 @@ const VideoCard = ({ video, layout = 'grid' }) => {
           <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-1">
             {video.title}
           </h3>
-          <p className="text-purple-600 dark:text-purple-400 text-sm mb-1">{video.channel}</p>
-          <p className="text-gray-500 text-sm">{video.views} • {video.timestamp}</p>
+          <p className="text-purple-600 dark:text-purple-400 text-sm mb-1">
+            {video.channel}
+          </p>
+          <p className="text-gray-500 text-sm">
+            {video.views} • {video.timestamp}
+          </p>
         </div>
       </div>
     );
   }
-  
+
   return (
-    <div 
+    <div
       className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative">
-        <img 
-          src={video.thumbnail} 
+        <img
+          src={video.thumbnail}
           alt={video.title}
           className="w-full h-48 object-cover"
         />
@@ -54,8 +58,8 @@ const VideoCard = ({ video, layout = 'grid' }) => {
       </div>
       <div className="p-4">
         <div className="flex gap-3">
-          <img 
-            src={video.channelAvatar} 
+          <img
+            src={video.channelAvatar}
             alt={video.channel}
             className="w-10 h-10 rounded-full flex-shrink-0"
           />
@@ -63,8 +67,12 @@ const VideoCard = ({ video, layout = 'grid' }) => {
             <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-1">
               {video.title}
             </h3>
-            <p className="text-purple-600 dark:text-purple-400 text-sm mb-1">{video.channel}</p>
-            <p className="text-gray-500 text-sm">{video.views} • {video.timestamp}</p>
+            <p className="text-purple-600 dark:text-purple-400 text-sm mb-1">
+              {video.channel}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {video.views} • {video.timestamp}
+            </p>
           </div>
         </div>
       </div>
@@ -72,5 +80,4 @@ const VideoCard = ({ video, layout = 'grid' }) => {
   );
 };
 
-
-export default VideoCard
+export default VideoCard;

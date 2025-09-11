@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { User, ThumbsUp, ThumbsDown, ChevronDown } from "lucide-react";
 
 const CommentsSection = ({ comments }) => {
   const [newComment, setNewComment] = useState("");

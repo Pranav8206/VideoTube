@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { Share2, MoreVertical, ThumbsUp, ThumbsDown } from "lucide-react";
+import Button from "./Button";
 
-const VideoActions = ({ video }) => {
+const VideoActions = ( video ) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
 
