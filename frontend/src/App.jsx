@@ -1,14 +1,15 @@
 import { useState } from "react";
-import Home from "./pages/Home.jsx"
+import Home from "./pages/Home.jsx";
 import Navbar from "./components/Navbar.jsx";
+import VideoTubeApp from "./pages/Playing.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
-      <Navbar/>
-      <Home />
+      <Navbar setSidebarOpen={setSidebarOpen} />
+      <Home sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     </>
   );
 }

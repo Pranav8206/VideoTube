@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Play } from "lucide-react";
+import Button from "./Button";
 
 const VideoCard = ({ video, layout = "grid" }) => {
   const [isHovered, setIsHovered] = useState(false);

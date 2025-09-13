@@ -1,5 +1,4 @@
 import React from "react";
-import Hero from "../components/Hero";
 import Button from "../components/Button";
 import ChannelInfo from "../components/ChannelInfo";
 import Sidebar from "../components/Sidebar";
@@ -13,8 +12,10 @@ import {
 import VideoActions from "../components/VideoActions";
 import VideoCard from "../components/VideoCard";
 import VideosGrid from "../components/VideosGrid";
+import Feed from "../components/Feed";
+import SmallSidebar from "../components/SmallSidebar";
 
-const Home = () => {
+const Home = ({ sidebarOpen, setSidebarOpen }) => {
   const video = {
     thumbnail: "lsdfkj",
     title: "lsdkfj",
@@ -25,8 +26,12 @@ const Home = () => {
   };
   return (
     <div>
-      <Hero />
-      
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+      <div className="flex-grow">
+        <SmallSidebar />
+        <Feed />
+      </div>
     </div>
   );
 };
