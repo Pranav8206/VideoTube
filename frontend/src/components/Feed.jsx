@@ -1,9 +1,13 @@
 import React from 'react'
+import axios from 'axios';
 
-const Feed = () => {
+const Feed = async () => {
+  
+
   return (
     <div >
-      
+      Feed
+      {videos}
     </div>
   )
 }

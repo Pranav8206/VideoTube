@@ -5,7 +5,7 @@ import VideoTubeApp from "./pages/Playing.jsx";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  
   return (
     <>
       <Navbar setSidebarOpen={setSidebarOpen} />
