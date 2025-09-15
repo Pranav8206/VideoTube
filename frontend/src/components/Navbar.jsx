@@ -14,7 +14,7 @@ const Navbar = ({ setSidebarOpen={setSidebarOpen} }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="bg-white border-b sticky top-0 border-gray-200 px-4 h-12">
+    <header className="bg-white border-b z-1000 sticky top-0 border-gray-200 px-4 h-12">
       <div className="flex items-center justify-between ">
         <div className="flex items-center gap-4 ">
           {/* Hamburger */}

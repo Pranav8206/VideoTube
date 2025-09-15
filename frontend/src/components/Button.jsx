@@ -12,7 +12,7 @@ const Button = ({
     "font-medium transition-all duration-200 flex items-center gap-2 disabled:opacity-50";
 
   const variants = {
-    primary: "bg-purple-600 hover:bg-purple-700 text-white",
+    primary: "bg-purple-400 hover:bg-purple-500 text-white",
     secondary: "bg-purple-100 hover:bg-purple-200 text-black",
     ghost: "hover:bg-purple-100  text-purple-700 ",
     danger: "bg-red-500 hover:bg-red-600 text-white",

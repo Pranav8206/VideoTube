@@ -6,27 +6,30 @@ const sampleComments = [
   {
     id: 1,
     author: "John Doe",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     timestamp: "2 hours ago",
     text: "This is a great post! Thanks for sharing your insights.",
-    likes: 12
+    likes: 12,
   },
   {
     id: 2,
     author: "Jane Smith",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
     timestamp: "4 hours ago",
     text: "I found this really helpful. Looking forward to more content like this.",
-    likes: 8
+    likes: 8,
   },
   {
     id: 3,
     author: "Mike Johnson",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     timestamp: "1 day ago",
     text: "Excellent explanation! This clarified a lot of things for me.",
-    likes: 15
-  }
+    likes: 15,
+  },
 ];
 
 // Main Comments Section Component
@@ -43,12 +46,15 @@ function CommentsSection() {
   };
 
   return (
-    <section className="w-full px-0 sm:px-0">
-      <div className="w-full bg-[var(--color-light)] rounded-2xl shadow-lg overflow-hidden border border-[var(--color-borderColor)]">
+    <section className=" lg:min-w-[70vh] px-0 sm:px-0">
+      <div className="w-full  bg-white rounded-2xl shadow-lg overflow-hidden ">
         {/* Header */}
-  <div className="p-6 sm:p-10 border-b border-transparent bg-[var(--color-light)]">
+        <div className="p-6 sm:p-10 border-b border-transparent bg-[var(--color-light)]">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] mb-1 tracking-tight">
-            Comments <span className="text-[var(--color-primary)]">({sampleComments.length})</span>
+            Comments{" "}
+            <span className="text-[var(--color-primary)]">
+              ({sampleComments.length})
+            </span>
           </h2>
           <p className="text-[var(--color-primary-dull)] text-base sm:text-lg">
             Join the discussion and share your thoughts
@@ -56,7 +62,7 @@ function CommentsSection() {
         </div>
 
         {/* Comment Form */}
-  <div className="p-6 sm:p-10 border-b border-transparent bg-transparent">
+        <div className="p-6 sm:p-10 border-b border-transparent bg-transparent">
           <div className="flex gap-3 sm:gap-5 items-start">
             <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center shadow-md">
               <User size={22} className="text-white" />
@@ -82,8 +88,8 @@ function CommentsSection() {
         </div>
 
         {/* Comments List */}
-  <div className="p-6 sm:p-10">
-          <div className="space-y-5">
+        <div className="p-6 sm:p-10">
+          <div className="space-y-1">
             {sampleComments
               .slice(0, showAllComments ? sampleComments.length : 2)
               .map((comment) => (
@@ -142,7 +148,7 @@ function InteractiveComment({ comment }) {
   };
 
   return (
-  <div className="flex gap-3 sm:gap-5 items-start p-4 sm:p-5 rounded-xl bg-white/90 shadow border border-[var(--color-borderColor)]">
+    <div className="flex gap-3 sm:gap-5 items-start p-4 sm:p-5 rounded-xl bg-white/90 shadow border border-[var(--color-borderColor)]">
       <img
         src={comment.avatar}
         alt={comment.author}
@@ -163,9 +169,9 @@ function InteractiveComment({ comment }) {
         <div className="flex items-center gap-4 mt-1">
           <button
             className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-150 rounded-full px-3 py-1 ${
-              liked 
-                ? 'bg-[var(--color-primary)] text-white' 
-                : 'bg-transparent text-[var(--color-primary)] hover:bg-[var(--color-primary-dull)] hover:text-white border border-[var(--color-primary)]'
+              liked
+                ? "bg-[var(--color-primary)] text-white"
+                : "bg-transparent text-[var(--color-primary)] hover:bg-[var(--color-primary-dull)] hover:text-white border border-[var(--color-primary)]"
             }`}
             onClick={handleLike}
             aria-pressed={liked}
@@ -175,9 +181,9 @@ function InteractiveComment({ comment }) {
           </button>
           <button
             className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-150 rounded-full px-3 py-1 ${
-              disliked 
-                ? 'bg-[var(--color-primary-dull)] text-white' 
-                : 'bg-transparent text-[var(--color-primary-dull)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-primary-dull)]'
+              disliked
+                ? "bg-[var(--color-primary-dull)] text-white"
+                : "bg-transparent text-[var(--color-primary-dull)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-primary-dull)]"
             }`}
             onClick={handleDislike}
             aria-pressed={disliked}
