@@ -15,6 +15,7 @@
   --color-light: #f7f7fa;
   --color-dark: #374151; 
   --color-borderColor: #e5e7eb;
+  --breakpoint-xs: 475px;
 }
 
 /* Use a different approach for the logo text to make it more cohesive */

@@ -28,9 +28,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       <aside
         className={`
         fixed top-0 left-0 h-screen bg-white  border-r border-gray-200  
-        sm:w-58 w-50 transform transition-transform duration-300 z-50
+        sm:w-58 w-50 transform transition-transform duration-300 z-50 cursor-ew-resize
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}
+      onClick={()=> {setSidebarOpen(!sidebarOpen)}}
       >
         <div className="px-2 my-1.5">
           <div className="flex pl-2 items-center gap-4 ">

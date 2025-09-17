@@ -15,7 +15,7 @@ import VideosGrid from "../components/VideosGrid";
 import Feed from "../components/Feed";
 import SmallSidebar from "../components/SmallSidebar";
 import CommentsSection from "../components/CommentSection";
-import VideoPlayer from "../components/VideoPlayer";
+import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 
 const Home = ({ sidebarOpen, setSidebarOpen }) => {
   const dummyVideos = [
@@ -340,7 +340,7 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
       />
 
       <VideoActions video={video} />
-      <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
+      {/* <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
         <div style={{ flex: 1 }}>
           <CommentsSection comments={dummyComments} />
         </div>
@@ -349,8 +349,8 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
             <VideoCard key={video.id} video={video} />
           ))}
         </div>
-      </div>
-      <VideosGrid videos={dummyVideos} />
+      </div>*/}
+      <VideosGrid videos={dummyVideos} /> 
 
       <ChannelInfo
         avatar="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
