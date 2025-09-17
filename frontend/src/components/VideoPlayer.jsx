@@ -52,6 +52,10 @@ const VideoPlayer = ({
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(-1);
 
+  // Skip animation states
+  const [skipAnimation, setSkipAnimation] = useState(null); // 'forward' | 'backward' | null
+  const [skipTimeoutRef, setSkipTimeoutRef] = useState(null);
+
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const seekbarRef = useRef(null);
@@ -229,8 +233,31 @@ const VideoPlayer = ({
       if (volumeTimeoutRef.current) {
         clearTimeout(volumeTimeoutRef.current);
       }
+      if (skipTimeoutRef) {
+        clearTimeout(skipTimeoutRef);
+      }
     };
-  }, []);
+  }, [skipTimeoutRef]);
+
+  // Show skip animation
+  const showSkipAnimation = useCallback(
+    (direction) => {
+      setSkipAnimation(direction);
+
+      // Clear existing timeout
+      if (skipTimeoutRef) {
+        clearTimeout(skipTimeoutRef);
+      }
+
+      // Hide animation after 800ms
+      const timeout = setTimeout(() => {
+        setSkipAnimation(null);
+      }, 800);
+
+      setSkipTimeoutRef(timeout);
+    },
+    [skipTimeoutRef]
+  );
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -379,6 +406,13 @@ const VideoPlayer = ({
   const skipTime = (seconds) => {
     const newTime = Math.max(0, Math.min(duration, currentTime + seconds));
     seek(newTime);
+
+    // Show skip animation
+    if (seconds > 0) {
+      showSkipAnimation("forward");
+    } else {
+      showSkipAnimation("backward");
+    }
   };
 
   const changePlaybackRate = () => {
@@ -559,6 +593,33 @@ const VideoPlayer = ({
       {/* Loading spinner */}
       {!error && isLoading && <Loader />}
 
+      {/* Skip Animation */}
+      {skipAnimation && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
+          <div
+            className={`flex items-center justify-center  rounded-full p-4 ease-in transform transition-all duration-300 ${
+              skipAnimation === "forward"
+                ? "animate-pulse "
+                : "animate-pulse "
+            }`}
+          >
+            <div className="flex items-center justify-center text-[var(--color-primary)]">
+              {skipAnimation === "forward" ? (
+                <div className="relative items-center justify-center left-25 md:left-35 bg-black/60 rounded-xl p-1.5">
+                  <RotateCw size={20} className="mx-auto" />
+                  <span className="text-sm font-semibold">+10s</span>
+                </div>
+              ) : (
+                <div className="relative items-center justify-center right-25 md:right-35 bg-black/60 rounded-xl p-1.5">
+                  <RotateCcw size={20} className="mx-auto"/>
+                  <span className="text-sm font-semibold">-10s</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Controls */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
@@ -580,31 +641,42 @@ const VideoPlayer = ({
         )}
 
         {/* Overlay for double-click fullscreen and single-click play/pause  */}
-        <div
-          className="absolute flex inset-0 cursor-pointer z-10 h-full w-full "
-          onClick={() => {
-            if (window.innerWidth > 640) {
-              togglePlay();
-              alert("above 640 ")
-            } else {
-              showControls ? setShowControls(false) : setShowControls(true);
-            }
-          }}
-        >
+        <div className="absolute flex inset-0 cursor-pointer z-10 h-full w-full ">
           <div
             className="relative w-1/3 "
-            onDoubleClick={() => {
+            onDoubleClickCapture={() => {
               skipTime(-10);
+            }}
+            onClickCapture={() => {
+              if (window.innerWidth > 640) {
+                togglePlay();
+              } else {
+                showControls ? setShowControls(false) : setShowControls(true);
+              }
             }}
           ></div>
           <div
             className="relative w-1/3 "
             onDoubleClick={toggleFullscreen}
+            onClick={() => {
+              if (window.innerWidth > 640) {
+                togglePlay();
+              } else {
+                showControls ? setShowControls(false) : setShowControls(true);
+              }
+            }}
           ></div>
           <div
             className="relative w-1/3 "
             onDoubleClick={() => {
               skipTime(10);
+            }}
+            onClickCapture={() => {
+              if (window.innerWidth > 640) {
+                togglePlay();
+              } else {
+                showControls ? setShowControls(false) : setShowControls(true);
+              }
             }}
           ></div>
         </div>
