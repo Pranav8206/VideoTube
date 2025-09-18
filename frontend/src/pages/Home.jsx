@@ -15,7 +15,8 @@ import VideosGrid from "../components/VideosGrid";
 import Feed from "../components/Feed";
 import SmallSidebar from "../components/SmallSidebar";
 import CommentsSection from "../components/CommentSection";
-import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
+import VideoPlayer from "../components/VideoPlayer/VideoPlayer.jsx";
+import NotFound from "../components/NotFound.jsx";
 
 const Home = ({ sidebarOpen, setSidebarOpen }) => {
   const dummyVideos = [
@@ -30,7 +31,8 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
       avatar: "https://i.pravatar.cc/40?img=7",
       name: "React School",
       subscribers: "200K",
-      description: "Start learning React from scratch with this beginner tutorial.",
+      description:
+        "Start learning React from scratch with this beginner tutorial.",
     },
     {
       id: 4,
@@ -322,7 +324,8 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
     },
   ];
 
-
+  const VideoLink =
+    "http://res.cloudinary.com/dfxpccwii/video/upload/v1756909444/nmuwi33nvfssymgwazut.mp4";
 
   return (
     <div>
@@ -332,10 +335,10 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
         <SmallSidebar />
         <Feed />
       </div> */}
-      
 
       <VideoPlayer
-        src="http://res.cloudinary.com/dfxpccwii/video/upload/v1756909444/nmuwi33nvfssymgwazut.mp4"
+        src={VideoLink}
+        sources={[VideoLink]}
         poster="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
       />
 
@@ -350,7 +353,7 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
           ))}
         </div>
       </div>*/}
-      <VideosGrid videos={dummyVideos} /> 
+      {/* <VideosGrid videos={dummyVideos} /> */}
 
       <ChannelInfo
         avatar="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
@@ -358,6 +361,7 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
         subscribers="5.2K"
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       />
+      <NotFound/>
     </div>
   );
 };
