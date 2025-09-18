@@ -282,86 +282,25 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
       description: "Take your React skills to the next level.",
     },
   ];
-  const video = {
-    thumbnail:
-      "http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg",
-    title: "lsdkfj",
-    duration: 33,
-    channel: "Pranav Mavle",
-    views: 2,
-    timestamp: 3,
-    avatar:
-      "http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg",
-    name: "Pranav Mavle",
-    subscribers: "5.2K",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  };
-  const dummyComments = [
-    {
-      id: 1,
-      author: "Alice",
-      avatar: "https://i.pravatar.cc/40?img=1",
-      timestamp: "2 hours ago",
-      text: "Great video! Learned a lot.",
-      likes: 12,
-    },
-    {
-      id: 2,
-      author: "Bob",
-      avatar: "https://i.pravatar.cc/40?img=2",
-      timestamp: "1 hour ago",
-      text: "Thanks for sharing this.",
-      likes: 5,
-    },
-    {
-      id: 3,
-      author: "Charlie",
-      avatar: "https://i.pravatar.cc/40?img=3",
-      timestamp: "just now",
-      text: "Can you make a tutorial on React hooks?",
-      likes: 2,
-    },
-  ];
-
-  const VideoLink =
-    "http://res.cloudinary.com/dfxpccwii/video/upload/v1756909444/nmuwi33nvfssymgwazut.mp4";
 
   return (
     <div>
-      {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <div className="flex-grow">
+      <div className="flex flex-col">
         <SmallSidebar />
-        <Feed />
-      </div> */}
+        <div>
+          <VideosGrid videos={dummyVideos} />
 
-      <VideoPlayer
-        src={VideoLink}
-        sources={[VideoLink]}
-        poster="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
-      />
-
-      <VideoActions video={video} />
-      {/* <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
-        <div style={{ flex: 1 }}>
-          <CommentsSection comments={dummyComments} />
+          <ChannelInfo
+            avatar="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
+            name="Pranav Mavle"
+            subscribers="5.2K"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          />
+          <NotFound />
         </div>
-        <div style={{ flex: 2 }}>
-          {dummyVideos.map((video) => (
-            <VideoCard key={video.id} video={video} />
-          ))}
-        </div>
-      </div>*/}
-      {/* <VideosGrid videos={dummyVideos} /> */}
-
-      <ChannelInfo
-        avatar="http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg"
-        name="Pranav Mavle"
-        subscribers="5.2K"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      />
-      <NotFound/>
+      </div>
     </div>
   );
 };
