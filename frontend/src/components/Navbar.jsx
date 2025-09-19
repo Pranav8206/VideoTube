@@ -8,6 +8,7 @@ import {
   User,
   Mic,
 } from "lucide-react";
+import { Link } from "react-router-dom"; // ⬅️ add this import
 import Button from "./Button";
 import MobSearchNav from "./MobSearchNav";
 
@@ -28,25 +29,22 @@ const Navbar = ({ setSidebarOpen }) => {
   useEffect(() => {
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
-      
-      // Show navbar when at the top of the page
+
       if (currentScrollY < 10) {
         setIsVisible(true);
-      }
-      // Hide navbar when scrolling down, show when scrolling up
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       } else if (currentScrollY < lastScrollY) {
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', controlNavbar);
+    window.addEventListener("scroll", controlNavbar);
 
     return () => {
-      window.removeEventListener('scroll', controlNavbar);
+      window.removeEventListener("scroll", controlNavbar);
     };
   }, [lastScrollY]);
 
@@ -62,9 +60,9 @@ const Navbar = ({ setSidebarOpen }) => {
 
   return (
     <>
-      <header 
+      <header
         className={`bg-white border-b z-1000 sticky top-0 border-gray-200 px-2 sm:px-4 h-12 w-full flex justify-between max-sm:h-10 transition-transform duration-300 ease-in-out ${
-          isVisible ? 'translate-y-0' : '-translate-y-full'
+          isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
         <div className="flex items-center justify-between">
@@ -78,7 +76,7 @@ const Navbar = ({ setSidebarOpen }) => {
             </button>
 
             {/* logo + text */}
-            <div className="flex items-center justify-center min-w-fit">
+            <Link to="/" className="flex items-center justify-center min-w-fit">
               <img
                 className="w-5 h-5 sm:w-7 sm:h-7 cursor-pointer"
                 src="/favicon.webp"
@@ -86,19 +84,13 @@ const Navbar = ({ setSidebarOpen }) => {
               />
               <div className="flex justify-center items-end cursor-pointer text-base sm:text-xl ml-1">
                 <span className="logo-video z-10">
-                  V
-                  <span className="logo-video hidden xs:inline ">
-                    ideo
-                  </span>
+                  V<span className="logo-video hidden xs:inline ">ideo</span>
                 </span>
                 <span className="logo-tube max-sm:-ml-[1px]">
-                  T
-                  <span className="logo-tube hidden xs:inline ">
-                    ube
-                  </span>
+                  T<span className="logo-tube hidden xs:inline ">ube</span>
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -146,14 +138,16 @@ const Navbar = ({ setSidebarOpen }) => {
 
           {/* Right Side Icons */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            <Button
-              variant="info"
-              size="sm"
-              className="flex items-center bg-purple-50 transition-colors"
-            >
-              <Upload size={14} className="sm:w-4 sm:h-4" />
-              <span className="ml-1 hidden  md:inline">Upload</span>
-            </Button>
+            <Link to="/upload">
+              <Button
+                variant="info"
+                size="sm"
+                className="flex items-center bg-purple-50 transition-colors"
+              >
+                <Upload size={14} className="sm:w-4 sm:h-4" />
+                <span className="ml-1 hidden  md:inline">Upload</span>
+              </Button>
+            </Link>
 
             {/* Notifications */}
             <button className="p-1 sm:p-1.5 rounded-full transition-colors relative cursor-pointer bg-purple-50">
@@ -164,9 +158,11 @@ const Navbar = ({ setSidebarOpen }) => {
             </button>
 
             {/* User Avatar */}
-            <button className="w-6 h-6 sm:w-8 sm:h-8 bg-primary cursor-pointer rounded-full flex items-center justify-center flex-shrink-0">
-              <User size={14} className="sm:w-4.5 sm:h-4.5 text-white" />
-            </button>
+            <Link to="/settings">
+              <button className="w-6 h-6 sm:w-8 sm:h-8 bg-primary cursor-pointer rounded-full flex items-center justify-center flex-shrink-0">
+                <User size={14} className="sm:w-4.5 sm:h-4.5 text-white" />
+              </button>
+            </Link>
           </div>
         </div>
       </header>
