@@ -16,7 +16,6 @@ import Feed from "../components/Feed";
 import SmallSidebar from "../components/SmallSidebar";
 import CommentsSection from "../components/CommentSection";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer.jsx";
-import NotFound from "../components/NotFound.jsx";
 
 const Home = ({ sidebarOpen, setSidebarOpen }) => {
   const dummyVideos = [
@@ -298,7 +297,6 @@ const Home = ({ sidebarOpen, setSidebarOpen }) => {
             subscribers="5.2K"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           />
-          <NotFound />
         </div>
       </div>
     </div>

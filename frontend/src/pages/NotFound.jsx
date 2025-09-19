@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AlertTriangle, Home } from "lucide-react";
+import { Link } from "react-router-dom"; // Assuming React Router for navigation
 
 const NotFound = () => {
   const containerRef = useRef(null);
@@ -51,7 +52,12 @@ const NotFound = () => {
         <p className="text-xs sm:text-sm font-mono text-purple-100">
           Oops! The page you're looking for cannot be found.
         </p>
-        
+        <Link to="/" >
+          <button className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded text-sm hover:bg-[var(--color-dark)] hover:text-[var(--color-primary)] transition-colors cursor-pointer">
+            <Home size={18} />
+            Back to Home
+          </button>
+        </Link>
       </div>
     </div>
   );
