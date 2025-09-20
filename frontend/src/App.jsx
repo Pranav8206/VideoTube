@@ -6,12 +6,10 @@ import Sidebar from "./components/Sidebar.jsx";
 import { Outlet } from "react-router-dom";
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <>
-      <Navbar setSidebarOpen={setSidebarOpen} />
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Navbar />
+      <Sidebar />
       <Outlet />
     </>
   );

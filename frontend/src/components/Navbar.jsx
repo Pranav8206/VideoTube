@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   Play,
   Search,
@@ -11,8 +11,11 @@ import {
 import { Link } from "react-router-dom"; // ⬅️ add this import
 import Button from "./Button";
 import MobSearchNav from "./MobSearchNav";
+import { AppContext } from "../context/context";
 
-const Navbar = ({ setSidebarOpen }) => {
+const Navbar = () => {
+  const { sidebarOpen, setSidebarOpen } = useContext(AppContext);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
