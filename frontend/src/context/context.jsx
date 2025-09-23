@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -7,6 +7,7 @@ export const AppContext = createContext();
 
 const ContextProvider = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const fetchAllVideos = async () => {
     try {
@@ -16,11 +17,15 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-  const value = { sidebarOpen, setSidebarOpen, fetchAllVideos };
+  const value = {
+    sidebarOpen,
+    setSidebarOpen,
+    fetchAllVideos,
+    showNotification,
+    setShowNotification,  
+  };
 
-  return  <AppContext.Provider value={value}>
-           {children}
-          </AppContext.Provider>;
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export default ContextProvider;
