@@ -158,7 +158,7 @@ const Navbar = () => {
 
         {/* Right Side Icons */}
         <div className="flex sm:flex-row-reverse items-center gap-1 sm:gap-2 flex-shrink-0 duration-1000 transition-all ease-in-out">
-          <div className="flex items-center rounded-full  bg-purple-100 text-pretty  text-primary">
+          <div className="flex items-center rounded-full  bg-purple-50 text-pretty  text-primary">
             <TooltipButton
               tooltipText="Upload Video"
               className={`rounded-full p-1.5 transition-colors duration-200 
