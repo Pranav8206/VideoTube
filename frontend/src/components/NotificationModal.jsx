@@ -28,16 +28,21 @@ const NotificationModal = ({ message }) => {
   return (
     <>
       {/* Backdrop */}
-      <div
-        onClick={() => setShowNotification(false)}
-        className="fixed inset-0 w-full h-full bg-black/10 z-40"
-      />
+      {showNotification && (
+        <div
+          onClick={() => setShowNotification(false)}
+          className="fixed inset-0 w-full h-full bg-black/10 z-40"
+        ></div>
+      )}
 
-      {/* Modal */}
-      <div className={`fixed top-9.5 sm:top-11 right-0 sm:mx-3 max-sm:max-w-[70vw] sm:w-[30vw] border border-gray-300 shadow-2xl flex bg-white bg-opacity-40 transform transition-transform duration-300 z-40 rounded-lg  p-6 min-w-[300px] ${showNotification ? "translate-x-0" : "-translate-x-full"}`}> 
+      <aside
+        className={`fixed top-9 sm:top-10 right-0 mx-1 sm:mx-3 max-sm:max-w-[70vw] sm:w-[30vw] border border-gray-300 shadow-2xl flex bg-white bg-opacity-40 transform transition-transform duration-300 z-40 rounded-lg  p-6 min-w-[300px] ${
+          showNotification ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
         <ChevronUp
           fill="white"
-          className="absolute text-white z-50 -top-5 right-10 sm:right-1 stroke-gray-200 sm:stroke-0.5"
+          className="absolute text-white z-50 -top-5 right-8 sm:right-0 stroke-gray-200 sm:stroke-0.5"
           size={41}
           strokeWidth={1}
         />
@@ -53,7 +58,7 @@ const NotificationModal = ({ message }) => {
             </div>
           )}
         </div>
-      </div>
+      </aside>
     </>
   );
 };

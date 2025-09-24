@@ -28,7 +28,6 @@ const Sidebar = () => {
     }
   }, [sidebarOpen, setSidebarOpen]);
 
-
   return (
     <>
       {sidebarOpen && (
@@ -40,16 +39,13 @@ const Sidebar = () => {
 
       <aside
         className={`
-          fixed top-0 left-0 h-screen bg-white border-r border-gray-200  
-          sm:w-58 w-50 transform transition-transform duration-300 z-30 cursor-ew-resize
+          fixed top-0 left-0 h-screen bg-white border-r border-gray-200 sm:w-58 w-50 transform transition-transform duration-300 z-30 cursor-ew-resize
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
-        onClick={() => 
-          setSidebarOpen(!sidebarOpen)
-        }
+        onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        <div className="px-1 sm:px-3 mt-1.5 mb-0 ">
-          <div className="flex items-center justify-between px-1">
+        <div className="px-1 sm:px-3 my-1.5  h-12 max-sm:h-10">
+          <div className="flex items-center justify-between px-1 ">
             <div className="flex items-center gap-1 sm:gap-4">
               {/* Hamburger */}
               <button
@@ -70,19 +66,15 @@ const Sidebar = () => {
                   alt="VideoTube Logo"
                 />
                 <div className="flex justify-center items-end cursor-pointer text-base sm:text-xl ml-1">
-                  <span className="logo-video z-10">
-                    V<span className="logo-video hidden xs:inline ">ideo</span>
-                  </span>
-                  <span className="logo-tube max-sm:-ml-[1px]">
-                    T<span className="logo-tube hidden xs:inline ">ube</span>
-                  </span>
+                  <span className="logo-video z-10">Video</span>
+                  <span className="logo-tube max-sm:-ml-[1px]">Tube</span>
                 </div>
               </Link>
             </div>
           </div>
 
           {/* Menu Items */}
-          <nav className="space-y-1 border-t border-gray-200 mt-1.5 pt-2 px-1 ">
+          <nav className="space-y-1 border-t border-gray-200 sm:mt-1.5 pt-2 px-1 ">
             {menuItems.map((item) => (
               <Link
                 to={item.path}

@@ -1,6 +1,3 @@
-
-
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100...900;700&display=swap");
 
 @import "tailwindcss";
@@ -9,30 +6,30 @@
   font-family: "Poppins", sans-serif;
 }
 
- @theme {
+@theme {
   --color-primary: #ca53fa;
   --color-primary-dull: #ae3edb;
   --color-light: #f7f7fa;
-  --color-dark: #374151; 
+  --color-dark: #374151;
   --color-borderColor: #e5e7eb;
   --breakpoint-xs: 475px;
 }
 
-/* Use a different approach for the logo text to make it more cohesive */
 .logo-video {
   font-family: "Poppins", sans-serif;
-  font-weight: 600; 
+  font-weight: 600;
   letter-spacing: -1px;
   color: var(--color-dark);
 }
 
 .logo-tube {
   font-family: "Poppins", sans-serif;
-  font-weight: 700; 
+  font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--color-primary);
 }
 
-.logo-video, .logo-tube {
+.logo-video,
+.logo-tube {
   font-size: 1.3rem; /* Equivalent to text-2xl for better scaling */
 }

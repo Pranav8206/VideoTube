@@ -8,6 +8,7 @@ export const AppContext = createContext();
 const ContextProvider = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchAllVideos = async () => {
     try {
@@ -23,6 +24,8 @@ const ContextProvider = ({ children }) => {
     fetchAllVideos,
     showNotification,
     setShowNotification,  
+    searchQuery,
+    setSearchQuery,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
