@@ -28,9 +28,9 @@ const routes = [
       { path: "playlist/:playlistId", element: <Playlist /> },
       { path: "upload", element: <Upload /> },
       { path: "settings", element: <Settings /> },
-      { path: "*", element: <NotFound /> },
     ],
   },
+  { path: "*", element: <NotFound /> },
 ];
 
 export default routes;
