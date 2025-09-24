@@ -13,6 +13,7 @@
   --color-dark: #374151;
   --color-borderColor: #e5e7eb;
   --breakpoint-xs: 475px;
+  --breakpoint-s: 550px;
 }
 
 .logo-video {
@@ -32,4 +33,8 @@
 .logo-video,
 .logo-tube {
   font-size: 1.3rem; /* Equivalent to text-2xl for better scaling */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
