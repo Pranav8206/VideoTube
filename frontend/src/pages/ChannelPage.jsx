@@ -1,11 +1,12 @@
 import React from 'react'
+import ChannelContent from '../components/channel/ChannelContent'
 
 const ChannelPage = () => {
   return (
     <div>
-      Channel details here
+      <ChannelContent/>
     </div>
   )
 }
 
-export default ChannelPage;
+export default ChannelPage
