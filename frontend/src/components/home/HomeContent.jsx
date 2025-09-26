@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import VideoSection from "./VideoSection";
-import {videos} from "../../utils/videosData"
+import { videos } from "../../utils/videosData";
 
 const HomeContent = () => {
   const [activeCategory, setActiveCategory] = useState("all");

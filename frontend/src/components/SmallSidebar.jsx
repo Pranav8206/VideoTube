@@ -1,16 +1,8 @@
 import React from "react";
-import { Home, Compass, Clock, Heart, ListVideo } from "lucide-react";
 import { Link } from "react-router-dom";
+import { menuItems } from "../utils/videosData";
 
 const SmallSidebar = () => {
-  const menuItems = [
-    { icon: Home, label: "Home", path: "/", active: true },
-    { icon: Compass, label: "Trending", path: "/trending", active: false },
-    { icon: ListVideo , label: "Playlists", path: "/playlists", active: false },
-    { icon: Clock, label: "History", path: "/history", active: false },
-    { icon: Heart, label: "Liked", path: "/liked", active: false },
-  ];
-
   return (
     <aside
       className={`h-[calc(100vh-3rem)] bg-white max-sm:hidden w-20 sticky sm:top-12`}
@@ -23,9 +15,7 @@ const SmallSidebar = () => {
               to={item.path}
               key={item.label}
               className={`w-full flex-col items-center justify-center mx-auto py-1 rounded-lg cursor-pointer text-xs flex ${
-                item.active
-                  ? "bg-purple-50 text-primary"
-                  : " text-gray-700"
+                item.active ? "bg-purple-50 text-primary" : " text-gray-700"
               }`}
             >
               <item.icon className="mx-auto" size={24} />

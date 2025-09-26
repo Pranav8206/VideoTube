@@ -1,17 +1,11 @@
 import React, { useContext, useLayoutEffect } from "react";
-import { Heart, Home, Compass, Clock, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../context/context";
+import { menuItems } from "../utils/videosData";
+import { Menu } from "lucide-react";
 
 const Sidebar = () => {
   const { sidebarOpen, setSidebarOpen } = useContext(AppContext);
-
-  const menuItems = [
-    { icon: Home, label: "Home", path: "/", active: false },
-    { icon: Compass, label: "Explore", path: "/explore", active: true },
-    { icon: Clock, label: "History", path: "/history", active: false },
-    { icon: Heart, label: "Liked Videos", path: "/liked", active: false },
-  ];
 
   useLayoutEffect(() => {
     if (sidebarOpen) {
