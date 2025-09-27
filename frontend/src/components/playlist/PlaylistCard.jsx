@@ -1,12 +1,11 @@
-// VideoCard.jsx
+import { MoreVertical, Play } from "lucide-react";
 import React, { useState } from "react";
-import { Download, Flag, Heart, Minus, MoreVertical, Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const VideoCard = ({ video, layout = "list" }) => {
+const PlaylistCard = ({ playlist, layout = "list", video, index, isPlaying,  onPlay, onRemove, showOptions }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [showOptions, setShowOptions] = useState(false)
-
   const isList = layout === "list";
+  const navigate = useNavigate();
 
   return (
     <div
@@ -18,8 +17,9 @@ const VideoCard = ({ video, layout = "list" }) => {
         }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => navigate(`/playlist/${playlist.id}`)}
     >
-      {/* Thumbnail */}
+      {/* Playlist Thumbnail */}
       <div
         className={`relative ${
           isList ? "flex-shrink-0 w-36 sm:w-48 h-full" : ""
@@ -31,8 +31,8 @@ const VideoCard = ({ video, layout = "list" }) => {
           }`}
         >
           <img
-            src={video.thumbnail}
-            alt={video.title}
+            src={playlist.thumbnail}
+            alt={playlist.title}
             className={`w-full h-full object-cover transition-transform duration-300
               ${isList ? "" : "group-hover:scale-105"}`}
           />
@@ -46,7 +46,7 @@ const VideoCard = ({ video, layout = "list" }) => {
                 : "bottom-2 right-2 text-[10px] sm:text-xs px-2 py-1 backdrop-blur-sm"
             }`}
         >
-          {video.duration}
+          {playlist.videoCount} videos
         </span>
 
         {isHovered && (
@@ -64,6 +64,7 @@ const VideoCard = ({ video, layout = "list" }) => {
         )}
       </div>
 
+      {/* Info */}
       {/* Info + Actions */}
       <div
         className={`flex-1 ${
@@ -74,55 +75,53 @@ const VideoCard = ({ video, layout = "list" }) => {
       >
         <div className="min-w-0 flex-1 space-y-1">
           <h3 className="font-semibold text-gray-900 line-clamp-2 text-xs xs:text-sm sm:text-base leading-snug">
-            {video.title}
+            {playlist.title}
           </h3>
           <p className="text-gray-500 text-[11px] s:text-xs">
-            {video.views} • {video.timestamp}
+            {playlist.videoCount} • {playlist.views}
           </p>
         </div>
       </div>
 
       {/* More button (only in list) */}
-      {isList && (
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
-          <div className="relative">
-            <button
-              onClick={() => setShowOptions((s) => !s)}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center"
-              aria-label="More"
-            >
-              <MoreVertical className="w-4 h-4 text-gray-600" />
-            </button>
+      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+        <div className="relative">
+          <button
+            onClick={() => setShowOptions((s) => !s)}
+            className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center"
+            aria-label="More"
+          >
+            <MoreVertical className="w-4 h-4 text-gray-600" />
+          </button>
 
-            {showOptions && (
-              <div className="absolute right-0 top-10 bg-white shadow-lg border border-gray-200 rounded-lg py-2 z-10 w-44">
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <Heart className="w-4 h-4" />
-                  Add to favorites
-                </button>
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <Download className="w-4 h-4" />
-                  Download
-                </button>
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <Flag className="w-4 h-4" />
-                  Report
-                </button>
-                <hr className="my-1" />
-                <button
-                  onClick={() => onRemove(video.id)}
-                  className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                >
-                  <Minus className="w-4 h-4" />
-                  Remove
-                </button>
-              </div>
-            )}
-          </div>
+          {showOptions && (
+            <div className="absolute right-0 top-10 bg-white shadow-lg border border-gray-200 rounded-lg py-2 z-10 w-44">
+              <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <Heart className="w-4 h-4" />
+                Add to favorites
+              </button>
+              <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Download All
+              </button>
+              <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <Flag className="w-4 h-4" />
+                Report
+              </button>
+              <hr className="my-1" />
+              <button
+                onClick={() => onRemove(video.id)}
+                className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+              >
+                <Minus className="w-4 h-4" />
+                Remove
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export default VideoCard;
+export default PlaylistCard;

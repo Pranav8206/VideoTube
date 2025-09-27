@@ -3,7 +3,8 @@ import ChannelBanner from "./ChannelBanner";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelNavigation from "./ChannelNavigation";
 import VideosGrid from "../VideosGrid";
-import { videos as videosData } from "../../utils/videosData";
+import { videos as videosData, multiPlaylists } from "../../utils/videosData";
+import PlaylistGrid from "../playlist/PlaylistGrid";
 
 const ChannelContent = () => {
   const [activeTab, setActiveTab] = useState("Videos");
@@ -63,17 +64,9 @@ const ChannelContent = () => {
               searchQuery={searchQuery}
             />
           )}
+
           {activeTab === "Playlists" && (
-            <div className="text-center px-4 min-h-screen">
-              <div className="bg-white rounded-xl p-6 sm:p-8 border border-gray-100 max-w-md mx-auto shadow-sm">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                  No playlists yet
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  This channel hasn't created any playlists.
-                </p>
-              </div>
-            </div>
+            <PlaylistGrid playlists={multiPlaylists} layout={layout} searchQuery={searchQuery} />
           )}
 
           {activeTab === "About" && (
