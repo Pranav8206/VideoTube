@@ -32,7 +32,7 @@ const VideoList = ({
             }`}
             key={video.id}
           >
-            <div className="flex max-s:flex-col-reverse items-center gap-3 border cursor-pointer">
+            <div className="flex max-s:flex-col-reverse items-center gap-3 cursor-pointer">
               <GripVertical
                 size={16}
                 className="text-gray-300 opacity-0 group-hover:opacity-100 hover:scale-125 transition"

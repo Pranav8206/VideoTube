@@ -64,7 +64,7 @@ const PlaylistHeader = ({
             </button>
           </p>
 
-          <div className="flex flex-wrap gap-3 justify-items-end border">
+          <div className="flex flex-wrap gap-3 justify-items-end">
             <button
               onClick={onPlayAll}
               className="flex items-center gap-2 bg-gradient-to-r from-primary to-indigo-600 

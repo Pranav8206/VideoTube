@@ -35,7 +35,7 @@ const SmallSidebar = () => {
           <div className="space-y-1">
             {["TechChannel", "MusicHub", "GameZone"].map((channel) => (
               <Link
-                to={`/channel/${channel.toLowerCase()}`}
+                to={`/c/${channel.toLowerCase()}`}
                 key={channel}
                 className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
               >

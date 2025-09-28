@@ -68,41 +68,48 @@ const VideoCard = ({ video, layout = "list", onRemove }) => {
       </div>
 
       {/* Info + Actions */}
-      <div className="flex">
-        <div
-          className={`flex-1 ${
-            isList
-              ? "flex xs:px-1 pt-1 flex-col justify-start"
-              : "p-2 flex items-start"
-          }`}
-        >
-          <div className="min-w-0 flex-1 space-y-1">
-            <h3
-              className={`font-semibold text-gray-900 line-clamp-2  xs:text-sm sm:text-base leading-snug ${
-                isList ? "text-xs" : "text-sm"
-              } `}
-            >
-              {video.title}
-            </h3>
-            <p className="text-gray-500 text-[11px] s:text-xs">
-              {video.views} • {video.timestamp}
-            </p>
-          </div>
+      <div
+        className={`flex-1 ${
+          isList
+            ? "flex xs:px-1 pt-1 justify-between"
+            : "p-2 flex items-start"
+        }`}
+      >
+        <div className="min-w-0 flex-1 space-y-1">
+          <h3
+            className={`font-semibold text-gray-900 line-clamp-2  xs:text-sm sm:text-base leading-snug ${
+              isList ? "text-xs" : "text-sm"
+            } `}
+          >
+            {video.title}
+          </h3>
+          <p className="text-gray-500 text-[11px] s:text-xs">
+            {video.views} • {video.timestamp}
+          </p>
         </div>
 
         {/* More button (only in list) */}
-        <div className={`flex gap-2 ${isList ? "items-start" : "items-center"} `}>
+        <div
+          className={`flex gap-2 ${isList ? "items-start" : "items-center"} `}
+        >
           <div className="relative">
             <button
               onClick={() => setShowOptions((s) => !s)}
-              className="w-5 h-5 sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer"
+              className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
               aria-label="More"
             >
               <MoreVertical size={16} className="text-gray-600" />
             </button>
 
             {showOptions && (
-              <div className={`absolute right-0 ${isList ? "top-8" : "bottom-6"}  bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-36 sm:w-44`}>
+              <div
+                className={`absolute right-0 ${
+                  isList ? "top-8" : "bottom-6"
+                }  bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-36 sm:w-44`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer">
                   <Clock size={16} />
                   Watch later

@@ -66,7 +66,11 @@ const ChannelContent = () => {
           )}
 
           {activeTab === "Playlists" && (
-            <PlaylistGrid playlists={multiPlaylists} layout={layout} searchQuery={searchQuery} />
+            <PlaylistGrid
+              playlists={multiPlaylists}
+              layout={layout}
+              searchQuery={searchQuery}
+            />
           )}
 
           {activeTab === "About" && (
