@@ -1,7 +1,5 @@
-import { useState } from "react";
-import Home from "./pages/Home.jsx";
+import react from "react";
 import Navbar from "./components/Navbars/Navbar.jsx";
-import VideoTubeApp from "./pages/VideoPlayerPage.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import { Outlet } from "react-router-dom";
 import NotificationModal from "./components/NotificationModal.jsx";

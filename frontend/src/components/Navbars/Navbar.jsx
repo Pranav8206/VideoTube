@@ -1,18 +1,16 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import {
-  Play,
   Search,
   MessageCircleMore,
   Upload,
   Menu,
   User,
   Mic,
-  Sun,
-  Moon,
   X,
   SendHorizonal,
+  MoreVertical,
 } from "lucide-react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MobSearchNav from "./MobSearchNav";
 import { AppContext } from "../../context/context";
 import TooltipButton from "../TooltipButton";
@@ -24,15 +22,16 @@ const Navbar = () => {
     setShowNotification,
     searchQuery,
     setSearchQuery,
+    showingSearchResults,
+    setShowingSearchResults,
   } = useContext(AppContext);
 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-
   const inputRef = useRef(null);
-
   const params = useLocation();
+  const navigate = useNavigate();
 
   // Navbar hide/show on scroll
   useEffect(() => {
@@ -59,6 +58,15 @@ const Navbar = () => {
     inputRef.current?.focus();
   };
 
+  const handleSearch = () => {
+    if (searchQuery) {
+      navigate(`/s/${searchQuery}`);
+      setShowingSearchResults(true);
+    } else {
+      setShowingSearchResults(false);
+    }
+  };
+
   if (showMobileSearch && window.innerWidth < 475) {
     return (
       <header
@@ -69,6 +77,7 @@ const Navbar = () => {
         <MobSearchNav
           showMobileSearch={showMobileSearch}
           onClose={() => setShowMobileSearch(false)}
+          handleSearch={handleSearch}
         />
       </header>
     );
@@ -116,14 +125,20 @@ const Navbar = () => {
               type="text"
               placeholder="Search..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-2 sm:px-4 py-1 sm:py-1.5 pl-8 sm:pl-10 pr-10 sm:pr-12 bg-gray-50 text-sm sm:text-base rounded-full focus:outline-none focus:ring-2 max-xs:hidden focus:ring-purple-500 focus:border-transparent"
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowingSearchResults(false);
+              }}
+              className="w-full px-2 sm:px-4 py-1 sm:py-1.5 pl-8 sm:pl-10 pr-10 sm:pr-13 bg-gray-50 text-sm sm:text-base rounded-full focus:outline-none focus:ring-2 max-xs:hidden focus:ring-purple-500 focus:border-transparent"
             />
             {/* Mobile Search */}
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowingSearchResults(false);
+              }}
               placeholder="...."
               onClick={() => setShowMobileSearch(true)}
               className="xs:hidden w-full px-2 py-1 pl-5 pr-10 bg-gray-50 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -140,7 +155,7 @@ const Navbar = () => {
             />
 
             {/* Clear Search */}
-            {searchQuery && (
+            {searchQuery && !showingSearchResults && (
               <button
                 type="button"
                 onClick={handleClearSearch}
@@ -157,47 +172,63 @@ const Navbar = () => {
               className="absolute right-1 max-sm:right-0.5 top-1/2 -translate-y-1/2 max-sm:size-6 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
               title={`${searchQuery ? "Send" : "Voice search"}`}
             >
-              {searchQuery ? <SendHorizonal onClick={()=> {"Send"}} size={18} /> : <Mic onClick={()=> {"Voice SEarch"}} size={18} />}
+              {searchQuery && !showingSearchResults ? (
+                <SendHorizonal onClick={handleSearch} size={18} />
+              ) : (
+                <Mic
+                  onClick={() => {
+                    "Voice SEarch";
+                  }}
+                  size={18}
+                />
+              )}
             </button>
           </div>
         </div>
 
         {/* Right Side Icons */}
-        <div className="flex sm:flex-row-reverse items-center gap-1 sm:gap-2 flex-shrink-0 duration-1000 transition-all ease-in-out">
-          <div className="flex items-center rounded-full  bg-purple-50 text-pretty  text-primary">
-            <TooltipButton
-              tooltipText="Upload Video"
-              className={`rounded-full p-1 transition-colors duration-200 
+
+        {showingSearchResults ? (
+          <button className="p-2 rounded-lg transition-colors cursor-pointer ml-1">
+            <MoreVertical size={16} className="text-gray-700" />
+          </button>
+        ) : (
+          <div className="flex sm:flex-row-reverse items-center gap-1 sm:gap-2 flex-shrink-0 duration-1000 transition-all ease-in-out">
+            <div className="flex items-center rounded-full  bg-purple-50 text-pretty  text-primary">
+              <TooltipButton
+                tooltipText="Upload Video"
+                className={`rounded-full p-1 transition-colors duration-200 
                 ${
                   params.pathname === "/upload" &&
                   !showNotification &&
                   "bg-primary text-white"
                 }`}
-              position="side"
-            >
-              <Link to="/upload">
-                <Upload size={20} />
-              </Link>
-            </TooltipButton>
+                position="side"
+              >
+                <Link to="/upload">
+                  <Upload size={20} />
+                </Link>
+              </TooltipButton>
 
-            <TooltipButton
-              tooltipText="Notifications"
-              className={`rounded-full p-1 transition-colors duration-200 cursor-pointer ${
-                showNotification && "bg-primary text-white"
-              }`}
-              position="side"
-              onClick={() => setShowNotification(!showNotification)}
-            >
-              <MessageCircleMore size={20} />
-            </TooltipButton>
+              <TooltipButton
+                tooltipText="Notifications"
+                className={`rounded-full p-1 transition-colors duration-200 cursor-pointer ${
+                  showNotification && "bg-primary text-white"
+                }`}
+                position="side"
+                onClick={() => setShowNotification(!showNotification)}
+              >
+                <MessageCircleMore size={20} />
+              </TooltipButton>
+            </div>
+
+            <Link to="/settings">
+              <button className="w-7 h-7 bg-primary rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
+                <User size={24} className="text-white " />
+              </button>
+            </Link>
           </div>
-
-          <Link to="/settings">
-            <button className="w-7 h-7 bg-primary rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
-              <User size={24} className="text-white " />
-            </button>
-          </Link>
-        </div>
+        )}
       </div>
     </header>
   );

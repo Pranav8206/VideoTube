@@ -9,6 +9,7 @@ const ContextProvider = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showingSearchResults, setShowingSearchResults] = useState(false);
 
   const fetchAllVideos = async () => {
     try {
@@ -23,9 +24,11 @@ const ContextProvider = ({ children }) => {
     setSidebarOpen,
     fetchAllVideos,
     showNotification,
-    setShowNotification,  
+    setShowNotification,
     searchQuery,
     setSearchQuery,
+    showingSearchResults,
+    setShowingSearchResults,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

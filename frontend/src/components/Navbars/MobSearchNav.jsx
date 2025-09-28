@@ -1,9 +1,21 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { ArrowLeft, Search, Mic, X, SendHorizonal } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  Mic,
+  X,
+  SendHorizonal,
+  MoreVertical,
+} from "lucide-react";
 import { AppContext } from "../../context/context";
 
-const MobSearchNav = ({ showMobileSearch, onClose }) => {
-  const { searchQuery, setSearchQuery } = useContext(AppContext);
+const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
+  const {
+    searchQuery,
+    setSearchQuery,
+    showingSearchResults,
+    setShowingSearchResults,
+  } = useContext(AppContext);
   const inputRef = useRef(null);
 
   // Auto-focus the input when component becomes visible
@@ -27,7 +39,7 @@ const MobSearchNav = ({ showMobileSearch, onClose }) => {
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    showMobileSearch = true
+    showMobileSearch = true;
     inputRef.current?.focus();
   };
 
@@ -43,7 +55,9 @@ const MobSearchNav = ({ showMobileSearch, onClose }) => {
   if (!showMobileSearch) return null;
 
   return (
-    <div className={`fixed mb-10 top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-10 flex items-center px-2 sm:hidden sm:px-4 w-full  justify-between transform transition-all duration-300 ease-in-out`}>
+    <div
+      className={`fixed mb-10 top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-10 flex items-center px-2 sm:hidden sm:px-4 w-full  justify-between transform transition-all duration-300 ease-in-out`}
+    >
       {/* Back Arrow */}
       <button
         onClick={onClose}
@@ -62,8 +76,13 @@ const MobSearchNav = ({ showMobileSearch, onClose }) => {
             type="text"
             placeholder="Search..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-2 py-1 pl-6 pr-14 bg-gray-50 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowingSearchResults(false);
+            }}
+            className={`w-full px-2 py-1 pl-6 ${
+              showingSearchResults ? "pr-8" : "pr-12"
+            } bg-gray-50 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
           />
 
           {/* Search Icon (left) */}
@@ -73,7 +92,7 @@ const MobSearchNav = ({ showMobileSearch, onClose }) => {
           />
 
           {/* Clear button */}
-          {searchQuery && (
+          {searchQuery && !showingSearchResults && (
             <button
               type="button"
               onClick={handleClearSearch}
@@ -85,27 +104,24 @@ const MobSearchNav = ({ showMobileSearch, onClose }) => {
           )}
 
           {/* Mic Icon */}
-          {searchQuery ? (
-            <button
-              type="button"
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
-              title="Search"
-              aria-label="search"
-            >
-              <SendHorizonal size={18} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
-              title="Voice search"
-              aria-label="Voice search"
-            >
+          <button
+            type="button"
+            className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
+            title={`${searchQuery ? "Send" : "Voice search"}`}
+          >
+            {searchQuery && !showingSearchResults ? (
+              <SendHorizonal onClick={handleSearch} size={18} />
+            ) : (
               <Mic size={18} />
-            </button>
-          )}
+            )}
+          </button>
         </div>
       </form>
+      {showingSearchResults && (
+        <button className="p-2 rounded-lg transition-colors cursor-pointer ml-1">
+          <MoreVertical size={16} className="text-gray-700" />
+        </button>
+      )}
     </div>
   );
 };
