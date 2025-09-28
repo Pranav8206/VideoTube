@@ -465,3 +465,60 @@ export const trendingVideos = [
     timestamp: "2 days ago",
   },
 ];
+
+export const searchData = {
+  videos: [
+    {
+      id: "v1",
+      title: "How to build a SaaS in 30 days (and why you shouldn't)",
+      channelName: "Dev Channel",
+      views: "2.5M views",
+      uploadDate: "2 years ago",
+      duration: "12:00",
+      thumbnailUrl:
+        "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+1",
+      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      description:
+        "A comprehensive guide on the pitfalls and successes of rapid software development.",
+    },
+    {
+      id: "v2",
+      title: "The future of generative AI in design and art",
+      channelName: "Art Tech",
+      views: "1.1M views",
+      uploadDate: "3 months ago",
+      duration: "12:00",
+      thumbnailUrl:
+        "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+2",
+      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      description:
+        "A discussion on how AI is changing the creative industry, for better or worse.",
+    },
+    {
+      id: "v3",
+      title: "Exploring the most beautiful places in New Zealand",
+      channelName: "Travel Adventures",
+      views: "7.8M views",
+      uploadDate: "1 year ago",
+      duration: "12:00",
+      thumbnailUrl:
+        "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+3",
+      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      description:
+        "A visual journey through the stunning landscapes of New Zealand.",
+    },
+  ],
+  playlists: [
+    {
+      id: "p1",
+      title: "React.js Crash Course",
+      videoCount: "20",
+      thumbnailUrls: [
+        "https://placehold.co/100x75/505050/ffffff?text=P1",
+        "https://placehold.co/100x75/505050/ffffff?text=P2",
+        "https://placehold.co/100x75/505050/ffffff?text=P3",
+      ],
+      creatorName: "Dev Channel",
+    },
+  ],
+};

@@ -46,7 +46,7 @@ const VideoList = ({
               </span>
             </div>
 
-            <VideoCard video={video} showOptions={false} />
+            <VideoCard video={video}/>
           </div>
         );
       })}

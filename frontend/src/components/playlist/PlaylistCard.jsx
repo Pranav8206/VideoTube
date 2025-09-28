@@ -29,7 +29,7 @@ const PlaylistCard = ({
       className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer hover:border-gray-200 hover:shadow-md
         ${
           isList
-            ? "flex justify-between gap-3 hover:bg-gray-50"
+            ? "flex justify-between gap-4 hover:bg-gray-50 my-1"
             : "flex-col w-full group overflow-hidden"
         }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -45,12 +45,14 @@ const PlaylistCard = ({
       {/* Playlist Thumbnail */}
       <div
         className={`relative ${
-          isList ? "flex-shrink-0 w-36 sm:w-48 h-full max-xs:max-w-[50%] " : ""
+          isList
+            ? "flex-shrink-0 w-40 sm:w-56 md:w-64 lg:w-75 h-full max-xs:max-w-[50%]"
+            : ""
         }`}
       >
         <div
           className={`overflow-hidden bg-gray-100 aspect-video ${
-            isList ? "rounded-lg shadow-sm" : ""
+            isList ? "rounded-l-lg shadow-sm" : ""
           }`}
         >
           <img
@@ -62,15 +64,19 @@ const PlaylistCard = ({
         </div>
 
         {/* Playlist Overlay */}
-        <div className="absolute top-0 right-0 h-full px-1 bg-black/50 flex flex-col items-center justify-center text-white gap-2">
+        <div className="absolute top-0 right-0 h-full  bg-black/50 flex flex-col items-center justify-center text-white sm:text-sm px-2 py-0.5 md:text-base md:px-3 md:py-1 lg:text-lg lg:px-4 lg:py-1.5 gap-2">
           <ListVideo size={16} className="opacity-90" />
           <span className="text-[12px] sm:text-sm font-medium">
-            {playlist.videoCount} videos
+            {playlist.videoCount} {playlist.videoCount > 1 ? "videos" : "video"}
           </span>
         </div>
 
         {isHovered && (
-          <div className="absolute inset-0 bg-black/20 flex items-center justify-center rounded-lg">
+          <div
+            className={`absolute inset-0 bg-black/20 flex items-center justify-center ${
+              isList ? "rounded-l-lg" : "rounded-t-lg"
+            } `}
+          >
             <div
               className={`bg-white rounded-full flex items-center justify-center shadow-lg 
               ${isList ? "w-8 h-8" : "w-12 h-12"}`}
@@ -88,26 +94,25 @@ const PlaylistCard = ({
       <div
         className={`flex-1 ${
           isList
-            ? "flex xs:px-1 pt-1 justify-start"
-            : "p-2 flex gap-3 items-start"
+            ? "flex xs:px-2 sm:px-3 pt-2 justify-between"
+            : "p-2 sm:p-3 flex items-start gap-3"
         }`}
       >
         <div className="min-w-0 flex-1 space-y-1">
           <h3
-            className={`font-semibold text-gray-900 line-clamp-2  xs:text-sm sm:text-base leading-snug ${
-              isList ? "text-xs" : "text-sm"
-            } `}
+            className={`font-semibold text-gray-900 line-clamp-2 leading-snug
+              text-xs s:text-sm sm:text-base md:text-lg`}
           >
             {playlist.title}
           </h3>
-          <p className="text-gray-500 text-[11px] s:text-xs">
+          <p className="text-gray-500 text-[11px] sm:text-sm md:text-base">
             {playlist.videoCount} • {playlist.views}
           </p>
         </div>
 
         {/* More button (only in list) */}
         <div
-          className={`flex ${isList ? "items-start" : "items-center"} gap-2 `}
+          className={`flex ${isList ? "items-start" : "items-center"} gap-1 `}
         >
           <div className="relative">
             <button
@@ -115,7 +120,7 @@ const PlaylistCard = ({
                 e.stopPropagation();
                 setShowOptions((s) => !s);
               }}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"
+              className="sm:w-8 sm:h-8 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"
               aria-label="More"
             >
               <MoreVertical size={16} className=" text-gray-600" />

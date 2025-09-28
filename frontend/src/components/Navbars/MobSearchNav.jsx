@@ -25,31 +25,10 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
     }
   }, [showMobileSearch]);
 
-  // Handle escape key to close search
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape" && showMobileSearch) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showMobileSearch, onClose]);
-
   const handleClearSearch = () => {
     setSearchQuery("");
     showMobileSearch = true;
     inputRef.current?.focus();
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Handle search logic here
-      console.log("Searching for:", searchQuery);
-      // You can add your search logic here
-    }
   };
 
   if (!showMobileSearch) return null;
@@ -68,7 +47,14 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
       </button>
 
       {/* Search Form */}
-      <form onSubmit={handleSearchSubmit} className="flex-1 relative">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault(); // prevent page reload
+          handleSearch(e); // call search function
+          inputRef.current?.blur(); // remove focus from input
+        }}
+        className="flex-1 relative"
+      >
         <div className="border relative flex bg-purple-100 border-purple-100 rounded-full px-[0.1rem] py-[0.05rem]">
           {/* Search Input */}
           <input
@@ -104,17 +90,18 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
           )}
 
           {/* Mic Icon */}
-          <button
-            type="button"
+          <div
             className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
             title={`${searchQuery ? "Send" : "Voice search"}`}
           >
             {searchQuery && !showingSearchResults ? (
-              <SendHorizonal onClick={handleSearch} size={18} />
+              <button type="submit" className="cursor-pointer">
+                <SendHorizonal onClick={handleSearch} size={18} />
+              </button>
             ) : (
               <Mic size={18} />
             )}
-          </button>
+          </div>
         </div>
       </form>
       {showingSearchResults && (

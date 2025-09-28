@@ -58,13 +58,16 @@ const Navbar = () => {
     inputRef.current?.focus();
   };
 
-  const handleSearch = () => {
-    if (searchQuery) {
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
       navigate(`/s/${searchQuery}`);
       setShowingSearchResults(true);
+      console.log("s");
     } else {
       setShowingSearchResults(false);
     }
+    inputRef.current?.blur();
   };
 
   if (showMobileSearch && window.innerWidth < 475) {
@@ -118,7 +121,7 @@ const Navbar = () => {
       {/* Middle: Search */}
       <div className="flex-1 flex items-center gap-1 sm:gap-2 max-w-full overflow-hidden md:ml-10 max-sm:ml-7 max-xs:ml-5  justify-end">
         <div className="flex-1 max-w-full xs:max-w-xs sm:max-w-xl lg:max-w-[55%] sm:mx-8 border bg-purple-100 border-purple-100 rounded-full px-[0.1rem] py-[0.05rem] shadow-sm">
-          <div className="relative w-full">
+          <form onSubmit={handleSearch} className="relative w-full">
             {/* Desktop Search */}
             <input
               ref={inputRef}
@@ -167,13 +170,14 @@ const Navbar = () => {
             )}
 
             {/* Mic / Send */}
-            <button
-              type="button"
+            <div
               className="absolute right-1 max-sm:right-0.5 top-1/2 -translate-y-1/2 max-sm:size-6 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-purple-50 text-gray-500 hover:bg-gray-100 shadow-sm flex items-center justify-center cursor-pointer"
               title={`${searchQuery ? "Send" : "Voice search"}`}
             >
               {searchQuery && !showingSearchResults ? (
-                <SendHorizonal onClick={handleSearch} size={18} />
+                <button type="submit" className="cursor-pointer">
+                  <SendHorizonal size={18} />
+                </button>
               ) : (
                 <Mic
                   onClick={() => {
@@ -182,8 +186,8 @@ const Navbar = () => {
                   size={18}
                 />
               )}
-            </button>
-          </div>
+            </div>
+          </form>
         </div>
 
         {/* Right Side Icons */}
