@@ -56,7 +56,7 @@ const ChannelContent = () => {
           onViewModeChange={setLayout}
         />
 
-        <div className="px-2 s:px-6 pb-8">
+        <div className="px-0.5 s:px-4 md:px-6 pb-8">
           {activeTab === "Videos" && (
             <VideosGrid
               videos={videosData}

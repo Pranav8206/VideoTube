@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import UploadContent from "../components/upload/UploadContent";
 
 const Upload = () => {
   return (
     <div>
-      Video Upload Page 
+      <UploadContent />
     </div>
-  )
-}
+  );
+};
 
-export default Upload
+export default Upload;

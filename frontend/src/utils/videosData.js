@@ -383,7 +383,7 @@ export const playlist = {
   ],
 };
 
-const trendingVideos = [
+export const trendingVideos = [
   {
     id: 101,
     thumbnail: "https://i.ytimg.com/vi/aqz-KE-bpKQ/hqdefault.jpg",
