@@ -90,6 +90,10 @@ const VideoCard = ({ video, layout = "list", onRemove }) => {
           >
             {video.title}
           </h3>
+
+          <p className="text-purple-600 sm:text-base md:text-lg font-medium mb-2 hover:text-purple-700 cursor-pointer transition-colors duration-300">
+            {video.channel}
+          </p>
           <p className="text-gray-500 text-[11px] sm:text-sm md:text-base">
             {video.views} • {video.timestamp}
           </p>

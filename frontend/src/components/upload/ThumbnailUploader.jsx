@@ -12,7 +12,7 @@ const ThumbnailUploader = ({
         htmlFor="thumb"
         className="text-sm font-medium text-gray-700 flex items-center "
       >
-        Custom Thumbnail
+        Custom Thumbnail:
         {thumbnailPreview ? (
           <span>
             {" "}

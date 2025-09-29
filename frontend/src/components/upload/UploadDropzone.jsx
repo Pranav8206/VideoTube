@@ -38,7 +38,7 @@ const UploadDropzone = ({
       onDrop={handleDrop}
       className={`rounded-2xl border-2  transition-all  group cursor-pointer ${
         isDragging ? "border-purple-600 bg-purple-50/50" : "border-purple-300"
-      } ${previewUrl ? "border-dotted" : "border-dashed p-3"} `}
+      } ${previewUrl ? "border-dotted bg-purple-100" : "border-dashed p-3 "} `}
     >
       <div
         className="flex flex-col items-center justify-center text-center gap-3"
@@ -52,6 +52,7 @@ const UploadDropzone = ({
         >
           {previewUrl ? (
             <video
+              onClick={(e) => e.stopPropagation()}
               src={previewUrl}
               className="w-full h-full object-cover"
               controls
@@ -65,7 +66,10 @@ const UploadDropzone = ({
         <div className="text-gray-700 font-medium">
           {previewUrl ? (
             <span className="text-green-600">
-              🎉 Video uploaded successfully!
+              🎉 Video uploaded successfully!{" "}
+              <span className="text-gray-600 font-light text-sm group-required: group-hover:underline">
+                Change
+              </span>
             </span>
           ) : (
             <div className="text-sm">

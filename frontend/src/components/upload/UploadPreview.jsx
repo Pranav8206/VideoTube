@@ -7,7 +7,7 @@ const UploadPreview = ({ title, description, thumbnailPreview }) => {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Preview
+        Preview:
       </label>
 
       <div
