@@ -203,6 +203,8 @@ export const onePlaylist = {
       thumbnail: "https://via.placeholder.com/400x200.png?text=Intro+to+React",
       views: "2K",
       timestamp: "1 week ago",
+      channel: "TechReview Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
     },
     {
       id: 102,
@@ -210,6 +212,8 @@ export const onePlaylist = {
       thumbnail: "https://via.placeholder.com/400x200.png?text=JSX+Components",
       views: "1.8K",
       timestamp: "6 days ago",
+      channel: "TechReview Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
     },
     {
       id: 103,
@@ -217,6 +221,8 @@ export const onePlaylist = {
       thumbnail: "https://via.placeholder.com/400x200.png?text=Props+State",
       views: "2.5K",
       timestamp: "5 days ago",
+      channel: "TechReview Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
     },
     {
       id: 104,
@@ -224,6 +230,8 @@ export const onePlaylist = {
       thumbnail: "https://via.placeholder.com/400x200.png?text=Events",
       views: "3K",
       timestamp: "3 days ago",
+      channel: "TechReview Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
     },
     {
       id: 105,
@@ -231,6 +239,8 @@ export const onePlaylist = {
       thumbnail: "https://via.placeholder.com/400x200.png?text=Hooks",
       views: "2.7K",
       timestamp: "2 days ago",
+      channel: "TechReview Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
     },
   ],
 };
@@ -251,6 +261,8 @@ export const multiPlaylists = [
           "https://via.placeholder.com/400x200.png?text=Intro+to+React",
         views: "2K",
         timestamp: "1 week ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
       {
         id: 102,
@@ -259,6 +271,8 @@ export const multiPlaylists = [
           "https://via.placeholder.com/400x200.png?text=JSX+Components",
         views: "1.8K",
         timestamp: "6 days ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
     ],
   },
@@ -276,6 +290,8 @@ export const multiPlaylists = [
         thumbnail: "https://via.placeholder.com/400x200.png?text=Intro+Node",
         views: "1.2K",
         timestamp: "2 weeks ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
       {
         id: 202,
@@ -283,6 +299,8 @@ export const multiPlaylists = [
         thumbnail: "https://via.placeholder.com/400x200.png?text=Modules+NPM",
         views: "1.8K",
         timestamp: "12 days ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
     ],
   },
@@ -300,6 +318,8 @@ export const multiPlaylists = [
         thumbnail: "https://via.placeholder.com/400x200.png?text=Intro+DB",
         views: "950",
         timestamp: "3 weeks ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
       {
         id: 302,
@@ -307,6 +327,8 @@ export const multiPlaylists = [
         thumbnail: "https://via.placeholder.com/400x200.png?text=SQL+Basics",
         views: "1.5K",
         timestamp: "18 days ago",
+        channel: "TechReview Pro",
+        channelAvatar: "https://i.pravatar.cc/40?img=1",
       },
     ],
   },
@@ -330,7 +352,8 @@ export const playlist = {
     {
       id: 1,
       title: "HTML Fundamentals - Complete Beginner's Guide",
-      creator: "CodeMaster Pro",
+      channel: "CodeMaster Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
       thumbnail:
         "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=400&q=80",
       duration: "45:32",
@@ -341,7 +364,8 @@ export const playlist = {
     {
       id: 2,
       title: "CSS Grid & Flexbox - Modern Layout Techniques",
-      creator: "CodeMaster Pro",
+      channel: "CodeMaster Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
       thumbnail:
         "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?auto=format&fit=crop&w=400&q=80",
       duration: "38:15",
@@ -352,7 +376,8 @@ export const playlist = {
     {
       id: 3,
       title: "JavaScript ES6+ Features Every Developer Should Know",
-      creator: "CodeMaster Pro",
+      channel: "CodeMaster Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
       thumbnail:
         "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?auto=format&fit=crop&w=400&q=80",
       duration: "52:18",
@@ -363,7 +388,8 @@ export const playlist = {
     {
       id: 4,
       title: "React Components and Props Deep Dive",
-      creator: "CodeMaster Pro",
+      channel: "CodeMaster Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
       thumbnail:
         "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=400&q=80",
       duration: "41:27",
@@ -373,7 +399,8 @@ export const playlist = {
     {
       id: 5,
       title: "Node.js Backend Development Essentials",
-      creator: "CodeMaster Pro",
+      channel: "CodeMaster Pro",
+      channelAvatar: "https://i.pravatar.cc/40?img=1",
       thumbnail:
         "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=400&q=80",
       duration: "63:45",
@@ -477,7 +504,7 @@ export const searchData = {
       duration: "12:00",
       thumbnailUrl:
         "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+1",
-      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      channelAvatar: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
       description:
         "A comprehensive guide on the pitfalls and successes of rapid software development.",
     },
@@ -490,7 +517,7 @@ export const searchData = {
       duration: "12:00",
       thumbnailUrl:
         "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+2",
-      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      channelAvatar: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
       description:
         "A discussion on how AI is changing the creative industry, for better or worse.",
     },
@@ -503,7 +530,7 @@ export const searchData = {
       duration: "12:00",
       thumbnailUrl:
         "https://placehold.co/400x225/505050/ffffff?text=Video+Thumbnail+3",
-      channelAvatarUrl: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
+      channelAvatar: "https://placehold.co/40x40/7C3AED/ffffff?text=C",
       description:
         "A visual journey through the stunning landscapes of New Zealand.",
     },
@@ -522,3 +549,301 @@ export const searchData = {
     },
   ],
 };
+
+export const currentVideo = {
+  thumbnail:
+    "http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg",
+  title: "Unlocking the Secrets of the Deep Sea",
+  duration: "12:34",
+  channel: "OceanX Adventures",
+  views: "2.1M views",
+  timestamp: "10 weeks ago",
+  channelAvatar:
+    "http://res.cloudinary.com/dfxpccwii/image/upload/v1756714449/ihaj37usp6g4limw5pds.jpg",
+  name: "OceanX Adventures",
+  subscribers: "5.2K",
+  description:
+    "Aonert you be tin ofretitis 30i. Liberried Att tle tinuirte of she vactes. Discover the mysteries hidden beneath the ocean waves.",
+};
+
+export const dummyComments = [
+  {
+    id: 1,
+    channel: "Alice",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    timestamp: "2 hours ago",
+    text: "Great videos! Learned a lot.",
+    likes: 12,
+  },
+  {
+    id: 2,
+    channel: "Bob",
+    channelAvatar: "https://i.pravatar.cc/40?img=2",
+    timestamp: "1 hour ago",
+    text: "Thanks for sharing this.",
+    likes: 5,
+  },
+  {
+    id: 3,
+    channel: "Charlie",
+    channelAvatar: "https://i.pravatar.cc/40?img=3",
+    timestamp: "just now",
+    text: "Can you make a tutorial on React hooks?",
+    likes: 2,
+  },
+];
+
+export const upNextVideos = [
+  {
+    id: 1,
+    thumbnail:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "Amazing Tech Review 2024",
+    duration: "12:34",
+    channel: "Libel Greams",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "280M",
+    timestamp: "2 hours ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    subscribers: "180K",
+  },
+  {
+    id: 2,
+    thumbnail:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "Cooking Masterclass",
+    duration: "18:45",
+    channel: "Vitero Lin Game",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "2 viws",
+    timestamp: "5 hours ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=2",
+    subscribers: "S80K NNSE7",
+  },
+  {
+    id: 3,
+    thumbnail:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "Travel Vlog: Japan Adventure",
+    duration: "25:12",
+    channel: "Tine Rentes",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "1.5M views",
+    timestamp: "1 day ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=3",
+    subscribers: "120K",
+  },
+  {
+    id: 4,
+    thumbnail:
+      "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "Fitness Workout Routine",
+    duration: "30:15",
+    channel: "Vitea Iohahes",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "890K views",
+    timestamp: "3 days ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=4",
+    subscribers: "95K",
+  },
+  {
+    id: 5,
+    thumbnail:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "Music Production Tips",
+    duration: "22:30",
+    channel: "Viteer Majıs",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "1.2M views",
+    timestamp: "1 week ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=5",
+    subscribers: "75K",
+  },
+  {
+    id: 6,
+    thumbnail:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    title: "DIY Home Decor Ideas",
+    duration: "15:45",
+    channel: "Ciscur Johalaty",
+    channelAvatar: "https://i.pravatar.cc/40?img=1",
+    views: "650K views",
+    timestamp: "2 weeks ago",
+    channelAvatar: "https://i.pravatar.cc/40?img=6",
+    subscribers: "60K",
+  },
+];
+
+export const subscribedChannels = [
+  {
+    id: 1,
+    name: "TechReview Pro",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 3,
+  },
+  {
+    id: 2,
+    name: "CodeMaster",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 1,
+  },
+  {
+    id: 3,
+    name: "Creative Studio",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 2,
+  },
+  {
+    id: 4,
+    name: "Fitness Journey",
+    avatar:
+      "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 0,
+  },
+  {
+    id: 5,
+    name: "Food Adventures",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 1,
+  },
+  {
+    id: 6,
+    name: "Travel Vlogs",
+    avatar:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 0,
+  },
+  {
+    id: 7,
+    name: "Music Producer",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 4,
+  },
+  {
+    id: 8,
+    name: "DIY Crafts",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+    newVideos: 2,
+  },
+];
+
+export const videosData = [
+  {
+    id: 1,
+    title: "iPhone 15 Pro Max Complete Review - Everything You Need to Know!",
+    thumbnail:
+      "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[0],
+    views: "2.1M views",
+    timestamp: "2 hours ago",
+    duration: "15:42",
+    isNew: true,
+    isWatched: false,
+    description:
+      "Complete review of the iPhone 15 Pro Max with all the new features, camera tests, and performance benchmarks.",
+  },
+  {
+    id: 2,
+    title: "React 18 New Features - Complete Guide for Developers",
+    thumbnail:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[1],
+    views: "456K views",
+    timestamp: "4 hours ago",
+    duration: "28:15",
+    isNew: true,
+    isWatched: true,
+    description:
+      "Deep dive into React 18's concurrent features, automatic batching, and new hooks.",
+  },
+  {
+    id: 3,
+    title: "Amazing Photoshop Tips for Beginners - Creative Techniques",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[2],
+    views: "789K views",
+    timestamp: "6 hours ago",
+    duration: "22:33",
+    isNew: true,
+    isWatched: false,
+    description:
+      "Learn professional Photoshop techniques with step-by-step tutorials for stunning designs.",
+  },
+  {
+    id: 4,
+    title: "30-Minute HIIT Workout - Full Body Fat Burning Session",
+    thumbnail:
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[3],
+    views: "234K views",
+    timestamp: "1 day ago",
+    duration: "32:18",
+    isNew: false,
+    isWatched: false,
+    description:
+      "High-intensity interval training workout that targets all muscle groups for maximum fat burn.",
+  },
+  {
+    id: 5,
+    title: "Perfect Pasta Carbonara Recipe - Italian Cooking Masterclass",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[4],
+    views: "567K views",
+    timestamp: "1 day ago",
+    duration: "18:45",
+    isNew: false,
+    isWatched: true,
+    description:
+      "Learn to make authentic Italian carbonara with professional chef techniques and secret tips.",
+  },
+  {
+    id: 6,
+    title: "Exploring Hidden Gems in Tokyo - Travel Vlog Day 1",
+    thumbnail:
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[5],
+    views: "892K views",
+    timestamp: "2 days ago",
+    duration: "24:12",
+    isNew: false,
+    isWatched: false,
+    description:
+      "Join me as I explore Tokyo's best-kept secrets, from local restaurants to hidden temples.",
+  },
+  {
+    id: 7,
+    title: "Beat Making Tutorial - Hip Hop Producer Secrets Revealed",
+    thumbnail:
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[6],
+    views: "345K views",
+    timestamp: "3 days ago",
+    duration: "41:27",
+    isNew: false,
+    isWatched: false,
+    description:
+      "Learn professional beat making techniques used by top hip hop producers in the industry.",
+  },
+  {
+    id: 8,
+    title: "DIY Room Makeover on a Budget - Amazing Transformation",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    channel: subscribedChannels[7],
+    views: "678K views",
+    timestamp: "4 days ago",
+    duration: "35:56",
+    isNew: false,
+    isWatched: false,
+    description:
+      "Transform any room with these budget-friendly DIY tips and creative decorating ideas.",
+  },
+];

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Download, Flag, Clock, Minus, MoreVertical, Play } from "lucide-react";
 
-const VideoCard = ({ video, layout = "list", onRemove }) => {
+const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const isList = layout === "list";
@@ -45,11 +45,11 @@ const VideoCard = ({ video, layout = "list", onRemove }) => {
 
         {/* Duration overlay */}
         <span
-          className={`absolute bg-black/80 text-white rounded font-medium
+          className={`absolute bg-black/80 text-white rounded font-medium text-[10px] sm:text-xs
             ${
               isList
-                ? "bottom-1 right-1 text-[10px] sm:text-xs px-1.5 py-0.5"
-                : "bottom-2 right-2 text-[10px] sm:text-xs px-2 py-1 backdrop-blur-sm"
+                ? "bottom-1 right-1 px-1.5 py-0.5"
+                : "bottom-2 right-2 px-2 py-1 backdrop-blur-sm"
             }`}
         >
           {video.duration}
@@ -90,13 +90,34 @@ const VideoCard = ({ video, layout = "list", onRemove }) => {
           >
             {video.title}
           </h3>
+          <div className="flex items-start justify-start gap-2">
+            {/* Wrap avatar in a group */}
+            <div className="group">
+              <img
+                src={video.channelAvatar}
+                alt={video.channel}
+                className="rounded-full w-6 h-6 sm:w-8 sm:h-8 cursor-pointer"
+              />
+            </div>
 
-          <p className="text-purple-600 sm:text-base md:text-lg font-medium mb-2 hover:text-purple-700 cursor-pointer transition-colors duration-300">
-            {video.channel}
-          </p>
-          <p className="text-gray-500 text-[11px] sm:text-sm md:text-base">
-            {video.views} • {video.timestamp}
-          </p>
+            <div className="flex flex-col items-start content-start">
+              <p
+                className={`text-primary font-medium md:font-semibold text-xs sm:text-sm cursor-pointer transition-colors duration-300 
+        ${isList ? "md:text-base" : ""} 
+        group-hover:text-purple-600`}
+              >
+                {inSubscription ? video.channel?.name : video.channel}
+              </p>
+              <p
+                className={`text-gray-500 text-[11px] sm:text-xs flex flex-wrap   gap-x-1 tracking-tighter  
+        ${isList ? "md:text-sm" : ""}`}
+              >
+                <span>{video.views}</span>
+                <span>•</span>
+                <span>{video.timestamp}</span>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* More button (only in list) */}

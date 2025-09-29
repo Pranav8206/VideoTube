@@ -1,9 +1,10 @@
 import React from 'react'
+import SubscriptionContent from '../components/subscription/SubscriptionContent'
 
 const Subscriptions = () => {
   return (
     <div>
-      Subscriptions Page
+      <SubscriptionContent/>
     </div>
   )
 }
