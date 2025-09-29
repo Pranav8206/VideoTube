@@ -226,7 +226,7 @@ const Navbar = () => {
               </TooltipButton>
             </div>
 
-            <Link to="/settings">
+            <Link to="/setting">
               <button className="w-7 h-7 bg-primary rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
                 <User size={24} className="text-white " />
               </button>
