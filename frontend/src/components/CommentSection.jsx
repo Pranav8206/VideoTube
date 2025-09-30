@@ -1,202 +1,138 @@
 import React, { useState } from "react";
 import { User, ThumbsUp, ThumbsDown, ChevronDown } from "lucide-react";
+import { sampleComments } from "../utils/videosData";
 
-// Sample comments data
-const sampleComments = [
-  {
-    id: 1,
-    author: "John Doe",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-    timestamp: "2 hours ago",
-    text: "This is a great post! Thanks for sharing your insights.",
-    likes: 12,
-  },
-  {
-    id: 2,
-    author: "Jane Smith",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
-    timestamp: "4 hours ago",
-    text: "I found this really helpful. Looking forward to more content like this.",
-    likes: 8,
-  },
-  {
-    id: 3,
-    author: "Mike Johnson",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-    timestamp: "1 day ago",
-    text: "Excellent explanation! This clarified a lot of things for me.",
-    likes: 15,
-  },
-];
-
-// Main Comments Section Component
-function CommentsSection() {
-  const [showAllComments, setShowAllComments] = useState(false);
+const CommentsSection = () => {
+  const [showAll, setShowAll] = useState(false);
   const [newComment, setNewComment] = useState("");
 
-  const handleSubmitComment = () => {
-    if (newComment.trim()) {
-      // Here you would typically add the comment to your state or send to API
-      console.log("New comment:", newComment);
-      setNewComment("");
-    }
+  const handlePostComment = () => {
+    if (!newComment.trim()) return;
+    console.log("New comment:", newComment);
+    setNewComment("");
   };
 
   return (
-    <section className=" lg:min-w-[70vh] px-0 sm:px-0">
-      <div className="w-full  bg-white rounded-2xl shadow-lg overflow-hidden ">
-        {/* Header */}
-        <div className="p-6 sm:p-10 border-b border-transparent bg-[var(--color-light)]">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] mb-1 tracking-tight">
-            Comments{" "}
-            <span className="text-[var(--color-primary)]">
-              ({sampleComments.length})
-            </span>
-          </h2>
-          <p className="text-[var(--color-primary-dull)] text-base sm:text-lg">
-            Join the discussion and share your thoughts
-          </p>
-        </div>
-
-        {/* Comment Form */}
-        <div className="p-6 sm:p-10 border-b border-transparent bg-transparent">
-          <div className="flex gap-3 sm:gap-5 items-start">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center shadow-md">
-              <User size={22} className="text-white" />
-            </div>
-            <div className="flex-1">
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Write a comment..."
-                className="w-full p-3 sm:p-4 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-white/80 text-[var(--color-dark)] text-base shadow-none transition-all border-none"
-                rows={3}
-              />
-              <div className="flex justify-end mt-3">
-                <button
-                  onClick={handleSubmitComment}
-                  className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dull)] transition-colors duration-150 font-semibold shadow-md"
-                >
-                  Post Comment
-                </button>
-              </div>
-            </div>
+    <section className="lg:min-w-[70vh] w-full overflow-hidden">
+      {/* Comment Form */}
+      <div className="px-4 sm:px-6 md:px-10 py-3 sm:py-4 shadow-xs">
+        <div className="flex gap-3 sm:gap-5 items-start">
+          {/* Avatar */}
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary flex items-center justify-center shadow-md cursor-pointer">
+            <User size={20} className="text-white sm:text-white " />
           </div>
-        </div>
-
-        {/* Comments List */}
-        <div className="p-6 sm:p-10">
-          <div className="space-y-1">
-            {sampleComments
-              .slice(0, showAllComments ? sampleComments.length : 2)
-              .map((comment) => (
-                <InteractiveComment key={comment.id} comment={comment} />
-              ))}
-          </div>
-
-          {sampleComments.length > 2 && (
-            <div className="text-center mt-7">
+          <div className="flex-1">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
+              rows={2}
+              className="w-full p-1 sm:p-2 md:p-2 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-primary bg-white/80 text-dark text-sm sm:text-base transition-all border border-primary"
+            />
+            <div className="flex justify-end ">
               <button
-                onClick={() => setShowAllComments(!showAllComments)}
-                className="flex items-center gap-2 mx-auto text-[var(--color-primary)] hover:text-[var(--color-primary-dull)] transition-colors duration-150 font-semibold"
+                onClick={handlePostComment}
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-primary text-white rounded-full hover:bg-primary-dull transition-colors duration-150 font-semibold shadow-md text-sm sm:text-base cursor-pointer"
               >
-                {showAllComments ? "Show Less" : "Show More Comments"}
-                <ChevronDown
-                  size={18}
-                  className={`transform transition-transform duration-150 ${
-                    showAllComments ? "rotate-180" : ""
-                  }`}
-                />
+                Post Comment
               </button>
             </div>
-          )}
+          </div>
         </div>
+      </div>
+
+      {/* Comments List */}
+      <div className="px-4 sm:px-6 md:px-10 py-6 space-y-4">
+        {(showAll ? sampleComments : sampleComments.slice(0, 2)).map(
+          (comment) => (
+            <Comment key={comment.id} data={comment} />
+          )
+        )}
+
+        {sampleComments.length > 2 && (
+          <div className="text-center mt-7">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="flex items-center gap-2 mx-auto text-primary font-semibold text-sm sm:text-base  cursor-pointer"
+            >
+              {showAll ? "Show Less" : "Show More Comments"}
+              <ChevronDown
+                size={18}
+                className={`transition-transform duration-150 ${
+                  showAll ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
-}
+};
 
-// Interactive comment component for like/dislike
-function InteractiveComment({ comment }) {
+const Comment = ({ data }) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [likes, setLikes] = useState(comment.likes || 0);
+  const [likes, setLikes] = useState(data.likes || 0);
 
   const handleLike = () => {
-    if (liked) {
-      setLiked(false);
-      setLikes(likes - 1);
-    } else {
-      setLiked(true);
-      setLikes(likes + (disliked ? 2 : 1));
-      if (disliked) setDisliked(false);
-    }
+    setLikes((prev) => prev + (liked ? -1 : 1));
+    setLiked(!liked);
+    if (disliked) setDisliked(false);
   };
 
   const handleDislike = () => {
-    if (disliked) {
-      setDisliked(false);
-      setLikes(likes + 1);
-    } else {
-      setDisliked(true);
+    setDisliked(!disliked);
+    if (liked) {
       setLiked(false);
-      setLikes(likes - (liked ? 2 : 1));
+      setLikes((prev) => prev - 1);
     }
   };
 
   return (
-    <div className="flex gap-3 sm:gap-5 items-start p-4 sm:p-5 rounded-xl bg-white/90 shadow border border-[var(--color-borderColor)]">
+    <div className="flex gap-3 sm:gap-5 items-start sm:p-2 ">
       <img
-        src={comment.avatar}
-        alt={comment.author}
-        className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-[var(--color-primary)] shadow object-cover"
+        src={data.avatar}
+        alt={data.author}
+        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full  object-cover cursor-pointer"
       />
       <div className="flex-1">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-base sm:text-lg text-[var(--color-dark)]">
-            {comment.author}
+        <div className="flex items-center gap-3">
+          <span className="font-semibold text-sm sm:text-base text-dark cursor-pointer">
+            {data.author}
           </span>
-          <span className="text-xs sm:text-sm text-[var(--color-primary-dull)]">
-            {comment.timestamp}
+          <span className="text-xs sm:text-sm text-primary-dull">
+            {data.timestamp}
           </span>
         </div>
-        <p className="mb-2 text-sm sm:text-base text-[var(--color-dark)]">
-          {comment.text}
-        </p>
-        <div className="flex items-center gap-4 mt-1">
-          <button
-            className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-150 rounded-full px-3 py-1 ${
-              liked
-                ? "bg-[var(--color-primary)] text-white"
-                : "bg-transparent text-[var(--color-primary)] hover:bg-[var(--color-primary-dull)] hover:text-white border border-[var(--color-primary)]"
-            }`}
-            onClick={handleLike}
-            aria-pressed={liked}
-          >
-            <ThumbsUp size={15} />
-            {likes}
-          </button>
-          <button
-            className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-150 rounded-full px-3 py-1 ${
-              disliked
-                ? "bg-[var(--color-primary-dull)] text-white"
-                : "bg-transparent text-[var(--color-primary-dull)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-primary-dull)]"
+        <p className="mb-2 text-sm sm:text-base text-dark">{data.text}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="flex items-center gap-2">
+            <ThumbsUp
+              size={18}
+              className={`cursor-pointer transition-colors duration-150 text-primary ${
+                liked ? "fill-primary stroke-1 stroke-purple-700" : ""
+              }`}
+              onClick={handleLike}
+            />
+            <span className="text-xs sm:text-sm font-semibold   text-primary w-7">
+              {likes}
+            </span>
+          </span>
+          <ThumbsDown
+            size={18}
+            className={`cursor-pointer transition-colors duration-150 text-primary ${
+              disliked ? "fill-red-400 stroke-1 stroke-red-500" : ""
             }`}
             onClick={handleDislike}
-            aria-pressed={disliked}
-          >
-            <ThumbsDown size={15} />
-          </button>
-          <button className="text-sm font-semibold text-[var(--color-dark)] hover:text-[var(--color-primary)] transition-colors duration-150 px-2 py-1 rounded-full">
+          />
+          <button className="text-xs sm:text-sm font-medium text-gray-600 cursor-pointer ">
             Reply
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default CommentsSection;

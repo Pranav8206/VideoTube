@@ -96,7 +96,7 @@ const Seekbar = ({ currentTime, duration, bufferedTime, seek, formatTime }) => {
     <div className="relative mb-4 z-10">
       <div
         ref={seekbarRef}
-        className="h-2 bg-[var(--color-borderColor)]/60 rounded-full cursor-pointer group/seekbar relative"
+        className="h-2 bg-borderColor/60 rounded-full cursor-pointer group/seekbar relative"
         onMouseDown={handleStart}
         onTouchStart={handleStart}
         onTouchMove={(e) => {
@@ -115,23 +115,23 @@ const Seekbar = ({ currentTime, duration, bufferedTime, seek, formatTime }) => {
       >
         {/* Buffer progress */}
         <div
-          className="absolute inset-y-0 left-0 bg-[var(--color-borderColor)]/80 rounded-full"
+          className="absolute inset-y-0 left-0 bg-borderColor/80 rounded-full"
           style={{ width: `${bufferPercent}%` }}
         />
         {/* Progress */}
         <div
-          className="absolute inset-y-0 left-0 bg-[var(--color-primary)] rounded-full"
+          className="absolute inset-y-0 left-0 bg-primary rounded-full"
           style={{ width: `${progressPercent}%` }}
         />
         {/* Scrubber */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-[var(--color-primary)] rounded-full shadow-lg border-2 border-white opacity-0 group-hover/seekbar:opacity-100 transition-opacity"
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full shadow-lg border-2 border-white opacity-0 group-hover/seekbar:opacity-100 transition-opacity"
           style={{ left: `calc(${progressPercent}% - 8px)` }}
         />
         {/* Time preview */}
         {previewTime !== null && (
           <div
-            className="absolute -top-8 bg-[var(--color-dark)]/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10"
+            className="absolute -top-8 bg-dark/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none z-10"
             style={{
               left: `${previewPercent * 100}%`,
               transform: "translateX(-50%)",

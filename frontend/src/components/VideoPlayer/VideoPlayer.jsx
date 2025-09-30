@@ -11,6 +11,10 @@ import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const controlsTimeoutRef = useRef(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -28,19 +32,16 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [skipAnimation, setSkipAnimation] = useState(null);
 
-  const videoRef = useRef(null);
-  const containerRef = useRef(null);
-  const controlsTimeoutRef = useRef(null);
-
+  // Handle sources
   const effectiveSources = useMemo(() => {
-    if (sources) {
+    if (sources)
       return Array.isArray(sources)
         ? sources
-        : [{ src: sources, type: "video/mp4", label: "Default" }];
-    }
-    return [{ src, type: "video/mp4", label: "Default" }];
+        : [{ src: sources, type: "video/mp4" }];
+    return [{ src, type: "video/mp4" }];
   }, [sources, src]);
 
+  // Utility functions
   const formatTime = useCallback((time) => {
     if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -48,259 +49,163 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }, []);
 
-  const updateProgress = useCallback(() => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime);
-      if (videoRef.current.buffered.length > 0) {
-        const buffered = videoRef.current.buffered.end(
-          videoRef.current.buffered.length - 1
-        );
-        setBufferedTime(buffered);
-      }
-    }
+  const seek = useCallback((time) => {
+    if (videoRef.current) videoRef.current.currentTime = time;
+    setCurrentTime(time);
   }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video && effectiveSources.length > 0) {
-      video.src = effectiveSources[0].src;
-    }
-  }, [effectiveSources]);
+  const skipTime = useCallback(
+    (s) => {
+      const newTime = Math.max(0, Math.min(duration, currentTime + s));
+      seek(newTime);
+      setSkipAnimation(s > 0 ? "forward" : "backward");
+    },
+    [currentTime, duration, seek]
+  );
 
+  const togglePlay = useCallback(() => {
+    if (!videoRef.current) return;
+    isPlaying ? videoRef.current.pause() : videoRef.current.play();
+  }, [isPlaying]);
+
+  const toggleMute = useCallback(() => {
+    if (!videoRef.current) return;
+    const newMuted = !isMuted;
+    videoRef.current.muted = newMuted;
+    setIsMuted(newMuted);
+  }, [isMuted]);
+
+  const handleVolumeChange = useCallback((v) => {
+    if (!videoRef.current) return;
+    videoRef.current.volume = v;
+    videoRef.current.muted = v === 0;
+    setVolume(v);
+    setIsMuted(v === 0);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    if (!document.fullscreenElement)
+      await containerRef.current.requestFullscreen();
+    else await document.exitFullscreen();
+  }, []);
+
+  const toggleCinemaMode = useCallback(() => {
+    const mode = !isCinemaMode;
+    setIsCinemaMode(mode);
+    onTheaterModeChange?.(mode);
+  }, [isCinemaMode, onTheaterModeChange]);
+
+  const togglePiP = useCallback(async () => {
+    if (!videoRef.current) return;
+    isPiP
+      ? await document.exitPictureInPicture()
+      : await videoRef.current.requestPictureInPicture();
+  }, [isPiP]);
+
+  const changePlaybackRate = useCallback(() => {
+    const rates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    const idx = rates.indexOf(playbackRate);
+    const nextRate = rates[(idx + 1) % rates.length];
+    if (videoRef.current) videoRef.current.playbackRate = nextRate;
+    setPlaybackRate(nextRate);
+  }, [playbackRate]);
+
+  const handleChangeQuality = useCallback(
+    (i) => {
+      if (i === currentSourceIndex || !videoRef.current) return;
+      const v = videoRef.current;
+      const wasPlaying = isPlaying;
+      const time = currentTime;
+      setIsLoading(true);
+      setError(null);
+      v.src = effectiveSources[i].src;
+      v.load();
+      setCurrentSourceIndex(i);
+      v.addEventListener(
+        "loadedmetadata",
+        () => {
+          v.currentTime = time;
+          if (wasPlaying) v.play();
+          setIsLoading(false);
+        },
+        { once: true }
+      );
+    },
+    [currentSourceIndex, effectiveSources, isPlaying, currentTime]
+  );
+
+  // Video event listeners
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleLoadedMetadata = () => {
-      setDuration(video.duration);
-      setIsLoading(false);
+    const events = {
+      loadedmetadata: () => {
+        setDuration(video.duration);
+        setIsLoading(false);
+      },
+      timeupdate: () => setCurrentTime(video.currentTime),
+      progress: () => {
+        if (video.buffered.length > 0)
+          setBufferedTime(video.buffered.end(video.buffered.length - 1));
+      },
+      play: () => setIsPlaying(true),
+      pause: () => setIsPlaying(false),
+      volumechange: () => {
+        setVolume(video.volume);
+        setIsMuted(video.muted);
+      },
+      waiting: () => setIsLoading(true),
+      canplay: () => setIsLoading(false),
+      ratechange: () => setPlaybackRate(video.playbackRate),
+      error: () => setError(video.error?.message || "Video error"),
+      ended: () => setIsPlaying(false),
+      enterpictureinpicture: () => setIsPiP(true),
+      leavepictureinpicture: () => setIsPiP(false),
     };
-    const handleTimeUpdate = updateProgress;
-    const handleProgress = updateProgress;
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleVolumeChange = () => {
-      setVolume(video.volume);
-      setIsMuted(video.muted);
-    };
-    const handleWaiting = () => setIsLoading(true);
-    const handleCanPlay = () => setIsLoading(false);
-    const handleRateChange = () => setPlaybackRate(video.playbackRate);
-    const handleError = (e) => setError(video.error?.message || "Video error");
-    const handleEnded = () => setIsPlaying(false);
-    const handleEnterPiP = () => setIsPiP(true);
-    const handleLeavePiP = () => setIsPiP(false);
 
-    video.addEventListener("loadedmetadata", handleLoadedMetadata);
-    video.addEventListener("timeupdate", handleTimeUpdate);
-    video.addEventListener("progress", handleProgress);
-    video.addEventListener("play", handlePlay);
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("volumechange", handleVolumeChange);
-    video.addEventListener("waiting", handleWaiting);
-    video.addEventListener("canplay", handleCanPlay);
-    video.addEventListener("ratechange", handleRateChange);
-    video.addEventListener("error", handleError);
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("enterpictureinpicture", handleEnterPiP);
-    video.addEventListener("leavepictureinpicture", handleLeavePiP);
-
-    return () => {
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      video.removeEventListener("timeupdate", handleTimeUpdate);
-      video.removeEventListener("progress", handleProgress);
-      video.removeEventListener("play", handlePlay);
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("volumechange", handleVolumeChange);
-      video.removeEventListener("waiting", handleWaiting);
-      video.removeEventListener("canplay", handleCanPlay);
-      video.removeEventListener("ratechange", handleRateChange);
-      video.removeEventListener("error", handleError);
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("enterpictureinpicture", handleEnterPiP);
-      video.removeEventListener("leavepictureinpicture", handleLeavePiP);
-    };
-  }, [updateProgress]);
+    Object.entries(events).forEach(([event, handler]) =>
+      video.addEventListener(event, handler)
+    );
+    return () =>
+      Object.entries(events).forEach(([event, handler]) =>
+        video.removeEventListener(event, handler)
+      );
+  }, []);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.loop = isLoop;
-    }
+    if (videoRef.current) videoRef.current.loop = isLoop;
   }, [isLoop]);
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
+    const handleFullscreenChange = () =>
       setIsFullscreen(!!document.fullscreenElement);
-    };
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () =>
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   const resetControlsTimeout = useCallback(() => {
-    if (controlsTimeoutRef.current) {
-      clearTimeout(controlsTimeoutRef.current);
-    }
+    clearTimeout(controlsTimeoutRef.current);
     setShowControls(true);
-    if (isPlaying) {
-      controlsTimeoutRef.current = setTimeout(() => {
-        setShowControls(false);
-      }, 3000);
-    }
+    if (isPlaying)
+      controlsTimeoutRef.current = setTimeout(
+        () => setShowControls(false),
+        3000
+      );
   }, [isPlaying]);
-
-  const handleMouseMove = useCallback(() => {
-    resetControlsTimeout();
-  }, [resetControlsTimeout]);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
-      return () => container.removeEventListener("mousemove", handleMouseMove);
-    }
-  }, [handleMouseMove]);
-
-  useEffect(() => {
-    return () => {
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const showSkipAnimation = useCallback((direction) => {
-    setSkipAnimation(direction);
-  }, []);
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(console.error("error"));
-      }
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      const newMuted = !isMuted;
-      videoRef.current.muted = newMuted;
-      setIsMuted(newMuted);
-    }
-  };
-
-  const handleVolumeChange = (newVolume) => {
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-      setVolume(newVolume);
-      if (newVolume === 0) {
-        setIsMuted(true);
-      } else if (isMuted) {
-        setIsMuted(false);
-        videoRef.current.muted = false;
-      }
-    }
-  };
-
-  const toggleFullscreen = async () => {
-    if (!document.fullscreenElement) {
-      try {
-        await containerRef.current.requestFullscreen();
-      } catch (err) {
-        console.error("Error attempting to enable fullscreen:", err);
-      }
-    } else {
-      try {
-        await document.exitFullscreen();
-      } catch (err) {
-        console.error("Error attempting to exit fullscreen:", err);
-      }
-    }
-  };
-
-  const toggleCinemaMode = () => {
-    const newCinemaMode = !isCinemaMode;
-    setIsCinemaMode(newCinemaMode);
-    if (onTheaterModeChange) {
-      onTheaterModeChange(newCinemaMode);
-    }
-  };
-
-  const seek = (time) => {
-    if (videoRef.current && time >= 0 && time <= duration) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
-    }
-  };
-
-  const skipTime = (seconds) => {
-    const newTime = Math.max(0, Math.min(duration, currentTime + seconds));
-    seek(newTime);
-    if (seconds > 0) {
-      showSkipAnimation("forward");
-    } else {
-      showSkipAnimation("backward");
-    }
-  };
-
-  const changePlaybackRate = () => {
-    const rates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-    const currentIndex = rates.indexOf(playbackRate);
-    const nextRate = rates[(currentIndex + 1) % rates.length];
-    if (videoRef.current) {
-      videoRef.current.playbackRate = nextRate;
-      setPlaybackRate(nextRate);
-    }
-  };
-
-  const handleChangeQuality = useCallback(
-    (newIndex) => {
-      if (newIndex === currentSourceIndex) return;
-      const video = videoRef.current;
-      if (video) {
-        const wasPlaying = isPlaying;
-        const time = currentTime;
-        setIsLoading(true);
-        setError(null);
-        video.src = effectiveSources[newIndex].src;
-        video.load();
-        setCurrentSourceIndex(newIndex);
-        const handleLoaded = () => {
-          video.currentTime = time;
-          if (wasPlaying) video.play().catch(console.error);
-          setIsLoading(false);
-          video.removeEventListener("loadedmetadata", handleLoaded);
-        };
-        video.addEventListener("loadedmetadata", handleLoaded);
-      }
-    },
-    [currentSourceIndex, effectiveSources, isPlaying, currentTime]
-  );
-
-  const togglePiP = useCallback(async () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (isPiP) {
-      try {
-        await document.exitPictureInPicture();
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      try {
-        await video.requestPictureInPicture();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }, [isPiP]);
+    if (!container) return;
+    container.addEventListener("mousemove", resetControlsTimeout);
+    return () =>
+      container.removeEventListener("mousemove", resetControlsTimeout);
+  }, [resetControlsTimeout]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
-        return;
+      if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
       switch (e.code) {
         case "Space":
           e.preventDefault();
@@ -331,20 +236,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           e.preventDefault();
           handleVolumeChange(Math.max(0, volume - 0.1));
           break;
-        case "Comma":
-          if (e.shiftKey) {
-            e.preventDefault();
-            skipTime(-1);
-            break;
-          }
-          break;
-        case "Period":
-          if (e.shiftKey) {
-            e.preventDefault();
-            skipTime(1);
-            break;
-          }
-          break;
         case "KeyL":
           setIsLoop((prev) => !prev);
           break;
@@ -355,40 +246,47 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, volume, currentTime, duration, togglePiP]);
+  }, [
+    volume,
+    skipTime,
+    togglePlay,
+    toggleMute,
+    toggleFullscreen,
+    toggleCinemaMode,
+    togglePiP,
+  ]);
 
   return (
     <div
       ref={containerRef}
-      className={`relative bg-[var(--color-dark)] overflow-hidden group select-none transition-all duration-300 ease-in-out 
+      className={`relative bg-dark overflow-hidden group select-none transition-all duration-300 ease-in-out
         ${
           isFullscreen
-            ? "fixed inset-0 rounded-none"
+            ? "fixed inset-0"
             : isCinemaMode
-            ? "w-full max-w-[100vw] max-lg:h-fit sm:border sm:border-yellow-700 h-[50vh] sm:h-[75vh] lg:h-[80vh] rounded-none mx-auto"
-            : "w-[98vw] sm:w-[90vw] lg:w-[60vw] max-w-[1280px] h-fit max-h-[70vh] rounded-xl shadow-lg mt-2 sm:ml-1 sm:mr-1 max-sm:mx-auto"
-        }`}
+            ? "w-full max-lg:h-[50vh] sm:h-[75vh] lg:h-[80vh] mx-auto"
+            : "w-[98vw] sm:w-[90vw] lg:w-[60vw] max-w-[1280px] h-[60vh] sm:h-[70vh] lg:h-[70vh] rounded-xl shadow-lg mx-auto"
+        }
+      `}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
       <video
         ref={videoRef}
         poster={poster}
-        className="w-full h-full cursor-pointer bg-[var(--color-dark)]"
-      >
-        Your browser does not support the video tag.
-      </video>
+        className="w-full h-full object-cover cursor-pointer"
+      />
 
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-dark)]/90">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/70">
           <div className="text-center">
             <p className="text-red-500 mb-2">{error}</p>
             <button
               onClick={() => {
                 setError(null);
-                if (videoRef.current) videoRef.current.load();
+                videoRef.current?.load();
               }}
-              className="bg-[var(--color-primary)] text-white px-4 py-1 rounded text-sm cursor-pointer"
+              className="bg-primary text-white px-4 py-1 rounded text-sm"
             >
               Retry
             </button>
@@ -397,7 +295,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       )}
 
       {!error && isLoading && <Loader />}
-
       <SkipAnimation
         direction={skipAnimation}
         onAnimationEnd={() => setSkipAnimation(null)}
@@ -408,81 +305,45 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           showControls ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark)]/80 via-transparent to-transparent" />
-
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
         {!isPlaying && !isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               onClick={togglePlay}
-              className="sm:w-16 w-10 sm:h-16 h-10 bg-[var(--color-dark)]/70 rounded-full flex items-center justify-center text-[var(--color-primary)] hover:bg-[var(--color-dark)]/90 transition-colors cursor-pointer"
+              className="sm:w-16 w-10 sm:h-16 h-10 bg-black/50 rounded-full flex items-center justify-center text-primary hover:bg-black/70"
             >
-              <Play size={32} className="ml-1" />
+              <Play size={32} />
             </button>
           </div>
         )}
-
-        <div className="absolute flex inset-0 cursor-pointer z-10 h-full w-full bg-red-5">
-          <div
-            className="relative w-1/3 bg-yellow-4"
-            onDoubleClick={() => skipTime(-10)}
-            onClick={() => {
-              if (window.innerWidth > 640) {
-                togglePlay();
-              } else {
-                showControls ? setShowControls(false) : setShowControls(true);
-              }
-            }}
-          ></div>
-          <div
-            className="relative w-1/3"
-            onDoubleClick={toggleFullscreen}
-            onClick={() => {
-              if (window.innerWidth > 640) {
-                togglePlay();
-              } else {
-                showControls ? setShowControls(false) : setShowControls(true);
-              }
-            }}
-          ></div>
-          <div
-            className="relative w-1/3"
-            onDoubleClick={() => skipTime(10)}
-            onClick={() => {
-              if (window.innerWidth > 640) {
-                togglePlay();
-              } else {
-                showControls ? setShowControls(false) : setShowControls(true);
-              }
-            }}
-          ></div>
-        </div>
-
         <Controls
-          isPlaying={isPlaying}
-          isMuted={isMuted}
-          volume={volume}
-          currentTime={currentTime}
-          duration={duration}
-          bufferedTime={bufferedTime}
-          playbackRate={playbackRate}
-          isLoop={isLoop}
-          isPiP={isPiP}
-          isCinemaMode={isCinemaMode}
-          isFullscreen={isFullscreen}
-          effectiveSources={effectiveSources}
-          currentSourceIndex={currentSourceIndex}
-          togglePlay={togglePlay}
-          toggleMute={toggleMute}
-          handleVolumeChange={handleVolumeChange}
-          skipTime={skipTime}
-          seek={seek}
-          formatTime={formatTime}
-          changePlaybackRate={changePlaybackRate}
-          handleChangeQuality={handleChangeQuality}
-          togglePiP={togglePiP}
-          toggleCinemaMode={toggleCinemaMode}
-          toggleFullscreen={toggleFullscreen}
-          setIsLoop={setIsLoop}
+          {...{
+            isPlaying,
+            isMuted,
+            volume,
+            currentTime,
+            duration,
+            bufferedTime,
+            playbackRate,
+            isLoop,
+            isPiP,
+            isCinemaMode,
+            isFullscreen,
+            effectiveSources,
+            currentSourceIndex,
+            togglePlay,
+            toggleMute,
+            handleVolumeChange,
+            skipTime,
+            seek,
+            formatTime,
+            changePlaybackRate,
+            handleChangeQuality,
+            togglePiP,
+            toggleCinemaMode,
+            toggleFullscreen,
+            setIsLoop,
+          }}
         />
       </div>
     </div>

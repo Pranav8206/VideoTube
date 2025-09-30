@@ -84,7 +84,7 @@ const SkipAnimation = ({ direction, onAnimationEnd, duration = 600 }) => {
       `}</style>
 
       <div
-        className="relative flex items-center justify-center rounded-full p-2 sm:p-3 bg-[var(--color-dark)]/80 shadow-md"
+        className="relative flex items-center justify-center rounded-full p-2 sm:p-3 bg-dark/80 shadow-md"
         style={
           prefersReducedMotion
             ? undefined
@@ -94,7 +94,7 @@ const SkipAnimation = ({ direction, onAnimationEnd, duration = 600 }) => {
         }
         onAnimationEnd={handleAnimationEnd}
       >
-        <div className="flex items-center justify-center gap-1.5 text-[var(--color-primary)]">
+        <div className="flex items-center justify-center gap-1.5 text-primary">
           {direction === "forward" ? (
             <>
               <RotateCw

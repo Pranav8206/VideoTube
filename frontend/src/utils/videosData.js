@@ -847,3 +847,33 @@ export const videosData = [
       "Transform any room with these budget-friendly DIY tips and creative decorating ideas.",
   },
 ];
+
+export const sampleComments = [
+  {
+    id: 1,
+    author: "John Doe",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    timestamp: "2 hours ago",
+    text: "This is a great post! Thanks for sharing your insights.",
+    likes: 12,
+  },
+  {
+    id: 2,
+    author: "Jane Smith",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+    timestamp: "4 hours ago",
+    text: "I found this really helpful. Looking forward to more content like this.",
+    likes: 8,
+  },
+  {
+    id: 3,
+    author: "Mike Johnson",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    timestamp: "1 day ago",
+    text: "Excellent explanation! This clarified a lot of things for me.",
+    likes: 15,
+  },
+];
