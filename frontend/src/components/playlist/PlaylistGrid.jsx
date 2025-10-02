@@ -2,11 +2,10 @@ import React from "react";
 import PlaylistCard from "./PlaylistCard";
 
 const PlaylistGrid = ({ playlists, layout = "list", searchQuery = "" }) => {
-
   const filteredPlaylist = playlists.filter((playlist) =>
     playlist.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   return (
     <div className="w-full">
       <div

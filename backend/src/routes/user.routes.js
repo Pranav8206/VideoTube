@@ -15,7 +15,6 @@ import {
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-
 const router = Router();
 
 router.route("/register").post(
@@ -45,7 +44,7 @@ router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 router
   .route("/avatar")
   .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
-  
+
 router
   .route("/cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);

@@ -17,8 +17,6 @@ const ChannelNavigation = ({
       if (window.innerWidth < 550) {
         // assuming "s" breakpoint is 640px
         onViewModeChange("list");
-        console.log(window.innerWidth);
-        
       }
     };
 

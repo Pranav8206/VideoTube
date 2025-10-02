@@ -33,13 +33,7 @@ const VideoPlayerPage = () => {
         <div className={`relative ${isCinemaMode ? "" : "rounded-lg"} `}>
           <VideoPlayer src={videoLink} poster={posterLink} />
         </div>
-        <div
-          className={`block  ${
-            isCinemaMode
-              ? "md-plus:hidden"
-              : " block"
-          }`}
-        >
+        <div className={`block  ${isCinemaMode ? "md-plus:hidden" : " block"}`}>
           <VideoActions video={currentVideo} />
           <CommentsSection comments={dummyComments} />
         </div>

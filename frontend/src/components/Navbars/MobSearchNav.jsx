@@ -15,7 +15,7 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
     setSearchQuery,
     showingSearchResults,
     setShowingSearchResults,
-    setShowVoiceSearchBox
+    setShowVoiceSearchBox,
   } = useContext(AppContext);
   const inputRef = useRef(null);
 

@@ -19,11 +19,11 @@ router.route("/publish").post(
   upload.fields([
     {
       name: "video",
-      maxCount: 1
+      maxCount: 1,
     },
     {
       name: "thumbnail",
-      maxCount: 1
+      maxCount: 1,
     },
   ]),
   publishAVideo
@@ -36,6 +36,5 @@ router
   .get(verifyJWT, getVideoById)
   .delete(verifyJWT, deleteVideo)
   .patch(verifyJWT, togglePublishStatus);
-
 
 export default router;

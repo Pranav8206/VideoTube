@@ -36,7 +36,7 @@ const HomeContent = () => {
       </div>
 
       {/* Video Grid */}
-      <VideosGrid videos={videos} layout="grid"/>
+      <VideosGrid videos={videos} layout="grid" />
     </div>
   );
 };

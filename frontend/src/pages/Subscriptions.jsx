@@ -1,12 +1,12 @@
-import React from 'react'
-import SubscriptionContent from '../components/subscription/SubscriptionContent'
+import React from "react";
+import SubscriptionContent from "../components/subscription/SubscriptionContent";
 
 const Subscriptions = () => {
   return (
     <div>
-      <SubscriptionContent/>
+      <SubscriptionContent />
     </div>
-  )
-}
+  );
+};
 
-export default Subscriptions
+export default Subscriptions;

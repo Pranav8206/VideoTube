@@ -1,12 +1,12 @@
-import React from 'react'
-import SearchResultsContent from '../components/SearchResultsContent'
+import React from "react";
+import SearchResultsContent from "../components/SearchResultsContent";
 
 const SearchResults = () => {
   return (
     <div>
-      <SearchResultsContent/>
+      <SearchResultsContent />
     </div>
-  )
-}
+  );
+};
 
-export default SearchResults
+export default SearchResults;

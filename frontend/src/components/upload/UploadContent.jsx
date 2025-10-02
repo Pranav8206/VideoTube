@@ -141,7 +141,9 @@ const UploadContent = () => {
                   </option>
                   <option className="text-black cursor-pointer">Gaming</option>
                   <option className="text-black cursor-pointer">Music</option>
-                  <option className="text-black cursor-pointer">Education</option>
+                  <option className="text-black cursor-pointer">
+                    Education
+                  </option>
                 </select>
                 {errors.category && (
                   <p className="text-red-600  text-xs -mt-3">

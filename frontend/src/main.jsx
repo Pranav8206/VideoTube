@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ContextProvider>
       {/* Suspense is required for lazy-loaded components */}
-      <Suspense fallback={<Loader/>}>
+      <Suspense fallback={<Loader />}>
         <RouterProvider router={router} />
       </Suspense>
     </ContextProvider>

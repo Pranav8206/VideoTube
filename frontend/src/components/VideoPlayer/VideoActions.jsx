@@ -94,9 +94,7 @@ const VideoActions = ({ video }) => {
         </button>
 
         {/* More Options */}
-        <button
-          className="p-2.5 rounded-full bg-gray-100 cursor-pointer text-gray-700 transition-all"
-        >
+        <button className="p-2.5 rounded-full bg-gray-100 cursor-pointer text-gray-700 transition-all">
           <MoreVertical size={20} />
         </button>
       </div>

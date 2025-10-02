@@ -1,12 +1,12 @@
-import React from 'react'
-import SettingsContent from '../components/settings/SettingsContent'
+import React from "react";
+import SettingsContent from "../components/settings/SettingsContent";
 
 const Settings = () => {
   return (
     <div>
-      <SettingsContent/>
+      <SettingsContent />
     </div>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

@@ -1,4 +1,4 @@
-import { CircleCheckBig  } from "lucide-react";
+import { CircleCheckBig } from "lucide-react";
 import React from "react";
 
 const ThumbnailUploader = ({
@@ -16,7 +16,7 @@ const ThumbnailUploader = ({
         {thumbnailPreview ? (
           <span>
             {" "}
-            <CircleCheckBig 
+            <CircleCheckBig
               size={16}
               className="fill-green-300 text-green-700"
             />{" "}

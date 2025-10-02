@@ -82,7 +82,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 
 const deleteTweet = asyncHandler(async (req, res) => {
   const { tweetId } = req.params;
-  
+
   const tweet = await Tweet.findById(tweetId);
   if (!tweet) {
     throw new ApiError(400, "Tweet is not exist or deleted.");
@@ -92,7 +92,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to delete this tweet.");
   }
 
-  await tweet.deleteOne()
+  await tweet.deleteOne();
 
   return res
     .status(200)
