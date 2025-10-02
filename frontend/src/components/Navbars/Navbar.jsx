@@ -24,6 +24,8 @@ const Navbar = () => {
     setSearchQuery,
     showingSearchResults,
     setShowingSearchResults,
+    showVoiceSearchBox,
+    setShowVoiceSearchBox,
   } = useContext(AppContext);
 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -79,7 +81,12 @@ const Navbar = () => {
       >
         <MobSearchNav
           showMobileSearch={showMobileSearch}
-          onClose={() => setShowMobileSearch(false)}
+          onClose={() => {
+            setShowMobileSearch(false);
+            navigate("/");
+            setShowingSearchResults(false);
+            setSearchQuery("");
+          }}
           handleSearch={handleSearch}
         />
       </header>
@@ -101,7 +108,14 @@ const Navbar = () => {
           <Menu size={18} className="sm:w-5 sm:h-5" />
         </button>
 
-        <Link to="/" className="flex items-center min-w-fit">
+        <Link
+          onClick={() => {
+            setShowingSearchResults(false);
+            setSearchQuery("");
+          }}
+          to="/"
+          className="flex items-center min-w-fit"
+        >
           <img
             className="w-5 h-5 sm:w-7 sm:h-7"
             src="/favicon.webp"
@@ -181,7 +195,7 @@ const Navbar = () => {
               ) : (
                 <Mic
                   onClick={() => {
-                    "Voice SEarch";
+                    setShowVoiceSearchBox(true);
                   }}
                   size={18}
                 />
@@ -192,7 +206,7 @@ const Navbar = () => {
 
         {/* Right Side Icons */}
 
-        {showingSearchResults ? (
+        {showingSearchResults && searchQuery ? (
           <button className="p-2 rounded-lg transition-colors cursor-pointer ml-1">
             <MoreVertical size={16} className="text-gray-700" />
           </button>

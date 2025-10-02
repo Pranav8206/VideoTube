@@ -15,6 +15,7 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
     setSearchQuery,
     showingSearchResults,
     setShowingSearchResults,
+    setShowVoiceSearchBox
   } = useContext(AppContext);
   const inputRef = useRef(null);
 
@@ -99,7 +100,12 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
                 <SendHorizonal onClick={handleSearch} size={18} />
               </button>
             ) : (
-              <Mic size={18} />
+              <Mic
+                onClick={() => {
+                  setShowVoiceSearchBox(true);
+                }}
+                size={18}
+              />
             )}
           </div>
         </div>

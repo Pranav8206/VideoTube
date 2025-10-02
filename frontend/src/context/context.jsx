@@ -11,6 +11,7 @@ const ContextProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showingSearchResults, setShowingSearchResults] = useState(false);
   const [isCinemaMode, setIsCinemaMode] = useState(false);
+  const [showVoiceSearchBox, setShowVoiceSearchBox] = useState(false);
 
   const fetchAllVideos = async () => {
     try {
@@ -32,6 +33,8 @@ const ContextProvider = ({ children }) => {
     setShowingSearchResults,
     isCinemaMode,
     setIsCinemaMode,
+    showVoiceSearchBox,
+    setShowVoiceSearchBox,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
