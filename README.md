@@ -35,6 +35,7 @@ VideoTube is a full-stack web application inspired by YouTube, built with the **
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React** - UI framework
 - **Tailwind CSS** - Styling
 - **Axios** - HTTP client
@@ -42,6 +43,7 @@ VideoTube is a full-stack web application inspired by YouTube, built with the **
 - **Context API** - State management
 
 ### Backend
+
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
 - **MongoDB** - Database
@@ -52,6 +54,7 @@ VideoTube is a full-stack web application inspired by YouTube, built with the **
 - **Cloudinary** - Media storage (optional)
 
 ### Development Tools
+
 - **Nodemon** - Development server
 - **Postman** - API testing
 
@@ -60,6 +63,7 @@ VideoTube is a full-stack web application inspired by YouTube, built with the **
 ## 📖 API Documentation
 
 ### Base URL
+
 ```
 http://localhost:5000/api/v1
 ```
@@ -68,122 +72,127 @@ All endpoints (except auth endpoints) require JWT authentication via Bearer toke
 
 ### Authentication Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `POST` | `/users/register` | Register new user | No |
-| `POST` | `/users/login` | Login user | No |
-| `POST` | `/users/logout` | Logout user | Yes |
-| `POST` | `/users/refresh-token` | Refresh access token | No |
-| `GET` | `/users/current-user` | Get current user | Yes |
-| `POST` | `/users/change-password` | Change password | Yes |
-| `PATCH` | `/users/update-account` | Update account | Yes |
-| `PATCH` | `/users/avatar` | Update avatar | Yes |
-| `PATCH` | `/users/cover-image` | Update cover image | Yes |
-| `GET` | `/users/c/:username` | Get channel profile | Yes |
-| `GET` | `/users/history` | Get watch history | Yes |
+| Method  | Endpoint                 | Description          | Auth Required |
+| ------- | ------------------------ | -------------------- | ------------- |
+| `POST`  | `/users/register`        | Register new user    | No            |
+| `POST`  | `/users/login`           | Login user           | No            |
+| `POST`  | `/users/logout`          | Logout user          | Yes           |
+| `POST`  | `/users/refresh-token`   | Refresh access token | No            |
+| `GET`   | `/users/current-user`    | Get current user     | Yes           |
+| `POST`  | `/users/change-password` | Change password      | Yes           |
+| `PATCH` | `/users/update-account`  | Update account       | Yes           |
+| `PATCH` | `/users/avatar`          | Update avatar        | Yes           |
+| `PATCH` | `/users/cover-image`     | Update cover image   | Yes           |
+| `GET`   | `/users/c/:username`     | Get channel profile  | Yes           |
+| `GET`   | `/users/history`         | Get watch history    | Yes           |
 
 ### Video Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `GET` | `/videos` | Get all videos | No |
-| `POST` | `/videos/publish` | Upload video | Yes |
-| `GET` | `/videos/:videoId` | Get video details | Yes |
-| `PATCH` | `/videos/:videoId/edit` | Update video | Yes |
-| `DELETE` | `/videos/:videoId` | Delete video | Yes |
-| `PATCH` | `/videos/:videoId` | Toggle publish status | Yes |
+| Method   | Endpoint                | Description           | Auth Required |
+| -------- | ----------------------- | --------------------- | ------------- |
+| `GET`    | `/videos`               | Get all videos        | No            |
+| `POST`   | `/videos/publish`       | Upload video          | Yes           |
+| `GET`    | `/videos/:videoId`      | Get video details     | Yes           |
+| `PATCH`  | `/videos/:videoId/edit` | Update video          | Yes           |
+| `DELETE` | `/videos/:videoId`      | Delete video          | Yes           |
+| `PATCH`  | `/videos/:videoId`      | Toggle publish status | Yes           |
 
 ### Subscription Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `POST` | `/subscriptions/:channelId` | Toggle subscription | Yes |
-| `GET` | `/subscriptions/:channelId` | Get subscribers | Yes |
-| `GET` | `/subscriptions` | Get subscribed channels | Yes |
+| Method | Endpoint                    | Description             | Auth Required |
+| ------ | --------------------------- | ----------------------- | ------------- |
+| `POST` | `/subscriptions/:channelId` | Toggle subscription     | Yes           |
+| `GET`  | `/subscriptions/:channelId` | Get subscribers         | Yes           |
+| `GET`  | `/subscriptions`            | Get subscribed channels | Yes           |
 
 ### Playlist Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `GET` | `/playlists` | Get user playlists | Yes |
-| `POST` | `/playlists` | Create playlist | Yes |
-| `GET` | `/playlists/:playlistId` | Get playlist | Yes |
-| `PATCH` | `/playlists/:playlistId` | Update playlist | Yes |
-| `DELETE` | `/playlists/:playlistId` | Delete playlist | Yes |
-| `PATCH` | `/playlists/add/:playlistId/:videoId` | Add video to playlist | Yes |
-| `PATCH` | `/playlists/remove/:playlistId/:videoId` | Remove video from playlist | Yes |
+| Method   | Endpoint                                 | Description                | Auth Required |
+| -------- | ---------------------------------------- | -------------------------- | ------------- |
+| `GET`    | `/playlists`                             | Get user playlists         | Yes           |
+| `POST`   | `/playlists`                             | Create playlist            | Yes           |
+| `GET`    | `/playlists/:playlistId`                 | Get playlist               | Yes           |
+| `PATCH`  | `/playlists/:playlistId`                 | Update playlist            | Yes           |
+| `DELETE` | `/playlists/:playlistId`                 | Delete playlist            | Yes           |
+| `PATCH`  | `/playlists/add/:playlistId/:videoId`    | Add video to playlist      | Yes           |
+| `PATCH`  | `/playlists/remove/:playlistId/:videoId` | Remove video from playlist | Yes           |
 
 ### Like Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `POST` | `/likes/video/:videoId` | Toggle video like | Yes |
-| `GET` | `/likes/video/:videoId` | Get video likes count | Yes |
-| `POST` | `/likes/comment/:commentId` | Toggle comment like | Yes |
-| `GET` | `/likes/comment/:commentId` | Get comment likes count | Yes |
-| `POST` | `/likes/tweet/:tweetId` | Toggle tweet like | Yes |
-| `GET` | `/likes/tweet/:tweetId` | Get tweet likes count | Yes |
-| `GET` | `/likes` | Get user's liked videos | Yes |
+| Method | Endpoint                    | Description             | Auth Required |
+| ------ | --------------------------- | ----------------------- | ------------- |
+| `POST` | `/likes/video/:videoId`     | Toggle video like       | Yes           |
+| `GET`  | `/likes/video/:videoId`     | Get video likes count   | Yes           |
+| `POST` | `/likes/comment/:commentId` | Toggle comment like     | Yes           |
+| `GET`  | `/likes/comment/:commentId` | Get comment likes count | Yes           |
+| `POST` | `/likes/tweet/:tweetId`     | Toggle tweet like       | Yes           |
+| `GET`  | `/likes/tweet/:tweetId`     | Get tweet likes count   | Yes           |
+| `GET`  | `/likes`                    | Get user's liked videos | Yes           |
 
 ### Comment Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `GET` | `/comments/:videoId` | Get video comments | Yes |
-| `POST` | `/comments/:videoId` | Add comment | Yes |
-| `PATCH` | `/comments/c/:commentId` | Update comment | Yes |
-| `DELETE` | `/comments/c/:commentId` | Delete comment | Yes |
+| Method   | Endpoint                 | Description        | Auth Required |
+| -------- | ------------------------ | ------------------ | ------------- |
+| `GET`    | `/comments/:videoId`     | Get video comments | Yes           |
+| `POST`   | `/comments/:videoId`     | Add comment        | Yes           |
+| `PATCH`  | `/comments/c/:commentId` | Update comment     | Yes           |
+| `DELETE` | `/comments/c/:commentId` | Delete comment     | Yes           |
 
 ### Tweet Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `POST` | `/tweets` | Create tweet | Yes |
-| `GET` | `/tweets/user/:username` | Get user tweets | Yes |
-| `PATCH` | `/tweets/:tweetId` | Update tweet | Yes |
-| `DELETE` | `/tweets/:tweetId` | Delete tweet | Yes |
+| Method   | Endpoint                 | Description     | Auth Required |
+| -------- | ------------------------ | --------------- | ------------- |
+| `POST`   | `/tweets`                | Create tweet    | Yes           |
+| `GET`    | `/tweets/user/:username` | Get user tweets | Yes           |
+| `PATCH`  | `/tweets/:tweetId`       | Update tweet    | Yes           |
+| `DELETE` | `/tweets/:tweetId`       | Delete tweet    | Yes           |
 
 ### Dashboard Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `GET` | `/dashboard/stats/:userId` | Get channel stats | Yes |
-| `GET` | `/dashboard/videos/:userId` | Get channel videos | Yes |
+| Method | Endpoint                    | Description        | Auth Required |
+| ------ | --------------------------- | ------------------ | ------------- |
+| `GET`  | `/dashboard/stats/:userId`  | Get channel stats  | Yes           |
+| `GET`  | `/dashboard/videos/:userId` | Get channel videos | Yes           |
 
 ### Health Check
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| `GET` | `/healthcheck` | Health check | No |
+| Method | Endpoint       | Description  | Auth Required |
+| ------ | -------------- | ------------ | ------------- |
+| `GET`  | `/healthcheck` | Health check | No            |
 
 ---
 
 ## ⚙️ Installation
 
 ### Prerequisites
+
 - Node.js (v14 or higher)
 - MongoDB (local or Atlas)
 - npm or yarn
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/your-username/videotube.git
 cd videotube
 ```
 
 ### 2. Backend Setup
+
 ```bash
 cd backend
 npm install
 ```
 
 ### 3. Frontend Setup
+
 ```bash
 cd ../frontend
 npm install
 ```
 
 ### 4. Environment Variables
+
 Create a `.env` file in the backend directory:
 
 ```env
@@ -198,6 +207,7 @@ CORS_ORIGIN=http://localhost:3000
 ```
 
 ### 5. Start the Application
+
 ```bash
 # Start backend (from backend directory)
 npm run dev
@@ -207,6 +217,7 @@ npm start
 ```
 
 The application will be available at:
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
 
@@ -214,14 +225,14 @@ The application will be available at:
 
 ## 🔧 Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Backend server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/videotube` |
-| `JWT_SECRET` | Secret key for JWT tokens | `your_jwt_secret` |
-| `JWT_REFRESH_SECRET` | Secret key for refresh tokens | `your_refresh_secret` |
-| `CLOUDINARY_*` | Cloudinary credentials for media storage | (Optional) |
-| `CORS_ORIGIN` | Allowed origin for CORS | `http://localhost:3000` |
+| Variable             | Description                              | Example                               |
+| -------------------- | ---------------------------------------- | ------------------------------------- |
+| `PORT`               | Backend server port                      | `5000`                                |
+| `MONGODB_URI`        | MongoDB connection string                | `mongodb://localhost:27017/videotube` |
+| `JWT_SECRET`         | Secret key for JWT tokens                | `your_jwt_secret`                     |
+| `JWT_REFRESH_SECRET` | Secret key for refresh tokens            | `your_refresh_secret`                 |
+| `CLOUDINARY_*`       | Cloudinary credentials for media storage | (Optional)                            |
+| `CORS_ORIGIN`        | Allowed origin for CORS                  | `http://localhost:3000`               |
 
 ---
 
@@ -248,7 +259,7 @@ videotube/
 │       ├── hooks/       # Custom hooks
 │       ├── utils/       # Utility functions
 │       └── styles/      # CSS/Tailwind files
-│   
+│
 └── README.md
 ```
 
