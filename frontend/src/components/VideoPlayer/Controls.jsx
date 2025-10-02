@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Play,
   Pause,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Seekbar from "./Seekbar";
 import TooltipButton from "../TooltipButton";
+import { AppContext } from "../../context/context";
 
 const Controls = ({
   isPlaying,
@@ -28,7 +29,6 @@ const Controls = ({
   playbackRate,
   isLoop,
   isPiP,
-  isCinemaMode,
   isFullscreen,
   effectiveSources,
   currentSourceIndex,
@@ -48,6 +48,7 @@ const Controls = ({
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const volumeTimeoutRef = useRef(null);
+  const { isCinemaMode } = useContext(AppContext);
 
   useEffect(() => {
     return () => {
@@ -64,8 +65,16 @@ const Controls = ({
       }, 500);
   };
 
+  // auto-hide after 2 seconds when it’s true
+  useEffect(() => {
+    if (showVolumeSlider) {
+      const timer = setTimeout(() => setShowVolumeSlider(false), 2000);
+      return () => clearTimeout(timer); // cleanup on unmount or reset
+    }
+  }, [showVolumeSlider]);
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4">
+    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 z-20">
       {/* Seekbar */}
       <Seekbar
         currentTime={currentTime}

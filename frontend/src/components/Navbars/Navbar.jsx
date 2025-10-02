@@ -73,7 +73,7 @@ const Navbar = () => {
   if (showMobileSearch && window.innerWidth < 475) {
     return (
       <header
-        className={`bg-white border-b z-20 sticky top-0 left-0 right-0 border-gray-200 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out ${
+        className={`bg-white z-20 sticky top-0 left-0 right-0 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out ${
           isVisible || searchQuery ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -88,7 +88,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`bg-white border-b z-20 sticky top-0 left-0 right-0 border-gray-200 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out  ${
+      className={`bg-white z-30 sticky top-0 left-0 right-0 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out  ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >

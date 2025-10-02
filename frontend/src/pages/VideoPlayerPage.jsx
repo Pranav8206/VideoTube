@@ -16,67 +16,60 @@ const VideoPlayerPage = () => {
   const currentId = onePlaylist.videos?.[1]?.id || onePlaylist.videos?.[0]?.id;
 
   return (
-    <div className="min-h-screen w-full">
-      {/* Outer Container - Changes based on cinema mode */}
+    <div
+      className={`flex flex-wrap mx-auto w-full transition-all duration-500 ease-in-out ${
+        isCinemaMode ? "" : "px-2 sm:px-4"
+      }`}
+    >
+      {/* Item 1: Video Player */}
       <div
-        className={`w-full transition-all duration-300 ${
-          isCinemaMode ? "bg-gray-700" : ""
+        className={`relative order-1 w-full ease-in-out ${
+          isCinemaMode
+            ? "md-plus:min-w-full  "
+            : "md-plus:flex-1 md-plus:min-w-[50vw]"
         }`}
       >
+        {" "}
+        <div className={`relative ${isCinemaMode ? "" : "rounded-lg"} `}>
+          <VideoPlayer src={videoLink} poster={posterLink} />
+        </div>
         <div
-          className={`mx-auto transition-all duration-300 ${
-            isCinemaMode ? "w-full" : "max-w-7xl px-4 sm:px-6 lg:px-8"
+          className={`block  ${
+            isCinemaMode
+              ? "md-plus:hidden"
+              : " block"
           }`}
         >
-          {/* Flex Container with 3 items */}
-          <div
-            className={`flex flex-wrap gap-4 lg:gap-6 ${
-              isCinemaMode ? "" : "mt-4"
-            }`}
-          >
-            {/* Item 1: Video Player */}
-            <div
-              className={`transition-all duration-300 ${
-                isCinemaMode
-                  ? "w-full order-1" // Cinema: Full width, first position
-                  : "w-full lg:flex-1 lg:min-w-0 order-1" // Default: Flexible width, first position
-              }`}
-            >
-              <VideoPlayer src={videoLink} poster={posterLink} />
-            </div>
-
-            {/* Item 2: Playlist Sidebar */}
-            <aside
-              className={`flex-shrink-0 transition-all duration-300 ${
-                isCinemaMode
-                  ? "w-full lg:w-[400px] xl:w-[450px] order-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" // Cinema: Third position, beside comments
-                  : "w-full lg:w-[400px] xl:w-[450px] order-2" // Default: Second position, beside video
-              }`}
-            >
-              <div className={isCinemaMode ? "mt-4" : ""}>
-                <PlaylistSidebar
-                  playlist={onePlaylist}
-                  currentVideoId={currentId}
-                  onVideoSelect={() => {}}
-                />
-              </div>
-            </aside>
-
-            {/* Item 3: Video Actions + Comments */}
-            <div
-              className={`transition-all duration-300 ${
-                isCinemaMode
-                  ? "w-full lg:flex-1 lg:min-w-0 order-2 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" // Cinema: Second position, beside sidebar
-                  : "w-full order-3" // Default: Third position, full width below
-              }`}
-            >
-              <div className={isCinemaMode ? "mt-4" : ""}>
-                <VideoActions video={currentVideo} />
-                <CommentsSection comments={dummyComments} />
-              </div>
-            </div>
-          </div>
+          <VideoActions video={currentVideo} />
+          <CommentsSection comments={dummyComments} />
         </div>
+      </div>
+
+      {/* Item 2: Playlist Sidebar */}
+      <aside
+        className={`flex-shrink-0 ease-in-out w-full mx-auto order-3 ${
+          isCinemaMode
+            ? "md-plus:order-3 md-plus:w-[36vw]"
+            : "md-plus:order-2 md-plus:w-[36vw] "
+        }`}
+      >
+        <PlaylistSidebar
+          playlist={onePlaylist}
+          currentVideoId={currentId}
+          onVideoSelect={() => {}}
+        />
+      </aside>
+
+      {/* Item 3: Video Actions + Comments */}
+      <div
+        className={`order-2 w-full max-md-plus:hidden transition-opacity duration-500 ease-in-out ${
+          isCinemaMode
+            ? "flex-1 min-w-0 order-2 max-w-7xl mx-auto px-4 md-plus:px-8 md-plus:w-165 opacity-100 block"
+            : "order-3 hidden border"
+        }`}
+      >
+        <VideoActions video={currentVideo} />
+        <CommentsSection comments={dummyComments} />
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const SettingsContent = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden ">
+    <div className="h-full w-full flex ">
       <SettingsSidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}

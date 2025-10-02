@@ -1,18 +1,80 @@
 // VideoCard.jsx
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Download, Flag, Clock, Minus, MoreVertical, Play } from "lucide-react";
 
 const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [width, setWidth] = useState(0);
+  const rootRef = useRef(null);
   const isList = layout === "list";
+
+  // Measure width of the root so we can scale fonts appropriately
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const setMeasuredWidth = () => {
+      const w = Math.round(el.getBoundingClientRect().width);
+      setWidth(w);
+    };
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => setMeasuredWidth());
+      ro.observe(el);
+      setMeasuredWidth();
+      return () => ro.disconnect();
+    }
+
+    // fallback
+    setMeasuredWidth();
+    const onResize = () => setMeasuredWidth();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Decide bucket from width
+  const sizeBucket = useMemo(() => {
+    if (width <= 220) return "xs";
+    if (width <= 300) return "sm";
+    if (width <= 420) return "md";
+    return "lg";
+  }, [width]);
+
+  // Map bucket to Tailwind text classes
+  const titleClass = useMemo(() => {
+    switch (sizeBucket) {
+      case "xs":
+        return "text-xs"; // very compact
+      case "sm":
+        return "text-sm"; // small cards
+      case "md":
+        return "text-base"; // medium cards
+      default:
+        return "text-lg"; // large / full width
+    }
+  }, [sizeBucket]);
+
+  const metaClass = useMemo(() => {
+    switch (sizeBucket) {
+      case "xs":
+        return "text-[10px]";
+      case "sm":
+        return "text-xs";
+      case "md":
+        return "text-sm";
+      default:
+        return "text-base";
+    }
+  }, [sizeBucket]);
 
   return (
     <div
+      ref={rootRef}
       className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer hover:border-gray-200 hover:shadow-md
         ${
           isList
-            ? "flex justify-between gap-4 hover:bg-gray-50 my-1"
+            ? "flex justify-between gap-2 hover:bg-gray-50 my-1"
             : "flex-col w-full group overflow-hidden"
         }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -24,9 +86,7 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
       {/* Thumbnail */}
       <div
         className={`relative ${
-          isList
-            ? "flex-shrink-0 w-40 sm:w-56 md:w-64 lg:w-75 h-full max-xs:max-w-[50%]"
-            : ""
+          isList ? "flex-shrink-0 w-[40%] max-w-[320px]" : ""
         }`}
       >
         <div
@@ -45,14 +105,13 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
 
         {/* Duration overlay */}
         <span
-          className={`absolute bg-black/80 text-white rounded font-medium text-[10px] sm:text-xs
-            ${
-              isList
-                ? "bottom-1 right-1 px-1.5 py-0.5"
-                : "bottom-2 right-2 px-2 py-1 backdrop-blur-sm"
-            }`}
+          className={`absolute bg-black/80 text-white rounded text-xs ${
+            isList
+              ? "bottom-1 right-1 px-0.5 "
+              : "bottom-2 right-2 px-2 py-1 backdrop-blur-sm"
+          }`}
         >
-          {video.duration}
+          {video.duration ? video.duration : "0:00"}
         </span>
 
         {/* Play overlay on hover */}
@@ -60,11 +119,12 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
           <div
             className={`absolute inset-0 bg-black/20 flex items-center justify-center ${
               isList ? "rounded-l-lg" : "rounded-t-lg"
-            } `}
+            }`}
           >
             <div
-              className={`bg-white rounded-full flex items-center justify-center shadow-lg 
-              ${isList ? "w-8 h-8" : "w-12 h-12"}`}
+              className={`bg-white rounded-full flex items-center justify-center shadow-lg ${
+                isList ? "w-8 h-8" : "w-12 h-12"
+              }`}
             >
               <Play
                 size={isList ? 20 : 28}
@@ -79,19 +139,18 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
       <div
         className={`flex-1 ${
           isList
-            ? "flex xs:px-2 sm:px-3 pt-2 justify-between"
+            ? "flex pt-1 justify-between"
             : "p-2 sm:p-3 flex items-start gap-3"
         }`}
       >
         <div className="min-w-0 flex-1 space-y-1">
           <h3
-            className={`font-semibold text-gray-900 line-clamp-2 leading-snug
-              text-xs s:text-sm sm:text-base md:text-lg `}
+            className={`font-medium text-gray-900 line-clamp-2 min-h-10 leading-tight ${titleClass}`}
           >
             {video.title}
           </h3>
-          <div className="flex items-start justify-start gap-2">
-            {/* Wrap avatar in a group */}
+
+          <div className="flex items-start justify-start s:gap-2">
             <div className="group">
               <img
                 src={video.channelAvatar}
@@ -102,15 +161,12 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
 
             <div className="flex flex-col items-start content-start">
               <p
-                className={`text-primary font-medium md:font-semibold text-xs sm:text-sm cursor-pointer transition-colors duration-300 
-        ${isList ? "md:text-base" : ""} 
-        group-hover:text-purple-600`}
+                className={`text-primary font-medium cursor-pointer transition-colors duration-300 line-clamp-1 ${metaClass} group-hover:text-purple-600`}
               >
                 {inSubscription ? video.channel?.name : video.channel}
               </p>
               <p
-                className={`text-gray-500 text-[11px] sm:text-xs flex flex-wrap   gap-x-1 tracking-tighter  
-        ${isList ? "md:text-sm" : ""}`}
+                className={`text-gray-500 ${metaClass} flex flex-wrap gap-x-1 tracking-tighter leading-none`}
               >
                 <span>{video.views}</span>
                 <span>•</span>

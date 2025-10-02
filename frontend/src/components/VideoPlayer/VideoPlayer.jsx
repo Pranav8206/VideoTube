@@ -4,23 +4,26 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useContext,
 } from "react";
 import { Play } from "lucide-react";
 import Loader from "../Loader";
 import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
+import axios from "axios";
+import { AppContext } from "../../context/context";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const controlsTimeoutRef = useRef(null);
 
+  // Player states
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isCinemaMode, setIsCinemaMode] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [bufferedTime, setBufferedTime] = useState(0);
@@ -32,16 +35,17 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [skipAnimation, setSkipAnimation] = useState(null);
 
-  // Handle sources
+  const { isCinemaMode, setIsCinemaMode } = useContext(AppContext);
+
+  // Prepare sources
   const effectiveSources = useMemo(() => {
-    if (sources)
-      return Array.isArray(sources)
-        ? sources
-        : [{ src: sources, type: "video/mp4" }];
-    return [{ src, type: "video/mp4" }];
+    if (!sources) return [{ src, type: "video/mp4" }];
+    return Array.isArray(sources)
+      ? sources
+      : [{ src: sources, type: "video/mp4" }];
   }, [sources, src]);
 
-  // Utility functions
+  // Utils
   const formatTime = useCallback((time) => {
     if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -63,9 +67,15 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     [currentTime, duration, seek]
   );
 
+  // Player actions
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
-    isPlaying ? videoRef.current.pause() : videoRef.current.play();
+    if (isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play();
+      setShowControls(false);
+    }
   }, [isPlaying]);
 
   const toggleMute = useCallback(() => {
@@ -134,10 +144,11 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     [currentSourceIndex, effectiveSources, isPlaying, currentTime]
   );
 
-  // Video event listeners
+  // Events
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    console.log(duration, "duration is this");
 
     const events = {
       loadedmetadata: () => {
@@ -171,7 +182,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       Object.entries(events).forEach(([event, handler]) =>
         video.removeEventListener(event, handler)
       );
-  }, []);
+  }, [videoRef]);
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.loop = isLoop;
@@ -185,24 +196,28 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
+  // Controls visibility
   const resetControlsTimeout = useCallback(() => {
+    if (!isPlaying) {
+      setShowControls(true);
+    }
     clearTimeout(controlsTimeoutRef.current);
     setShowControls(true);
-    if (isPlaying)
-      controlsTimeoutRef.current = setTimeout(
-        () => setShowControls(false),
-        3000
-      );
+    let timeoutTime = 2000;
+    if (window.innerWidth < 640) {
+      timeoutTime = 3000;
+    }
+    controlsTimeoutRef.current = setTimeout(() => {
+      setShowControls(false);
+    }, timeoutTime);
   }, [isPlaying]);
 
+  // Cleanup timer
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.addEventListener("mousemove", resetControlsTimeout);
-    return () =>
-      container.removeEventListener("mousemove", resetControlsTimeout);
-  }, [resetControlsTimeout]);
+    return () => clearTimeout(controlsTimeoutRef.current);
+  }, []);
 
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
@@ -256,25 +271,80 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     togglePiP,
   ]);
 
+  // Handlers for click zones
+  const handleZoneClick = () => {
+    if (window.innerWidth > 640) {
+      togglePlay();
+    } else {
+      showControls ? setShowControls(false) : setShowControls(true);
+    }
+  };
+
+  useEffect(() => {
+    //fix later
+    if (!src) return;
+
+    const fetchDuration = async () => {
+      try {
+        const url = new URL(src);
+        const parts = url.pathname.split("/");
+        // ["", "dfxpccwii", "video", "upload", "v1756730931", "skymltj9zhhsk98k3iad.mp4"]
+
+        const cloudName = parts[1];
+        const publicIdWithExt = parts.pop(); // "skymltj9zhhsk98k3iad.mp4"
+        const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // "skymltj9zhhsk98k3iad"
+
+        // ❌ remove version (like v1756730931)
+        const jsonUrl = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.json`;
+
+        const res = await axios.get(jsonUrl);
+        console.log(res, "res");
+
+        if (res.data?.duration) {
+          setDuration(res.data.duration);
+        }
+      } catch (err) {
+        console.error("Error fetching video metadata:", err);
+      }
+    };
+
+    fetchDuration();
+  }, [src]);
+
   return (
     <div
       ref={containerRef}
-      className={`relative bg-dark overflow-hidden group select-none transition-all duration-300 ease-in-out
-        ${
-          isFullscreen
-            ? "fixed inset-0"
-            : isCinemaMode
-            ? "w-full max-lg:h-[50vh] sm:h-[75vh] lg:h-[80vh] mx-auto"
-            : "w-[98vw] sm:w-[90vw] lg:w-[60vw] max-w-[1280px] h-[60vh] sm:h-[70vh] lg:h-[70vh] rounded-xl shadow-lg mx-auto"
-        }
-      `}
-      onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
+      className={`relative overflow-hidden group select-none transition-all duration-300 ease-in-out aspect-video mx-auto  shadow-2xl  ${
+        isFullscreen
+          ? "fixed inset-0 z-[1100]"
+          : isCinemaMode
+          ? "max-h-[70vh] max-lg:w-full w-screen rounded-xs"
+          : " max-h-[60vh] rounded-lg mx-auto"
+      }`}
+      onMouseEnter={resetControlsTimeout}
+      onMouseMove={resetControlsTimeout}
+      onMouseLeave={() => setShowControls((prev) => !prev)}
     >
       <video
         ref={videoRef}
         poster={poster}
-        className="w-full h-full object-cover cursor-pointer"
+        src={src}
+        preload="metadata"
+        onLoadedMetadata={(e) => {
+          const vid = e.currentTarget;
+          if (!isNaN(vid.duration)) {
+            setDuration(vid.duration);
+          }
+        }}
+        onDurationChange={(e) => {
+          const vid = e.currentTarget;
+          if (!isNaN(vid.duration)) {
+            setDuration(vid.duration);
+          }
+        }}
+        className={`bg-gray-300  ${isFullscreen && "h-screen w-screen"} ${
+          isCinemaMode ? "mx-auto h-full" : "h-full w-full object-cover"
+        }`}
       />
 
       {error && (
@@ -294,12 +364,13 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
         </div>
       )}
 
-      {!error && isLoading && <Loader />}
+      {!error && isLoading && <Loader className="" />}
       <SkipAnimation
         direction={skipAnimation}
         onAnimationEnd={() => setSkipAnimation(null)}
       />
 
+      {/* Controls overlay */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
           showControls ? "opacity-100" : "opacity-0"
@@ -310,12 +381,35 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               onClick={togglePlay}
-              className="sm:w-16 w-10 sm:h-16 h-10 bg-black/50 rounded-full flex items-center justify-center text-primary hover:bg-black/70"
+              className={`z-20 sm:w-16 w-10 sm:h-16 h-10 bg-black/50 rounded-full flex items-center justify-center text-primary cursor-pointer ${
+                !showControls && "hidden"
+              } `}
             >
               <Play size={32} />
             </button>
           </div>
         )}
+
+        {/* Click zones */}
+        <div className="absolute flex inset-0 cursor-pointer z-10 h-full w-full">
+          <div
+            className="relative w-1/3"
+            onDoubleClick={() => skipTime(-10)}
+            onClick={handleZoneClick}
+          />
+          <div
+            className="relative w-1/3"
+            onDoubleClick={toggleFullscreen}
+            onClick={handleZoneClick}
+          />
+          <div
+            className="relative w-1/3"
+            onDoubleClick={() => skipTime(10)}
+            onClick={handleZoneClick}
+          />
+        </div>
+
+        {/* Controls bar */}
         <Controls
           {...{
             isPlaying,
@@ -327,7 +421,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
             playbackRate,
             isLoop,
             isPiP,
-            isCinemaMode,
             isFullscreen,
             effectiveSources,
             currentSourceIndex,

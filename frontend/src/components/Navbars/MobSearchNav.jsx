@@ -35,7 +35,7 @@ const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
 
   return (
     <div
-      className={`fixed mb-10 top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-10 flex items-center px-2 sm:hidden sm:px-4 w-full  justify-between transform transition-all duration-300 ease-in-out`}
+      className={`fixed mb-10 top-0 left-0 right-0 z-50 bg-white h-10 flex items-center px-2 sm:hidden sm:px-4 w-full  justify-between transform transition-all duration-300 ease-in-out`}
     >
       {/* Back Arrow */}
       <button

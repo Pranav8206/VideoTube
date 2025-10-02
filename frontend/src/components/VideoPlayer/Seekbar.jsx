@@ -93,10 +93,10 @@ const Seekbar = ({ currentTime, duration, bufferedTime, seek, formatTime }) => {
   const bufferPercent = duration ? (bufferedTime / duration) * 100 : 0;
 
   return (
-    <div className="relative mb-4 z-10">
+    <div className="relative  z-20">
       <div
         ref={seekbarRef}
-        className="h-2 bg-borderColor/60 rounded-full cursor-pointer group/seekbar relative"
+        className="h-0.5 hover:h-1.5 mb-4 hover:mb-3.5 my-1 transition-all duration-300 bg-borderColor/60 rounded-full cursor-pointer group/seekbar relative"
         onMouseDown={handleStart}
         onTouchStart={handleStart}
         onTouchMove={(e) => {
@@ -125,7 +125,7 @@ const Seekbar = ({ currentTime, duration, bufferedTime, seek, formatTime }) => {
         />
         {/* Scrubber */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full shadow-lg border-2 border-white opacity-0 group-hover/seekbar:opacity-100 transition-opacity"
+          className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-lg border-2 border-white  group-hover/seekbar:w-4 group-hover/seekbar:h-4  "
           style={{ left: `calc(${progressPercent}% - 8px)` }}
         />
         {/* Time preview */}
