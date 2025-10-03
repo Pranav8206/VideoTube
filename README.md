@@ -173,7 +173,7 @@ All endpoints (except auth endpoints) require JWT authentication via Bearer toke
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/videotube.git
+git clone https://github.com/Pranav8206/VideoTube.git
 cd videotube
 ```
 
@@ -203,7 +203,7 @@ JWT_REFRESH_SECRET=your_super_secret_refresh_key_here
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:5173
 ```
 
 ### 5. Start the Application
@@ -218,7 +218,7 @@ npm start
 
 The application will be available at:
 
-- Frontend: http://localhost:3000
+- Frontend: http://localhost:5173
 - Backend API: http://localhost:5000
 
 ---
@@ -232,7 +232,7 @@ The application will be available at:
 | `JWT_SECRET`         | Secret key for JWT tokens                | `your_jwt_secret`                     |
 | `JWT_REFRESH_SECRET` | Secret key for refresh tokens            | `your_refresh_secret`                 |
 | `CLOUDINARY_*`       | Cloudinary credentials for media storage | (Optional)                            |
-| `CORS_ORIGIN`        | Allowed origin for CORS                  | `http://localhost:3000`               |
+| `CORS_ORIGIN`        | Allowed origin for CORS                  | `http://localhost:5000`               |
 
 ---
 
@@ -255,10 +255,8 @@ videotube/
 │   └── src/
 │       ├── components/  # React components
 │       ├── pages/       # Page components
-│       ├── context/     # React context
-│       ├── hooks/       # Custom hooks
-│       ├── utils/       # Utility functions
-│       └── styles/      # CSS/Tailwind files
+│       ├── context/     # React context API
+│       └── utils/       # Utility functions
 │
 └── README.md
 ```

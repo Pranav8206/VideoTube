@@ -22,7 +22,7 @@ import userRouter from "./routes/user.routes.js";
 //routes declaration
 // app.use("/users", userRouter)  not professional way
 app.use("/api/v1/users", userRouter); //this follows in production
-//http://localhost:3000//api/v1/users/register
+//http://localhost:5000//api/v1/users/register
 //routes declaration
 
 import videoRouter from "./routes/video.routes.js";
