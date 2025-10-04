@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 
 const TooltipButton = ({
   children,
@@ -35,4 +35,4 @@ const TooltipButton = ({
   );
 };
 
-export default TooltipButton;
+export default memo(TooltipButton);

@@ -1,19 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 import PlaylistSidebar from "../components/playlist/PlaylistSidebar";
 import CommentsSection from "../components/CommentSection";
 import VideoActions from "../components/VideoPlayer/VideoActions";
 import { onePlaylist, currentVideo, dummyComments } from "../utils/videosData";
 import { AppContext } from "../context/context";
+import { useParams } from "react-router-dom";
 
 const VideoPlayerPage = () => {
-  const { isCinemaMode } = useContext(AppContext);
+  const [video, setVideo] = useState({});
+  const { isCinemaMode, fetchVideo } = useContext(AppContext);
+  const { videoId } = useParams();
 
-  const videoLink =
-    "https://res.cloudinary.com/dfxpccwii/video/upload/v1756730931/skymltj9zhhsk98k3iad.mp4";
-  const posterLink =
-    "https://res.cloudinary.com/dfxpccwii/image/upload/v1756654093/nen6f9kxdubhygpvqiie.webp";
   const currentId = onePlaylist.videos?.[1]?.id || onePlaylist.videos?.[0]?.id;
+
+  useEffect(() => {
+    let ignore = false;
+    const loadVideo = async () => {
+      const fetched = await fetchVideo(videoId);
+      if (!ignore) setVideo(fetched);
+    };
+    loadVideo();
+
+    return () => {
+      ignore = true;
+    };
+  }, [videoId, fetchVideo]);
 
   return (
     <div
@@ -31,10 +43,10 @@ const VideoPlayerPage = () => {
       >
         {" "}
         <div className={`relative ${isCinemaMode ? "" : "rounded-lg"} `}>
-          <VideoPlayer src={videoLink} poster={posterLink} />
+          <VideoPlayer src={video.videoFile} poster={video.thumbnail} />
         </div>
         <div className={`block  ${isCinemaMode ? "md-plus:hidden" : " block"}`}>
-          <VideoActions video={currentVideo} />
+          <VideoActions video={video} />
           <CommentsSection comments={dummyComments} />
         </div>
       </div>
@@ -62,7 +74,7 @@ const VideoPlayerPage = () => {
             : "order-3 hidden border"
         }`}
       >
-        <VideoActions video={currentVideo} />
+        <VideoActions video={video} />
         <CommentsSection comments={dummyComments} />
       </div>
     </div>

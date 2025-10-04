@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X, List } from "lucide-react";
-import VideoCard from "../VideoCard"; // your final component (unchanged)
+import VideoCard from "../VideoCard";
 
 const PlaylistSidebar = ({
   playlist,
@@ -23,7 +23,7 @@ const PlaylistSidebar = ({
       </div>
     );
 
-  const headerHeight = 120; // adjust if header/footer sizes change
+  const headerHeight = 120;
 
   return (
     <>
@@ -92,7 +92,7 @@ const PlaylistSidebar = ({
                   isActive ? "bg-primary/10 ring-1 ring-primary/40" : ""
                 }`}
               >
-                <VideoCard video={video} layout="list" />
+                <VideoCard video={video} layout="list" inSidebar={true} />
               </div>
             );
           })}

@@ -22,7 +22,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
   const videos = await Video.find(filter)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ [sortBy]: sortType === "desc" ? -1 : 1 });
+    .sort({ [sortBy]: sortType === "desc" ? -1 : 1 })
+    .populate("owner", "username avatar");
 
   return res
     .status(200)
@@ -86,7 +87,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
   const video = await Video.findById(videoId).populate(
     "owner",
-    "username fullName email avatar coverImage"
+    "username fullName avatar coverImage"
   );
 
   if (!video) {

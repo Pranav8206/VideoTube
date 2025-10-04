@@ -1,6 +1,12 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { AppContext } from "../../context/context";
-import { Mic } from "lucide-react";
+import { Mic, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const VoiceSearchBox = () => {
@@ -16,9 +22,10 @@ const VoiceSearchBox = () => {
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
 
-  const startListening = () => {
+  const startListening = useCallback(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
       alert("Speech recognition not supported in this browser.");
       return;
@@ -38,10 +45,10 @@ const VoiceSearchBox = () => {
       setTranscript(text);
 
       if (event.results[0].isFinal) {
-        setSearchQuery(text); // save to context
+        setSearchQuery(text);
         setShowingSearchResults(true);
-        navigate(`/s/${encodeURIComponent(text)}`); // go to search page
-        setShowVoiceSearchBox(false); // close popup
+        navigate(`/s/${encodeURIComponent(text)}`);
+        setShowVoiceSearchBox(false);
       }
     };
 
@@ -54,28 +61,27 @@ const VoiceSearchBox = () => {
 
     recognition.start();
     recognitionRef.current = recognition;
-  };
+  }, [
+    navigate,
+    setSearchQuery,
+    setShowingSearchResults,
+    setShowVoiceSearchBox,
+  ]);
 
-  // Auto start when popup opens
   useEffect(() => {
     if (showVoiceSearchBox) {
       startListening();
-    } else {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-        recognitionRef.current = null;
-      }
+    } else if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
       setTranscript("");
       setListening(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showVoiceSearchBox]);
+  }, [showVoiceSearchBox, startListening]);
 
   // Close with Escape key
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") setShowVoiceSearchBox(false);
-    };
+    const handleEsc = (e) => e.key === "Escape" && setShowVoiceSearchBox(false);
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [setShowVoiceSearchBox]);
@@ -83,42 +89,45 @@ const VoiceSearchBox = () => {
   if (!showVoiceSearchBox) return null;
 
   return (
-    <>
+    <div className="fixed inset-0 flex z-50 justify-center p-2 animate-in fade-in duration-200">
       {/* Backdrop */}
       <div
         onClick={() => setShowVoiceSearchBox(false)}
-        className="fixed inset-0 bg-black/30 z-30 cursor-pointer "
-      />
-
-      {/* Popup */}
-      <div
-        className="fixed top-2 
-      left-1/12 w-10/12 right-1/12 
-      sm:left-1/5 sm:w-3/5 sm:right-1/5 
-      md:left-1/4 md:w-1/2 md:right-1/4
-      lg:left-1/3 lg:w-1/3 lg:right-1/3
-      border flex items-start my-2 justify-center z-30"
+        className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-sm cursor-pointer z-50"
       >
-        <div className="bg-white rounded-xl shadow-xl p-6 flex flex-col items-center gap-4 w-full">
-          <div className="flex flex-col items-center">
+        {/* Popup */}
+        <div
+          className="relative w-full max-w-md mx-auto p-2 cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative bg-white rounded-xl shadow-xl p-5 sm:p-6 flex flex-col items-center">
+            {/* Mic Button */}
             <button
               onClick={startListening}
-              className={`w-16 h-16 rounded-full flex items-center justify-center text-white shadow-lg transition cursor-pointer ${
+              className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white shadow-lg transition-all cursor-pointer ${
                 listening ? "bg-red-500 animate-pulse" : "bg-primary"
               }`}
             >
               <Mic size={28} />
             </button>
-            <p className="text-xs mt-0">
-              {listening ? "" : "Tap the mic to try again"}
+            <button
+              className="absolute top-1 right-1 p-1 text-gray-400 cursor-pointer"
+              onClick={() => setShowVoiceSearchBox(false)}
+            >
+              <X size={18} />
+            </button>
+            <p className="text-xs text-gray-600 ">
+              {listening ? "" : "Tap the mic to start"}
             </p>
-          </div>
-          <div className="min-h-[48px] w-full text-center text-black font-semibold overflow-hidden text-ellipsis">
-            {transcript || (listening ? "Speak now..." : "I'm waiting...")}
+
+            {/* Transcript Display */}
+            <div className="min-h-[48px] w-full text-center text-black font-semibold overflow-hidden text-ellipsis px-2 sm:px-4 pt-3">
+              {transcript || (listening ? "Speak now..." : "I'm waiting...")}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

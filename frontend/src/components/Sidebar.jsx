@@ -22,18 +22,20 @@ const Sidebar = () => {
     }
   }, [sidebarOpen, setSidebarOpen]);
 
+  if (!sidebarOpen) return null
+
   return (
-    <>
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-2 animate-in fade-in ">
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed w-full h-full inset-0 bg-black/60 z-20 "
+          className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-sm cursor-pointer "
         ></div>
       )}
 
       <aside
         className={`
-          fixed top-0 left-0 h-screen bg-white border-r border-gray-200 sm:w-58 w-50 transform transition-transform duration-300 z-30 cursor-ew-resize
+          fixed top-0 left-0 h-screen bg-white border-r border-gray-200 sm:w-58 w-50 transform transition-transform duration-600 z-50 cursor-ew-resize
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -106,7 +108,7 @@ const Sidebar = () => {
           </div>
         </div>
       </aside>
-    </>
+    </div>
   );
 };
 

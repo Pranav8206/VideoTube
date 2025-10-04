@@ -17,8 +17,9 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
         }
       >
         {filteredVideos.length === 0 ? (
-          <div className="col-span-full text-center text-gray-500 py-16 text-lg font-medium">
-            No videos found.
+          <div className="col-span-full text-center text-gray-500 py-26 text-xl font-medium">
+            Server is not responding.
+            <p className="text-sm mt-4"> Please try again later.</p>
           </div>
         ) : (
           filteredVideos.map((video) => (

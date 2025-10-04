@@ -33,7 +33,7 @@ router.route("/:videoId/edit").patch(verifyJWT, updateVideo);
 
 router
   .route("/:videoId")
-  .get(verifyJWT, getVideoById)
+  .get(getVideoById)
   .delete(verifyJWT, deleteVideo)
   .patch(verifyJWT, togglePublishStatus);
 

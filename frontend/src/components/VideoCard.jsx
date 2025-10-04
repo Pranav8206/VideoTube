@@ -1,76 +1,71 @@
 // VideoCard.jsx
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Download, Flag, Clock, Minus, MoreVertical, Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/context";
 
-const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
+const VideoCard = ({
+  video,
+  layout = "list",
+  onRemove,
+  inSubscription,
+  inSidebar = false,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [width, setWidth] = useState(0);
-  const rootRef = useRef(null);
+  const navigate = useNavigate();
+  const nameRef = useRef(null);
+  const { timeAgo } = useContext(AppContext);
+
   const isList = layout === "list";
 
-  // Measure width of the root so we can scale fonts appropriately
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
+  const handleDuration = (duration) => {
+    if (duration == null || isNaN(duration)) return "0:00";
+    const totalSeconds = Math.floor(Number(duration));
 
-    const setMeasuredWidth = () => {
-      const w = Math.round(el.getBoundingClientRect().width);
-      setWidth(w);
-    };
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    if (typeof ResizeObserver !== "undefined") {
-      const ro = new ResizeObserver(() => setMeasuredWidth());
-      ro.observe(el);
-      setMeasuredWidth();
-      return () => ro.disconnect();
+    let formatted = "";
+
+    if (hours > 0) {
+      formatted = `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
+    } else {
+      formatted = `${minutes}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    // fallback
-    setMeasuredWidth();
-    const onResize = () => setMeasuredWidth();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    return formatted;
+  };
 
-  // Decide bucket from width
-  const sizeBucket = useMemo(() => {
-    if (width <= 220) return "xs";
-    if (width <= 300) return "sm";
-    if (width <= 420) return "md";
-    return "lg";
-  }, [width]);
-
-  // Map bucket to Tailwind text classes
-  const titleClass = useMemo(() => {
-    switch (sizeBucket) {
-      case "xs":
-        return "text-xs"; // very compact
-      case "sm":
-        return "text-sm"; // small cards
-      case "md":
-        return "text-base"; // medium cards
-      default:
-        return "text-lg"; // large / full width
+  const showNameRefUnderline = () => {
+    if (nameRef.current) {
+      nameRef.current.style.textDecoration = "underline";
+      nameRef.current.style.transform = "scale(1.05)";
+      nameRef.current.style.paddingLeft = "0.25rem";
+      nameRef.current.style.paddingRight = "0.25rem";
+      nameRef.current.style.transition =
+        "transform 0.2s ease, padding 0.2s ease, text-decoration 0.2s ease";
     }
-  }, [sizeBucket]);
+  };
 
-  const metaClass = useMemo(() => {
-    switch (sizeBucket) {
-      case "xs":
-        return "text-[10px]";
-      case "sm":
-        return "text-xs";
-      case "md":
-        return "text-sm";
-      default:
-        return "text-base";
+  const hideNameRefUnderline = () => {
+    if (nameRef.current) {
+      nameRef.current.style.textDecoration = "none";
+      nameRef.current.style.transform = "scale(1)";
+      nameRef.current.style.paddingLeft = "";
+      nameRef.current.style.paddingRight = "";
     }
-  }, [sizeBucket]);
+  };
+
+  const handleClick = () => {
+    navigate(`/v/${video._id}`);
+  };
 
   return (
     <div
-      ref={rootRef}
       className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer hover:border-gray-200 hover:shadow-md
         ${
           isList
@@ -82,6 +77,7 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
         setIsHovered(false);
         setShowOptions(false);
       }}
+      onClick={handleClick}
     >
       {/* Thumbnail */}
       <div
@@ -111,7 +107,7 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
               : "bottom-2 right-2 px-2 py-1 backdrop-blur-sm"
           }`}
         >
-          {video.duration ? video.duration : "0:00"}
+          {video.duration ? handleDuration(video.duration) : "0:00"}
         </span>
 
         {/* Play overlay on hover */}
@@ -138,55 +134,72 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
       {/* Info + Actions */}
       <div
         className={`flex-1 ${
-          isList
-            ? "flex pt-1 justify-between"
-            : "p-2 sm:p-3 flex items-start gap-3"
+          isList ? "flex pt-1 justify-between" : "p-1 flex justify-between "
         }`}
       >
-        <div className="min-w-0 flex-1 space-y-1">
+        <div className="flex-col justify-between pl-1 overflow-hidden">
           <h3
-            className={`font-medium text-gray-900 line-clamp-2 min-h-10 leading-tight ${titleClass}`}
+            className={`font-semibold text-gray-900 line-clamp-2 overflow-ellipsis leading-tight ${
+              inSidebar ? "text-base " : "text-base sm:text-lg"
+            } `}
           >
-            {video.title}
+            {video.title.charAt(0).toUpperCase() + video.title.slice(1)}
           </h3>
 
-          <div className="flex items-start justify-start s:gap-2">
-            <div className="group">
+          <div className="flex items-start gap-2 sm:gap-3 h-full   ">
+            <div className="shrink-0">
               <img
-                src={video.channelAvatar}
-                alt={video.channel}
-                className="rounded-full w-6 h-6 sm:w-8 sm:h-8 cursor-pointer"
+                src={video.owner.avatar}
+                alt={video.owner.username}
+                className={`rounded-full w-8 h-8  ${
+                  inSidebar ? "" : " sm:w-9 sm:h-9"
+                }`}
+                onMouseEnter={showNameRefUnderline}
+                onMouseLeave={hideNameRefUnderline}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               />
             </div>
 
-            <div className="flex flex-col items-start content-start">
+            <div className="flex flex-col peer-hover:underline justify-center">
               <p
-                className={`text-primary font-medium cursor-pointer transition-colors duration-300 line-clamp-1 ${metaClass} group-hover:text-purple-600`}
+                ref={nameRef}
+                className={`font-semibold text-primary cursor-pointer line-clamp-1 leading-none ${
+                  inSidebar ? "text-xs" : "text-sm sm:text-base"
+                } `}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
-                {inSubscription ? video.channel?.name : video.channel}
+                {inSubscription
+                  ? video.channel?.name.charAt(0).toUpperCase() +
+                    video.channel?.name.slice(1)
+                  : video.owner.username.charAt(0).toUpperCase() +
+                    video.owner.username.slice(1)}
               </p>
               <p
-                className={`text-gray-500 ${metaClass} flex flex-wrap gap-x-1 tracking-tighter leading-none`}
+                className={`text-gray-500 ${
+                  inSidebar ? "text-xs" : "text-xs sm:text-sm"
+                } flex items-center gap-1 leading-tight`}
               >
-                <span>{video.views}</span>
+                <span>{video.views} views</span>
                 <span>•</span>
-                <span>{video.timestamp}</span>
+                <span>{timeAgo(video.createdAt)}</span>
               </p>
             </div>
           </div>
         </div>
 
-        {/* More button (only in list) */}
-        <div
-          className={`flex ${isList ? "items-start" : "items-center"} gap-1`}
-        >
+        {/* More button */}
+        <div className={`flex ${isList ? "items-start" : "items-end"} gap-1`}>
           <div className="relative">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setShowOptions((s) => !s);
               }}
-              className="sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100"
+              className="sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 p-1"
               aria-label="More"
             >
               <MoreVertical size={16} className="text-gray-600" />
@@ -196,19 +209,19 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
               <div
                 className={`absolute right-0 ${
                   isList ? "top-8" : "bottom-6"
-                } bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-40 sm:w-48`}
+                } bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
                 onClick={(e) => e.stopPropagation()}
               >
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2">
+                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer">
                   <Clock size={16} />
                   Watch later
                 </button>
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer">
                   <Download size={16} />
                   Download
                 </button>
                 <hr className="text-gray-300" />
-                <button className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 rounded-b-lg flex items-center gap-2">
+                <button className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 rounded-b-lg flex items-center gap-2 cursor-pointer">
                   <Flag size={16} />
                   Report
                 </button>
@@ -216,7 +229,7 @@ const VideoCard = ({ video, layout = "list", onRemove, inSubscription }) => {
                 {onRemove && (
                   <button
                     onClick={() => onRemove(video.id)}
-                    className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer"
                   >
                     <Minus size={16} />
                     Remove

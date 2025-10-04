@@ -6,12 +6,20 @@ import React, {
   useMemo,
   useContext,
 } from "react";
-import { Play } from "lucide-react";
+import {
+  ArrowUpToLine,
+  Pin,
+  PinOff,
+  PinOffIcon,
+  Play,
+  UnplugIcon,
+} from "lucide-react";
 import Loader from "../Loader";
 import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
 import axios from "axios";
 import { AppContext } from "../../context/context";
+import { motion, AnimatePresence } from "framer-motion";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const videoRef = useRef(null);
@@ -34,6 +42,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const [error, setError] = useState(null);
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [skipAnimation, setSkipAnimation] = useState(null);
+  const [pin, setPin] = useState(true);
 
   const { isCinemaMode, setIsCinemaMode } = useContext(AppContext);
 
@@ -202,6 +211,10 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       setShowControls(true);
     }
     clearTimeout(controlsTimeoutRef.current);
+    if (pin) {
+      setShowControls(true);
+      return;
+    }
     setShowControls(true);
     let timeoutTime = 2000;
     if (window.innerWidth < 640) {
@@ -280,37 +293,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     }
   };
 
-  useEffect(() => {
-    //fix later
-    if (!src) return;
-
-    const fetchDuration = async () => {
-      try {
-        const url = new URL(src);
-        const parts = url.pathname.split("/");
-        // ["", "dfxpccwii", "video", "upload", "v1756730931", "skymltj9zhhsk98k3iad.mp4"]
-
-        const cloudName = parts[1];
-        const publicIdWithExt = parts.pop(); // "skymltj9zhhsk98k3iad.mp4"
-        const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // "skymltj9zhhsk98k3iad"
-
-        // ❌ remove version (like v1756730931)
-        const jsonUrl = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.json`;
-
-        const res = await axios.get(jsonUrl);
-        console.log(res, "res");
-
-        if (res.data?.duration) {
-          setDuration(res.data.duration);
-        }
-      } catch (err) {
-        console.error("Error fetching video metadata:", err);
-      }
-    };
-
-    fetchDuration();
-  }, [src]);
-
   return (
     <div
       ref={containerRef}
@@ -323,7 +305,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       }`}
       onMouseEnter={resetControlsTimeout}
       onMouseMove={resetControlsTimeout}
-      onMouseLeave={() => setShowControls((prev) => !prev)}
+      onMouseLeave={() => !pin && setShowControls((prev) => !prev)}
     >
       <video
         ref={videoRef}
@@ -346,6 +328,27 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           isCinemaMode ? "mx-auto h-full" : "h-full w-full object-cover"
         }`}
       />
+
+      <div className="absolute top-1 right-1 z-30">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setPin((prev) => !prev);
+          }}
+          className={`flex items-center bg-black/10  text-white text-xs sm:text-sm p-1 rounded-full shadow-md cursor-pointer select-none transition-all duration-300 ease-in-out transform ${
+            pin && "gap-1"
+          } `}
+        >
+          <span
+            className={`duration-300 transition-all z-20 ${
+              pin ? "translate-x-0 opacity-50" : "translate-x-full opacity-0"
+            }`}
+          >
+            {pin && "Controls pinned"}
+          </span>
+          {pin ? <Pin size={16} /> : <PinOff size={16} />}
+        </button>
+      </div>
 
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70">
@@ -373,7 +376,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       {/* Controls overlay */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
-          showControls ? "opacity-100" : "opacity-0"
+          showControls || pin ? "opacity-100" : "opacity-0"
         }`}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
