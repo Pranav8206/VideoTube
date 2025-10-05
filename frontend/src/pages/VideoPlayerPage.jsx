@@ -71,7 +71,7 @@ const VideoPlayerPage = () => {
         className={`order-2 w-full max-md-plus:hidden transition-opacity duration-500 ease-in-out ${
           isCinemaMode
             ? "flex-1 min-w-0 order-2 max-w-7xl mx-auto px-4 md-plus:px-8 md-plus:w-165 opacity-100 block"
-            : "order-3 hidden border"
+            : "order-3 hidden"
         }`}
       >
         <VideoActions video={video} />

@@ -241,8 +241,8 @@ const Navbar = () => {
             </div>
 
             <Link to="/setting">
-              <button className="w-7 h-7 bg-primary rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
-                <User size={24} className="text-white " />
+              <button className="w-7 h-7 bg-gray-400 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
+                <User size={24} className="text-gray-100" fill="#f3f4f6" strokeWidth={2} />
               </button>
             </Link>
           </div>

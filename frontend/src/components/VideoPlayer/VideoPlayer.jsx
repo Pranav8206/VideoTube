@@ -6,20 +6,11 @@ import React, {
   useMemo,
   useContext,
 } from "react";
-import {
-  ArrowUpToLine,
-  Pin,
-  PinOff,
-  PinOffIcon,
-  Play,
-  UnplugIcon,
-} from "lucide-react";
+import { Pin, PinOff, Play } from "lucide-react";
 import Loader from "../Loader";
 import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
-import axios from "axios";
 import { AppContext } from "../../context/context";
-import { motion, AnimatePresence } from "framer-motion";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const videoRef = useRef(null);
@@ -83,7 +74,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       videoRef.current.pause();
     } else {
       videoRef.current.play();
-      setShowControls(false);
     }
   }, [isPlaying]);
 
@@ -207,28 +197,46 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
 
   // Controls visibility
   const resetControlsTimeout = useCallback(() => {
-    if (!isPlaying) {
-      setShowControls(true);
-    }
+    // Always clear any running timer
     clearTimeout(controlsTimeoutRef.current);
-    if (pin) {
+    // Controls should stay visible if paused or pinned
+    if (!isPlaying || pin) {
       setShowControls(true);
       return;
     }
     setShowControls(true);
-    let timeoutTime = 2000;
-    if (window.innerWidth < 640) {
-      timeoutTime = 3000;
-    }
+    // Auto-hide after a delay (longer on mobile)
+    const timeout = window.innerWidth < 640 ? 3000 : 2000;
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
-    }, timeoutTime);
-  }, [isPlaying]);
+    }, timeout);
+  }, [isPlaying, pin]);
 
-  // Cleanup timer
+  // Cleanup on unmount
   useEffect(() => {
     return () => clearTimeout(controlsTimeoutRef.current);
   }, []);
+
+  // Mouse and touch handling
+  const handleMouseEnter = () => resetControlsTimeout();
+  const handleMouseMove = () => resetControlsTimeout();
+  const handleMouseLeave = () => {
+    if (!pin) setShowControls(false);
+  };
+
+  // On mobile: tap to toggle controls visibility
+  const handleTouchStart = () => {
+    if (pin) {
+      setShowControls(true);
+      return;
+    }
+    if (showControls) {
+      setShowControls(false);
+    } else {
+      setShowControls(true);
+      resetControlsTimeout();
+    }
+  };
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -282,6 +290,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     toggleFullscreen,
     toggleCinemaMode,
     togglePiP,
+    handleVolumeChange,
   ]);
 
   // Handlers for click zones
@@ -289,23 +298,45 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
     if (window.innerWidth > 640) {
       togglePlay();
     } else {
-      showControls ? setShowControls(false) : setShowControls(true);
+      // Mobile: tap to toggle controls visibility
+      if (showControls) {
+        if (!pin && isPlaying) {
+          setShowControls(false);
+        }
+      } else {
+        resetControlsTimeout();
+      }
+    }
+  };
+
+  const handleCenterZoneClick = () => {
+    if (window.innerWidth > 640) {
+      // Desktop: click to play/pause
+      togglePlay();
+    } else {
+      // Mobile: tap center to play/pause if controls are visible
+      if (showControls) {
+        togglePlay();
+      } else {
+        resetControlsTimeout();
+      }
     }
   };
 
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden group select-none transition-all duration-300 ease-in-out aspect-video mx-auto  shadow-2xl  ${
+      className={`relative overflow-hidden group select-none transition-all duration-300 ease-in-out aspect-video mx-auto shadow-2xl ${
         isFullscreen
           ? "fixed inset-0 z-[1100]"
           : isCinemaMode
           ? "max-h-[70vh] max-lg:w-full w-screen rounded-xs"
-          : " max-h-[60vh] rounded-lg mx-auto"
+          : "max-h-[60vh] rounded-lg mx-auto"
       }`}
-      onMouseEnter={resetControlsTimeout}
-      onMouseMove={resetControlsTimeout}
-      onMouseLeave={() => !pin && setShowControls((prev) => !prev)}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
     >
       <video
         ref={videoRef}
@@ -329,23 +360,29 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
         }`}
       />
 
-      <div className="absolute top-1 right-1 z-30">
+      {/* pin/ unpin controls */}
+      <div className="absolute top-1 right-1 sm:right-3 z-30 flex items-center gap-2">
+        <span
+          className={`text-xs text-white bg-black/60 px-2 rounded-md whitespace-nowrap transition-all duration-300 ${
+            pin
+              ? "translate-x-0 opacity-80"
+              : "translate-x-full opacity-0 pointer-events-none"
+          }`}
+          aria-live="polite"
+        >
+          Controls pinned
+        </span>
         <button
           onClick={(e) => {
             e.stopPropagation();
             setPin((prev) => !prev);
           }}
-          className={`flex items-center bg-black/10  text-white text-xs sm:text-sm p-1 rounded-full shadow-md cursor-pointer select-none transition-all duration-300 ease-in-out transform ${
-            pin && "gap-1"
-          } `}
+          className="flex items-center justify-center bg-black/20 text-white p-1 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out backdrop-blur-sm"
+          aria-label={pin ? "Unpin controls" : "Pin controls"}
+          title={pin ? "Unpin controls" : "Pin controls"}
+          aria-pressed={pin}
+          type="button"
         >
-          <span
-            className={`duration-300 transition-all z-20 ${
-              pin ? "translate-x-0 opacity-50" : "translate-x-full opacity-0"
-            }`}
-          >
-            {pin && "Controls pinned"}
-          </span>
           {pin ? <Pin size={16} /> : <PinOff size={16} />}
         </button>
       </div>
@@ -367,7 +404,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
         </div>
       )}
 
-      {!error && isLoading && <Loader className="" />}
+      {!error && isLoading && <Loader className="" size="small" />}
       <SkipAnimation
         direction={skipAnimation}
         onAnimationEnd={() => setSkipAnimation(null)}
@@ -403,7 +440,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           <div
             className="relative w-1/3"
             onDoubleClick={toggleFullscreen}
-            onClick={handleZoneClick}
+            onClick={handleCenterZoneClick}
           />
           <div
             className="relative w-1/3"

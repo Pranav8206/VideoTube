@@ -4,6 +4,7 @@ import VideosGrid from "../VideosGrid";
 import CategoriesSlider from "./CategoriesSlider";
 import { AppContext } from "../../context/context";
 import Loader from "../Loader";
+import SkeletonCard from "./SkeletonCard";
 
 const HomeContent = () => {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -55,11 +56,16 @@ const HomeContent = () => {
           </div>
         )}
       </div>
-
       {/* Video Grid */}
       {loading && (
-        <div className="text-center py-4">
-          <Loader />{" "}
+        <div className="w-full grid gap-4 s:gap-2 sm:gap-6 grid-cols-1 s:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 ">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={`skeleton-${i}`}
+            >
+              <SkeletonCard />
+            </div>
+          ))}
         </div>
       )}
       {error && <div className="text-center py-4 text-red-500">{error}</div>}

@@ -1,6 +1,7 @@
 // VideosGrid.jsx
 import React from "react";
 import VideoCard from "./VideoCard";
+import { Link } from "react-router-dom";
 
 const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
   const filteredVideos = videos.filter((video) =>
@@ -9,6 +10,7 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
 
   return (
     <div className="w-full">
+      {console.log(videos)}
       <div
         className={
           layout == "grid"
@@ -19,11 +21,18 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
         {filteredVideos.length === 0 ? (
           <div className="col-span-full text-center text-gray-500 py-26 text-xl font-medium">
             Server is not responding.
-            <p className="text-sm mt-4"> Please try again later.</p>
+            <p className="text-sm mt-4 gap-2">
+              {" "}
+              <span> Please</span>
+              <Link to="/" className="text-blue-500 hover:underline px-1">
+                retry
+              </Link>
+              <span>again later.</span>
+            </p>
           </div>
         ) : (
-          filteredVideos.map((video) => (
-            <VideoCard key={video.id} video={video} layout={layout} />
+          filteredVideos.map((video, i) => (
+            <VideoCard key={video.id || i} video={video} layout={layout} />
           ))
         )}
       </div>
