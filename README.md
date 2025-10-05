@@ -281,7 +281,7 @@ Please ensure your code follows the project's style guidelines and includes appr
 
 - Inspired by YouTube
 - Built with the MERN stack
-- Icons from [Heroicons](https://heroicons.com/)
+- Icons from [Lucide icons](https://lucide.dev//)
 - UI components with Tailwind CSS
 
 ---

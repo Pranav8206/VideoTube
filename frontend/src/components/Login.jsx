@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../context/context";
 import { AlertCircle, Eye, EyeOff, User, Mail, Lock, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { setShowLogin, showLogin, axios, setToken, navigate } =
+  const { setShowLogin, showLogin, axios, setToken, fetchCurrentUser } =
     useContext(AppContext);
 
   const [state, setState] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -20,13 +22,13 @@ const Login = () => {
   } = useForm({
     mode: "onBlur",
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
     },
   });
 
-  React.useEffect(() => reset(), [state, reset]);
+  useEffect(() => reset(), [state, reset]);
 
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -35,20 +37,26 @@ const Login = () => {
         state === "login"
           ? { email: formData.email, password: formData.password }
           : {
-              name: formData.name,
+              username: formData.username,
               email: formData.email,
               password: formData.password,
             };
 
-      const { data } = await axios.post(`/api/v1/user/${state}`, payload);
+      const { data } = await axios.post(`/api/v1/users/${state}`, payload);
+      console.log(data, "data");
 
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        setToken(data.token);
-        navigate("/setting");
+      if (data?.success) {
+        localStorage.setItem("token", data.data.accessToken);
+        setToken(data.data.accessToken);
+        navigate("/");
+        console.log("login successfully");
+
         setShowLogin(false);
+        fetchCurrentUser();
         reset();
       } else {
+        console.log(data);
+
         setError("root", {
           type: "manual",
           message: data.message || "Authentication failed",
@@ -103,7 +111,7 @@ const Login = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80">
                 <User className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 {state === "login" ? "Welcome Back" : "Create Account"}
               </h2>
               <p className="text-xs sm:text-sm text-gray-500">
@@ -115,7 +123,7 @@ const Login = () => {
 
             {/* Root Error */}
             {errors.root && (
-              <div className="flex items-start gap-2 p-2 bg-red-50 border border-red-200 rounded-md text-sm">
+              <div className="flex items-start gap-2 px-2 py-1 bg-red-50 border border-red-200 rounded-md text-sm">
                 <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
                 <p className="text-red-800">{errors.root.message}</p>
               </div>
@@ -123,48 +131,52 @@ const Login = () => {
 
             {/* Name Field */}
             {state === "register" && (
-              <div className="space-y-1">
+              <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                  Full Name
+                  Username
                 </label>
-                <div className="relative">
+                <div className="relative mt-1">
                   <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
                     <User className="w-4 h-4 text-gray-400" />
                   </div>
                   <input
-                    {...register("name", {
+                    {...register("username", {
                       required:
-                        state === "register" ? "Name is required" : false,
-                      minLength: { value: 2, message: "At least 2 characters" },
-                      pattern: {
-                        value: /^[a-zA-Z\s]+$/,
-                        message: "Only letters and spaces",
+                        state === "register" ? "Username is required" : false,
+                      minLength: { value: 4, message: "At least 4 characters" },
+                      validate: {
+                        noInvalidSymbol: (value) =>
+                          /^[a-zA-Z0-9_]+$/.test(value) ||
+                          "Username can't contain symbol",
+                        noEdgeUnderscore: (value) =>
+                          !/^_|_$/.test(value) ||
+                          "Username cannot start or end with underscore",
                       },
                     })}
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="pranav_mavle"
                     className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
-                      errors.name
+                      errors.username
                         ? "border-red-300 bg-red-50"
                         : "border-gray-300 hover:border-gray-400"
                     }`}
                   />
                 </div>
-                {errors.name && (
-                  <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                {errors.username && (
+                  <p className="text-xs text-red-600 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
-                    {errors.name.message}
+                    {errors.username.message}
                   </p>
                 )}
               </div>
             )}
 
             {/* Email Field */}
-            <div className="space-y-1">
+            <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700">
                 Email Address
               </label>
-              <div className="relative">
+              <div className="relative mt-1">
                 <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
                   <Mail className="w-4 h-4 text-gray-400" />
                 </div>
@@ -186,7 +198,7 @@ const Login = () => {
                 />
               </div>
               {errors.email && (
-                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                <p className="text-xs text-red-600 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   {errors.email.message}
                 </p>
@@ -194,11 +206,11 @@ const Login = () => {
             </div>
 
             {/* Password Field */}
-            <div className="space-y-1">
+            <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="relative">
+              <div className="relative mt-1">
                 <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
                   <Lock className="w-4 h-4 text-gray-400" />
                 </div>
@@ -228,7 +240,7 @@ const Login = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                <p className="text-xs text-red-600 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   {errors.password.message}
                 </p>
@@ -239,7 +251,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2 px-3 bg-primary hover:bg-primary-dull text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="w-full py-2 px-3 bg-primary hover:bg-primary-dull text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm cursor-pointer"
             >
               {isSubmitting ? (
                 <>

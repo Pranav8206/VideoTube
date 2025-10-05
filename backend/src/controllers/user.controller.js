@@ -22,34 +22,25 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  //get user data from frontend
-  //validation - not empty
-  //check if user already exits- username, email
-  //check for images, check for avatar
-  //bcrypt the password
-  //upload to cloudinary
-  // create user object- create entry in db
-  //remove password and refresh token field from response
-  //   check for user creation
-  // return response
-  const { fullName, username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (
-    [fullName, username, email, password].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "All field are required");
-  } else if (password.length < 6) {
+  // Validation
+  if ([username, email, password].some((field) => field?.trim() === "")) {
+    throw new ApiError(400, "All fields are required");
+  }
+  if (password.length < 6) {
     throw new ApiError(400, "Password must be at least 6 characters long");
-  } else if (password === username) {
-    throw new ApiError(400, "Password must be different from username");
-  } else if (password === email) {
-    throw new ApiError(400, "Password must be different from email");
+  }
+  if (password === username || password === email) {
+    throw new ApiError(
+      400,
+      "Password must be different from username and email"
+    );
   }
 
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
   });
-
   if (userExist) {
     if (userExist.username === username) {
       throw new ApiError(
@@ -65,39 +56,14 @@ const registerUser = asyncHandler(async (req, res) => {
       );
     }
   }
-
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
-
-  let coverImageLocalPath;
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    coverImageLocalPath = req.files.coverImage[0].path;
-  }
-
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is missing!");
-  }
-
-  const avatar = await uploadeOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadeOnCloudinary(coverImageLocalPath);
-
-  if (!avatar) {
-    throw new ApiError(400, "Failed to upload avatar to cloud storage!");
-  }
-
+  
   const user = await User.create({
     username: username.toLowerCase(),
     email,
-    fullName,
-    avatar: avatar.url,
-    coverImage: coverImage.url || "",
     password,
   });
 
+  // Exclude sensitive fields from response
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );

@@ -13,6 +13,8 @@ const ContextProvider = ({ children }) => {
   const [isCinemaMode, setIsCinemaMode] = useState(false);
   const [showVoiceSearchBox, setShowVoiceSearchBox] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
 
   const timeAgo = (dateString) => {
     const date = new Date(dateString);
@@ -80,6 +82,40 @@ const ContextProvider = ({ children }) => {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await axios.get("/api/v1/users/current-user");
+
+      if (!response || !response.data) {
+        console.warn("No response from server");
+        return null;
+      }
+      const { success, data: user, message } = response.data;
+      setUser(userData);
+      console.log(user, "user");
+
+      if (success && user) {
+        return user;
+      }
+      console.warn("Failed to fetch user:", message || "Unknown error");
+      return null;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        setToken(token);
+        await fetchCurrentUser();
+      }
+    };
+    initializeAuth();
+  }, []);
+
   const value = {
     sidebarOpen,
     setSidebarOpen,
@@ -98,6 +134,10 @@ const ContextProvider = ({ children }) => {
     setShowLogin,
     showLogin,
     fetchVideo,
+    axios,
+    token,
+    setToken,
+    fetchCurrentUser,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -12,6 +12,10 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
       index: true,
+      match: [
+        /^[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*$/,
+        "Username can only contain letters, numbers, and underscores, cannot start or end with underscore",
+      ],
     },
     email: {
       type: String,
@@ -19,16 +23,15 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
     fullName: {
       type: String,
-      required: true,
       trim: true,
       index: true,
     },
     avatar: {
       type: String,
-      required: true,
     },
     coverImage: {
       type: String,
