@@ -56,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
       );
     }
   }
-  
+
   const user = await User.create({
     username: username.toLowerCase(),
     email,
@@ -72,9 +72,31 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user!");
   }
 
+  //adding auto login after register
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  };
+
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered successfully"));
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: createdUser,
+          accessToken,
+          refreshToken,
+        },
+        "User registered and logged in successfully"
+      )
+    );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -94,7 +116,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (req.cookies.accessToken) {
-    throw new ApiError(400, "You are already login.");
+    throw new ApiError(400, "You are already logged in.");
   }
 
   const user = await User.findOne({ $or: [{ username }, { email }] });
@@ -105,7 +127,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
-    throw new ApiError(401, "Password incorrect!");
+    throw new ApiError(400, "Password incorrect!");
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
