@@ -29,7 +29,6 @@ const PasswordSettings = () => {
 
   const onSubmit = (data) => {
     setSaveStatus("success");
-    console.log("Password change data:", data);
 
     setTimeout(() => {
       setSaveStatus(null);

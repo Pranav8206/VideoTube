@@ -65,7 +65,6 @@ const Navbar = () => {
     if (searchQuery.trim()) {
       navigate(`/s/${searchQuery}`);
       setShowingSearchResults(true);
-      console.log("s");
     } else {
       setShowingSearchResults(false);
     }

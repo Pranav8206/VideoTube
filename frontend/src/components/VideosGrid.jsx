@@ -10,7 +10,6 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
 
   return (
     <div className="w-full">
-      {console.log(videos)}
       <div
         className={
           layout == "grid"

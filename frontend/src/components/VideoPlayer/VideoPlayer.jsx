@@ -33,7 +33,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const [error, setError] = useState(null);
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [skipAnimation, setSkipAnimation] = useState(null);
-  const [pin, setPin] = useState(true);
+  const [pin, setPin] = useState(false);
 
   const { isCinemaMode, setIsCinemaMode } = useContext(AppContext);
 
@@ -147,7 +147,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    console.log(duration, "duration is this");
 
     const events = {
       loadedmetadata: () => {
@@ -379,7 +378,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           }}
           className="flex items-center justify-center bg-black/20 text-white p-1 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out backdrop-blur-sm"
           aria-label={pin ? "Unpin controls" : "Pin controls"}
-          title={pin ? "Unpin controls" : "Pin controls"}
+          title={pin ? "" : "Pin controls"}
           aria-pressed={pin}
           type="button"
         >

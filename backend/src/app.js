@@ -49,4 +49,22 @@ app.use("/api/v1/dashboard", dashboardRouter);
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 app.use("/api/v1/healthcheck", healthcheckRouter);
 
+import { ApiError } from "./utils/ApiError.js";
+
+app.use((err, req, res, next) => {
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      errors: err.errors || [],
+    });
+  }
+
+  // Fallback for unexpected errors
+  return res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
 export { app };
