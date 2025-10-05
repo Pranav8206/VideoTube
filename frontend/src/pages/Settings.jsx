@@ -4,41 +4,27 @@ import { AppContext } from "../context/context";
 
 const Settings = () => {
   const [currentUser, setCurrentUser] = useState(null);
-  const { setShowLogin, showLogin, fetchCurrentUser } = useContext(AppContext);
+  const { setShowLogin, user, setUser, logout } = useContext(AppContext);
 
-  useEffect(() => {
-    const fetched = async () => {
-      const user = await fetchCurrentUser();
-      setCurrentUser(user);
-    };
-    fetched();
-  }, []);
+  useEffect(() => {}, []);
 
-  const handleLogOut = async () => {
-    console.log("logout");
+  const handleButton = async () => {
+    if (user) {
+      await logout();
+    } else {
+      setShowLogin(true)
+    }
   };
 
   return (
     <div>
-      {!currentUser && (
-        <button
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
-          onClick={() => {
-            setShowLogin(true);
-          }}
-        >
-          login
-        </button>
-      )}
+      <button
+        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
+        onClick={handleButton}
+      >
+        {user ? "LogOut" : "LogIn"}
+      </button>
 
-      {currentUser && (
-        <button
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
-          onClick={handleLogOut}
-        >
-          logout
-        </button>
-      )}
       <SettingsContent />
     </div>
   );

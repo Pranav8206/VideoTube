@@ -5,6 +5,7 @@ import routes from "./routes.jsx";
 import "./App.css";
 import Loader from "./components/Loader.jsx";
 import ContextProvider from "./context/context.jsx";
+import { Toaster } from "react-hot-toast";
 
 // Create router from routes
 const router = createBrowserRouter(routes);
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")).render(
       <Suspense fallback={<Loader />}>
         <RouterProvider router={router} />
       </Suspense>
+      <Toaster position="top-right" reverseOrder={false} />
     </ContextProvider>
   </StrictMode>
 );

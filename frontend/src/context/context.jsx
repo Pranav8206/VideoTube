@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -90,19 +91,22 @@ const ContextProvider = ({ children }) => {
         console.warn("No response from server");
         return null;
       }
-      const { success, data: user, message } = response.data;
-      setUser(userData);
-      console.log(user, "user");
+      const { success, data: userData, message } = response.data;
+      if (success) setUser(userData);
 
-      if (success && user) {
-        return user;
-      }
       console.warn("Failed to fetch user:", message || "Unknown error");
-      return null;
     } catch (error) {
       console.error("Error fetching user:", error);
-      return null;
+      toast.error("error.message");
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+    axios.defaults.headers.common["Authorization"] = "";
+    toast.success("You have been logged out");
   };
 
   useEffect(() => {
@@ -110,11 +114,19 @@ const ContextProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (token) {
         setToken(token);
-        await fetchCurrentUser();
       }
     };
     initializeAuth();
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      console.log("token changed");
+      
+      axios.defaults.headers.common["Authorization"] = `${token}`;
+      fetchCurrentUser();
+    }
+  }, [token]);
 
   const value = {
     sidebarOpen,
@@ -138,6 +150,9 @@ const ContextProvider = ({ children }) => {
     token,
     setToken,
     fetchCurrentUser,
+    user,
+    setUser,
+    logout,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

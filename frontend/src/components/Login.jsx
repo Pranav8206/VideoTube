@@ -3,14 +3,15 @@ import { useForm } from "react-hook-form";
 import { AppContext } from "../context/context";
 import { AlertCircle, Eye, EyeOff, User, Mail, Lock, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const { setShowLogin, showLogin, axios, setToken, fetchCurrentUser } =
-    useContext(AppContext);
+  const { setShowLogin, showLogin, axios, setToken } = useContext(AppContext);
 
   const [state, setState] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginMode, setLoginMode] = useState("email");
   const navigate = useNavigate();
 
   const {
@@ -31,32 +32,39 @@ const Login = () => {
   useEffect(() => reset(), [state, reset]);
 
   const onSubmit = async (formData) => {
+    if (state === "login" && !formData.email && !formData.username) {
+      setError("root", {
+        type: "manual",
+        message: `Please enter ${loginMode === "email" ? "email" : "username"}`,
+      });
+      return;
+    }
     setIsSubmitting(true);
     try {
       const payload =
         state === "login"
-          ? { email: formData.email, password: formData.password }
+          ? {
+              ...(formData.email && { email: formData.email }),
+              ...(formData.username && {
+                username: formData.username.toLowerCase(),
+              }),
+              password: formData.password,
+            }
           : {
-              username: formData.username,
+              username: formData.username.toLowerCase(),
               email: formData.email,
               password: formData.password,
             };
-
       const { data } = await axios.post(`/api/v1/users/${state}`, payload);
-      console.log(data, "data");
 
       if (data?.success) {
         localStorage.setItem("token", data.data.accessToken);
         setToken(data.data.accessToken);
-        navigate("/");
-        console.log("login successfully");
+        toast.success(`${state} successful`);
 
-        setShowLogin(false);
-        fetchCurrentUser();
         reset();
+        setShowLogin(false);
       } else {
-        console.log(data);
-
         setError("root", {
           type: "manual",
           message: data.message || "Authentication failed",
@@ -130,49 +138,59 @@ const Login = () => {
             )}
 
             {/* Name Field */}
-            {state === "register" && (
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <div className="relative mt-1">
-                  <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                    <User className="w-4 h-4 text-gray-400" />
-                  </div>
-                  <input
-                    {...register("username", {
-                      required:
-                        state === "register" ? "Username is required" : false,
-                      minLength: { value: 4, message: "At least 4 characters" },
-                      validate: {
-                        noInvalidSymbol: (value) =>
-                          /^[a-zA-Z0-9_]+$/.test(value) ||
-                          "Username can't contain symbol",
-                        noEdgeUnderscore: (value) =>
-                          !/^_|_$/.test(value) ||
-                          "Username cannot start or end with underscore",
-                      },
-                    })}
-                    type="text"
-                    placeholder="pranav_mavle"
-                    className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
-                      errors.username
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
-                  />
+            <div
+              className={`${
+                state === "login" && loginMode === "email" && "hidden"
+              }`}
+            >
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                Username
+              </label>
+              <div className="relative mt-1">
+                <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                  <User className="w-4 h-4 text-gray-400" />
                 </div>
-                {errors.username && (
-                  <p className="text-xs text-red-600 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.username.message}
-                  </p>
-                )}
+                <input
+                  {...register("username", {
+                    required:
+                      state === "login" && loginMode === "email"
+                        ? false
+                        : "Username is required",
+                    minLength: { value: 4, message: "At least 4 characters" },
+                    validate: {
+                      noInvalidSymbol: (value) =>
+                        !value ||
+                        /^[a-zA-Z0-9_]+$/.test(value) ||
+                        "Username can't contain symbol and spaces",
+                      noEdgeUnderscore: (value) =>
+                        !value ||
+                        !/^_|_$/.test(value) ||
+                        "Username cannot start or end with underscore",
+                    },
+                  })}
+                  type="text"
+                  placeholder="pranav_mavle"
+                  className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
+                    errors.username
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                />
               </div>
-            )}
+              {errors.username && (
+                <p className="text-xs text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
 
             {/* Email Field */}
-            <div>
+            <div
+              className={`${
+                state === "login" && loginMode === "username" && "hidden"
+              }`}
+            >
               <label className="block text-xs sm:text-sm font-medium text-gray-700">
                 Email Address
               </label>
@@ -182,7 +200,10 @@ const Login = () => {
                 </div>
                 <input
                   {...register("email", {
-                    required: "Email is required",
+                    required:
+                      state === "login" && loginMode === "username"
+                        ? false
+                        : "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Invalid email",
@@ -203,6 +224,26 @@ const Login = () => {
                   {errors.email.message}
                 </p>
               )}
+            </div>
+
+            <div
+              className={`text-end mb-0 gap-0 space-y-0 ${
+                state === "register" && "hidden"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setLoginMode((prev) =>
+                    prev === "email" ? "username" : "email"
+                  )
+                }
+                className="text-xs text-gray-600 hover:underline cursor-pointer transition-colors"
+              >
+                {loginMode === "email"
+                  ? "Login with Username"
+                  : "Login with Email"}
+              </button>
             </div>
 
             {/* Password Field */}
@@ -255,27 +296,8 @@ const Login = () => {
             >
               {isSubmitting ? (
                 <>
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Processing...
+                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Processing...</span>
                 </>
               ) : state === "register" ? (
                 "Create Account"
