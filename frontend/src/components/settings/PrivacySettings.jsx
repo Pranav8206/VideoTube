@@ -8,7 +8,7 @@ import { AppContext } from "../../context/context";
 import { useNavigate } from "react-router-dom";
 
 const PrivacySettings = () => {
-  const { setToken, setUser, token, user } = useContext(AppContext);
+  const { setToken, setUser, token } = useContext(AppContext);
   const navigate = useNavigate();
 
   const { control, handleSubmit, watch } = useForm({
@@ -56,11 +56,7 @@ const PrivacySettings = () => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      // Send data to API
-      await axios.patch("/api/v1/users/privacy-settings", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("Privacy settings saved successfully!");
+      toast.success("Changes saved successfully!");
       setHasChanges(false);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to save settings");
@@ -72,7 +68,7 @@ const PrivacySettings = () => {
   const handleDeleteAccount = async () => {
     if (
       !window.confirm(
-        "Are you sure you want to delete your account? This action is permanent."
+        `Delete your account? All your videos will be permanently deleted.\nThis action is permanent`
       )
     )
       return;
@@ -83,12 +79,11 @@ const PrivacySettings = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      toast.success("Account deleted successfully");
       setToken(null);
       setUser(null);
       localStorage.removeItem("token");
       axios.defaults.headers.common["Authorization"] = "";
-
+      toast.success("Account deleted successfully");
       navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete account");
@@ -99,11 +94,11 @@ const PrivacySettings = () => {
 
   return (
     <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl p-3 sm:p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-5xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
           Privacy Settings
         </h1>
-        <div className="space-y-4">
+        <div className="max-w-120 space-y-4">
           {privacyItems.map((item) => (
             <Controller
               key={item.key}
@@ -113,7 +108,7 @@ const PrivacySettings = () => {
                 <div className="flex items-center justify-between gap-1 pl-2 sm:px-4">
                   <div>
                     <p className="font-medium text-gray-900">{item.label}</p>
-                    <p className="text-gray-500 text-sm">{item.description}</p>
+                    <p className="text-gray-500 text-sm leading-none">{item.description}</p>
                   </div>
                   <div>
                     <ToggleSwitch
@@ -126,11 +121,11 @@ const PrivacySettings = () => {
             />
           ))}
           {/* Delete Account Button */}
-          <div className="mt-8 px-4 flex flex-col sm:flex-row gap-3">
+          <div className="flex w-full xs:justify-end">
             <button
               onClick={handleDeleteAccount}
               disabled={isDeleting}
-              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 cursor-pointer"
+              className="flex items-center  justify-end gap-2 mx-2 px-3 sm:px-6 py-2 sm:py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 cursor-pointer"
             >
               {isDeleting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -139,7 +134,7 @@ const PrivacySettings = () => {
               )}
               Delete Account
             </button>
-          </div>
+            </div>
         </div>
 
         {/* Save Button */}

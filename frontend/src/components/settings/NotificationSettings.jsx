@@ -33,19 +33,20 @@ const NotificationSettings = () => {
 
   const fields = [
     {
-      name: "comments",
-      label: "Comments",
-      description: "When someone comments on your videos",
+      name: "newFollowers",
+      label: "New Followers",
+      description: "When someone follows you",
     },
     {
       name: "likes",
       label: "Likes",
       description: "When someone likes your content",
     },
+
     {
-      name: "newFollowers",
-      label: "New Followers",
-      description: "When someone follows you",
+      name: "comments",
+      label: "Comments",
+      description: "When someone comments on your videos",
     },
     {
       name: "mentions",
@@ -55,23 +56,21 @@ const NotificationSettings = () => {
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="max-w-5xl mx-auto rounded-tl-2xl"
-      >
-        <div className="px-3 sm:px-6 mb-6 max-w-120 space-y-4 mt-5">
+    <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl p-3 sm:p-6">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+          Notification Settings
+        </h1>
+        <div className="max-w-120 space-y-4 ">
           {fields.map((field) => (
             <Controller
               key={field.name}
               name={field.name}
               control={control}
               render={({ field: controllerField }) => (
-                <div className="flex items-center justify-between gap-1 ">
+                <div className="flex items-center justify-between gap-1 pl-2 sm:px-4">
                   <div>
-                    <p className="font-medium text-gray-900">
-                      {field.label}
-                    </p>
+                    <p className="font-medium text-gray-900">{field.label}</p>
                     <p className="text-gray-500 text-sm leading-none">
                       {field.description}
                     </p>

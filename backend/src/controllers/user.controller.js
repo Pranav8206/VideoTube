@@ -5,6 +5,7 @@ import { uploadeOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { Video } from "../models/video.models.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -267,7 +268,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { username, email, fullName } = req.body;
 
-  if (!username || !email || !fullName) {
+  if (!username || !email) {
     throw new ApiError(400, "All field are required");
   }
   const userExist = await User.findOne({
@@ -275,8 +276,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   });
   console.log(userExist, req.user);
   console.log("123");
-  
-  
+
   if (userExist && userExist._id.toString() !== req.user._id.toString()) {
     if (userExist.username === username) {
       throw new ApiError(400, "Username already taken");
@@ -489,18 +489,14 @@ const deleteUser = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(404, "User not found");
   }
+  await Video.deleteMany({ owner: userId });
 
   await User.findByIdAndDelete(userId);
 
-  
-
   return res
     .status(200)
-    .json(
-      new ApiResponse(200, null, "User account deleted successfully")
-    );
+    .json(new ApiResponse(200, null, "User account deleted successfully"));
 });
-
 
 export {
   registerUser,
@@ -514,5 +510,5 @@ export {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
-  deleteUser
+  deleteUser,
 };

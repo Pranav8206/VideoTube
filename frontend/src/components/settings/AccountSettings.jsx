@@ -28,6 +28,8 @@ const AccountSettings = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const saveRef = useRef();
+  const [showMessage, setShowMessage] = useState(false);
+  const [countdown, setCountdown] = useState(3);
 
   const {
     register,
@@ -168,6 +170,22 @@ const AccountSettings = () => {
     }
   };
 
+  const handleClick = () => {
+    setShowMessage(true);
+    setCountdown(4);
+  };
+
+  useEffect(() => {
+    if (!showMessage) return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowMessage(false);
+    }
+  }, [countdown, showMessage]);
+
   return (
     <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl">
       <form
@@ -262,18 +280,23 @@ const AccountSettings = () => {
                 : "N/A"}
             </p>
           </div>
-          <span
-            className={`text-xs absolute bottom-8 right-0 text-white bg-black/60 px-2 rounded-md whitespace-nowrap transition-all duration-300 ${
-              true
-                ? "translate-x-0 opacity-80"
-                : "translate-x-full opacity-0 pointer-events-none"
-            }`}
-            aria-live="polite"
+          {/* Info icon and Message */}
+          {showMessage && (
+            <span
+              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line transition-all duration-300 z-10"
+              aria-live="polite"
+            >
+              <strong>Cover Image:</strong> Use a 16:9 aspect ratio for best
+              fit.{"\n"}
+              <strong>Avatar:</strong> Upload a square image.{"\n"}
+              ⚠️ <strong></strong> Max file size: 5 MB.
+            </span>
+          )}
+          <div
+            onClick={handleClick}
+            className="absolute top-8 s:top-11 right-1 cursor-pointer text-gray-600 flex items-center justify-center w-4 h-4"
           >
-            message
-          </span>
-          <div className="absolute bottom-1 right-0  sm:rounded-lg cursor-pointer shadow-lg bg-black/40 px-1 py-1 rounded-xl text-white">
-            <Info size={15} strokeWidth={3} />
+            {showMessage ? countdown : <Info size={20} strokeWidth={2.5} />}
           </div>
         </div>
 
@@ -403,7 +426,7 @@ const AccountSettings = () => {
         </div>
 
         {/* Notifications */}
-        <div className="px-3 sm:px-6 mb-6 max-w-120 space-y-4">
+        <div className="px-3 sm:px-6 mb-6 max-w-125 space-y-4">
           <Controller
             name="emailNotifications"
             control={control}
@@ -445,11 +468,11 @@ const AccountSettings = () => {
           />
         </div>
 
-        <div className="flex gap-2 sm:gap-10 px-1 sm:px-4.5 h-10 md:px-6 mb-3">
+        <div className="flex gap-2 sm:gap-10 pl-3 pr-1 sm:px-6 h-10 md:px-6 mb-3">
           <button
             type="button"
             onClick={handleLogout}
-            className="flex items-center w-25  gap-1 text-center justify-center w border py-0.5 sm:py-1 text-sm font-medium cursor-pointer text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+            className="flex items-center w-25  gap-1 text-center justify-center w border py-0.5 sm:py-1 text-sm font-medium cursor-pointer text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-all duration-300"
           >
             <LogOut className="w-4 h-4" />
             Log Out
@@ -458,21 +481,21 @@ const AccountSettings = () => {
           <button
             type="button"
             onClick={() => setShowPasswordModal(true)}
-            className="flex items-center justify-center w-45 gap-1 rounded-lg border py-0.5 sm:py-1 border-primary bg-white text-sm hover:bg-purple-50 transition-all group cursor-pointer"
+            className="flex items-center justify-center w-45 gap-1 rounded-lg border py-0.5 sm:py-1 border-primary bg-white text-sm hover:bg-purple-50 transition-all duration-300 group cursor-pointer hover:text-primary"
           >
-            <Lock className="w-4 h-4 text-gray-900 group-hover:text-primary" />
+            <Lock className="w-4 h-4  text-gray-900 group-hover:text-primary transition-all duration-300" />
             Change Password
           </button>
         </div>
 
         {/* Save Status & Button */}
         {hasChanges && (
-          <div className="rounded-t-xl shadow-lg p-6 flex items-center justify-center">
+          <div className="rounded-t-xl shadow-lg flex items-center justify-center">
             <button
               ref={saveRef}
               type="submit"
               disabled={isLoading}
-              className="px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+              className="px-6 mx-auto py-3 my-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {isLoading ? (
                 <>

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Frown, LogOut } from "lucide-react";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -106,7 +107,9 @@ const ContextProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     axios.defaults.headers.common["Authorization"] = "";
-    toast.success("You have been logged out");
+    toast("You have been logged out", {
+      icon: <Frown size={28} className="text-yellow-500/90 " strokeWidth={3} />,
+    });
   };
 
   useEffect(() => {
@@ -122,7 +125,7 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       console.log("token changed");
-      
+
       axios.defaults.headers.common["Authorization"] = `${token}`;
       fetchCurrentUser();
     }

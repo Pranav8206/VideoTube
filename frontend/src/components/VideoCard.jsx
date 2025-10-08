@@ -167,7 +167,7 @@ const VideoCard = ({
             <div className="flex flex-col peer-hover:underline justify-center">
               <p
                 ref={nameRef}
-                className={`font-semibold text-primary cursor-pointer line-clamp-1 leading-none ${
+                className={`font-semibold text-primary cursor-pointer line-clamp-1 leading-tight ${
                   inSidebar ? "text-xs" : "text-sm sm:text-base"
                 } `}
                 onClick={(e) => {
@@ -246,8 +246,8 @@ const VideoCard = ({
                       toast.dismiss(t1);
                       toast.success("Video looks fine");
                       setTimeout(() => {
-                        toast.error("Report dismissed 🚫");
-                      }, 700);
+                        toast.error("Report dismissed 🗑️");
+                      }, 1000);
                     }, 5000);
                   }}
                 >
