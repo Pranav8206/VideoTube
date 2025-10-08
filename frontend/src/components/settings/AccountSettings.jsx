@@ -206,7 +206,7 @@ const AccountSettings = () => {
             name="coverImage"
             render={({ field }) => (
               <label
-                className={`absolute bottom-1 right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-white/90 backdrop-blur-sm rounded-sm sm:rounded-lg cursor-pointer shadow-lg z-10`}
+                className={`absolute bottom-1 right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-white/90 backdrop-blur-sm rounded-sm sm:rounded-lg cursor-pointer shadow-lg z-20`}
               >
                 <div className="flex items-center gap-1 sm:gap-2">
                   <ImageIcon className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
@@ -229,7 +229,7 @@ const AccountSettings = () => {
         </div>
 
         {/* Avatar and Info */}
-        <div className="relative px-1 s:px-3 sm:px-6 flex items-end gap-1 s:gap-6 -mt-7 s:-mt-10 z-0">
+        <div className="relative px-1 s:px-3 sm:px-6 flex items-end gap-1 s:gap-6 -mt-7 s:-mt-10 z-10">
           <Controller
             control={control}
             name="avatar"
@@ -283,7 +283,7 @@ const AccountSettings = () => {
           {/* Info icon and Message */}
           {showMessage && (
             <span
-              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line transition-all duration-300"
+              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line "
               aria-live="polite"
             >
               {" "}
@@ -328,9 +328,9 @@ const AccountSettings = () => {
 
         {/* Personal Information */}
         <div className="p-3 sm:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
               <div className="relative">
@@ -340,13 +340,13 @@ const AccountSettings = () => {
                     minLength: { value: 4, message: "At least 4 characters" },
                   })}
                   placeholder="Pranav Mavle"
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                  className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
                     errors.fullName
                       ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:border-primary focus:ring-primary"
                   } focus:outline-none focus:ring-2 transition-colors`}
                 />
-                <UserStar className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <UserStar className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
               </div>
               {errors.fullName && (
                 <p className="text-xs text-red-600 flex items-center gap-1">
@@ -357,7 +357,7 @@ const AccountSettings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Username
               </label>
               <div className="relative">
@@ -379,13 +379,13 @@ const AccountSettings = () => {
                     },
                   })}
                   placeholder="pranav_mavle"
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                  className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
                     errors.username
                       ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:border-primary focus:ring-primary"
                   } focus:outline-none focus:ring-2 transition-colors`}
                 />
-                <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
               </div>
               {errors.username && (
                 <p className="text-xs text-red-600 flex items-center gap-1">
@@ -396,7 +396,7 @@ const AccountSettings = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Email Address
               </label>
               <div className="relative">
@@ -410,13 +410,13 @@ const AccountSettings = () => {
                     },
                   })}
                   placeholder="you@example.com"
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                  className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
                     errors.email
                       ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:border-primary focus:ring-primary"
                   } focus:outline-none focus:ring-2 transition-colors`}
                 />
-                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
               </div>
               {errors.email && (
                 <p className="text-xs text-red-600 flex items-center gap-1">

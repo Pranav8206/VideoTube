@@ -71,7 +71,7 @@ const NotificationSettings = () => {
                 <div className="flex items-center justify-between gap-1 pl-2 sm:px-4">
                   <div>
                     <p className="font-medium text-gray-900">{field.label}</p>
-                    <p className="text-gray-500 text-sm leading-none">
+                    <p className="text-gray-500 text-xs sm:text-sm leading-none">
                       {field.description}
                     </p>
                   </div>
