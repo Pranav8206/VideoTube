@@ -119,11 +119,11 @@ const AccountSettings = () => {
 
       if (data.avatar instanceof File) {
         const avatarResponse = await uploadFile(data.avatar, "avatar");
-        updatedUser = avatarResponse.data;
+        updatedUser = avatarResponse.data.data;
       }
       if (data.coverImage instanceof File) {
         const coverResponse = await uploadFile(data.coverImage, "cover-image");
-        updatedUser = coverResponse.data;
+        updatedUser = coverResponse.data.data;
       }
 
       setUser(updatedUser);
@@ -206,7 +206,7 @@ const AccountSettings = () => {
             name="coverImage"
             render={({ field }) => (
               <label
-                className={`absolute bottom-1 right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-white/90 backdrop-blur-sm rounded-sm sm:rounded-lg cursor-pointer shadow-lg`}
+                className={`absolute bottom-1 right-1 px-1 py-0.5 sm:px-2 sm:py-1 bg-white/90 backdrop-blur-sm rounded-sm sm:rounded-lg cursor-pointer shadow-lg z-10`}
               >
                 <div className="flex items-center gap-1 sm:gap-2">
                   <ImageIcon className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
@@ -229,7 +229,7 @@ const AccountSettings = () => {
         </div>
 
         {/* Avatar and Info */}
-        <div className="relative px-1 s:px-3 sm:px-6 flex items-end gap-1 s:gap-6 -mt-7 s:-mt-10">
+        <div className="relative px-1 s:px-3 sm:px-6 flex items-end gap-1 s:gap-6 -mt-7 s:-mt-10 z-0">
           <Controller
             control={control}
             name="avatar"
@@ -283,18 +283,21 @@ const AccountSettings = () => {
           {/* Info icon and Message */}
           {showMessage && (
             <span
-              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line transition-all duration-300 z-10"
+              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line transition-all duration-300"
               aria-live="polite"
             >
-              <strong>Cover Image:</strong> Use a 16:9 aspect ratio for best
-              fit.{"\n"}
-              <strong>Avatar:</strong> Upload a square image.{"\n"}
+              {" "}
+              <p className="text-center font-bold tracking-widest italic py-1">
+                FOR BEST FIT{"\n"}
+              </p>
+              <strong>Cover Image:</strong> Use a 16:9 aspect ratio {"\n"}
+              <strong>Avatar:</strong> Upload a square image{"\n"}
               ⚠️ <strong></strong> Max file size: 5 MB.
             </span>
           )}
           <div
             onClick={handleClick}
-            className="absolute top-8 s:top-11 right-1 cursor-pointer text-gray-600 flex items-center justify-center w-4 h-4"
+            className="absolute top-8 s:top-11 right-1 cursor-pointer text-gray-400 flex items-center justify-center w-4 h-4"
           >
             {showMessage ? countdown : <Info size={20} strokeWidth={2.5} />}
           </div>

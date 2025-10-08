@@ -33,7 +33,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
-  console.log(req.files);
 
   //check title is available
   const existingVideo = await Video.findOne({ title });
@@ -117,7 +116,7 @@ const updateVideo = asyncHandler(async (req, res) => {
 
   if (thumbnail) {
     // upload new thumbnail to cloudinary
-    const uploadedThumbnail = await uploadeOnCloudinary(thumbnail);
+    let uploadedThumbnail = await uploadeOnCloudinary(thumbnail);
     if (!uploadedThumbnail) {
       throw new ApiError(500, "Failed to upload thumbnail to cloud storage!");
     }
@@ -154,7 +153,9 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   video.isPublished = !video.isPublished;
   await video.save();
 
-  return res.status(200).json(200, video, "Publish mode toggled successfully");
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Publish mode toggled successfully"));
 });
 // updateVideo,
 // deleteVideo,

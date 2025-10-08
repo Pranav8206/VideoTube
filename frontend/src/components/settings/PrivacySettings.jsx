@@ -8,7 +8,7 @@ import { AppContext } from "../../context/context";
 import { useNavigate } from "react-router-dom";
 
 const PrivacySettings = () => {
-  const { setToken, setUser, token } = useContext(AppContext);
+  const { setUser } = useContext(AppContext);
   const navigate = useNavigate();
 
   const { control, handleSubmit, watch } = useForm({
@@ -53,16 +53,13 @@ const PrivacySettings = () => {
     },
   ];
 
-  const onSubmit = async (data) => {
+  const onSubmit = () => {
     setIsLoading(true);
-    try {
-      toast.success("Changes saved successfully!");
-      setHasChanges(false);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to save settings");
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      setHasChanges(false);
+      toast.success("Changes saved successfully!");
+    }, 1500);
   };
 
   const handleDeleteAccount = async () => {
@@ -75,14 +72,9 @@ const PrivacySettings = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete("/api/v1/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete("/api/v1/users");
 
-      setToken(null);
       setUser(null);
-      localStorage.removeItem("token");
-      axios.defaults.headers.common["Authorization"] = "";
       toast.success("Account deleted successfully");
       navigate("/");
     } catch (err) {
@@ -94,11 +86,11 @@ const PrivacySettings = () => {
 
   return (
     <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl p-3 sm:p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-120">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
           Privacy Settings
         </h1>
-        <div className="max-w-120 space-y-4">
+        <div className="space-y-4">
           {privacyItems.map((item) => (
             <Controller
               key={item.key}
@@ -108,7 +100,9 @@ const PrivacySettings = () => {
                 <div className="flex items-center justify-between gap-1 pl-2 sm:px-4">
                   <div>
                     <p className="font-medium text-gray-900">{item.label}</p>
-                    <p className="text-gray-500 text-sm leading-none">{item.description}</p>
+                    <p className="text-gray-500 text-sm leading-none">
+                      {item.description}
+                    </p>
                   </div>
                   <div>
                     <ToggleSwitch
@@ -134,7 +128,7 @@ const PrivacySettings = () => {
               )}
               Delete Account
             </button>
-            </div>
+          </div>
         </div>
 
         {/* Save Button */}

@@ -80,7 +80,6 @@ const VideoCard = ({
       }}
       onClick={handleClick}
     >
-      {console.log(video)}
       {/* Thumbnail */}
       <div
         className={`relative ${
@@ -257,7 +256,7 @@ const VideoCard = ({
                 {onRemove && <hr className="my-1" />}
                 {onRemove && (
                   <button
-                    onClick={() => onRemove(video.id)}
+                    onClick={() => onRemove(video._id)}
                     className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer"
                   >
                     <Minus size={16} />

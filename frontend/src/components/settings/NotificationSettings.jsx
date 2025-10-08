@@ -57,11 +57,11 @@ const NotificationSettings = () => {
 
   return (
     <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl p-3 sm:p-6">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-120">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
           Notification Settings
         </h1>
-        <div className="max-w-120 space-y-4 ">
+        <div className="space-y-4">
           {fields.map((field) => (
             <Controller
               key={field.name}

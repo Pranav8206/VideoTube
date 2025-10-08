@@ -77,7 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
   };
 
   return res
@@ -86,7 +86,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
-        200,
+        201,
         {
           user: createdUser,
           accessToken,
@@ -135,11 +135,11 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-  console.log(loggedInUser.username, "You looged in successfully!");
+  console.log(loggedInUser.username, "You loged in successfully!");
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
   };
   return res
     .status(200)
@@ -174,7 +174,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
   };
 
   return res
@@ -209,7 +209,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     };
 
     const { accessToken, refreshToken: newrefreshToken } =
@@ -222,7 +222,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, newrefreshToken },
+          { accessToken, refreshToken: newrefreshToken },
           "Access token refreshed successfully"
         )
       );
@@ -269,13 +269,11 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   const { username, email, fullName } = req.body;
 
   if (!username || !email) {
-    throw new ApiError(400, "All field are required");
+    throw new ApiError(400, "All fields are required");
   }
   const userExist = await User.findOne({
     $or: [{ username }, { email }],
   });
-  console.log(userExist, req.user);
-  console.log("123");
 
   if (userExist && userExist._id.toString() !== req.user._id.toString()) {
     if (userExist.username === username) {
@@ -301,7 +299,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Accout details updated successfully"));
+    .json(new ApiResponse(200, user, "Account details updated successfully"));
 });
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
