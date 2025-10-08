@@ -3,6 +3,7 @@ import React, { useState, useRef, useContext } from "react";
 import { Download, Flag, Clock, Minus, MoreVertical, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/context";
+import toast from "react-hot-toast";
 
 const VideoCard = ({
   video,
@@ -79,6 +80,7 @@ const VideoCard = ({
       }}
       onClick={handleClick}
     >
+      {console.log(video)}
       {/* Thumbnail */}
       <div
         className={`relative ${
@@ -149,9 +151,9 @@ const VideoCard = ({
           <div className="flex items-start gap-2 sm:gap-3 h-full   ">
             <div className="shrink-0">
               <img
-                src={video.owner.avatar}
-                alt={video.owner.username}
-                className={`rounded-full w-8 h-8  ${
+                src={video.owner?.avatar || "user.png"}
+                alt={video.owner?.username}
+                className={`rounded-full w-8 h-8 border border-primary ${
                   inSidebar ? "" : " sm:w-9 sm:h-9"
                 }`}
                 onMouseEnter={showNameRefUnderline}
@@ -212,16 +214,43 @@ const VideoCard = ({
                 } bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
                 onClick={(e) => e.stopPropagation()}
               >
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer">
+                <button
+                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast.success("Saved in watch later");
+                  }}
+                >
                   <Clock size={16} />
                   Watch later
                 </button>
-                <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer">
+                <button
+                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    //downolad video
+                  }}
+                >
                   <Download size={16} />
                   Download
                 </button>
                 <hr className="text-gray-300" />
-                <button className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 rounded-b-lg flex items-center gap-2 cursor-pointer">
+                <button
+                  className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 rounded-b-lg flex items-center gap-2 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+
+                    const t1 = toast.loading("Analyzing the video...");
+
+                    setTimeout(() => {
+                      toast.dismiss(t1);
+                      toast.success("Video looks fine");
+                      setTimeout(() => {
+                        toast.error("Report dismissed 🚫");
+                      }, 700);
+                    }, 5000);
+                  }}
+                >
                   <Flag size={16} />
                   Report
                 </button>

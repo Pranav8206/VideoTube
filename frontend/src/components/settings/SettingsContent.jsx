@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import SettingsSidebar from "./SettingsSidebar";
 import AccountSettings from "./AccountSettings";
-import PasswordSettings from "./PasswordSettings";
 import NotificationSettings from "./NotificationSettings";
 import PrivacySettings from "./PrivacySettings";
 
@@ -12,8 +11,6 @@ const SettingsContent = () => {
     switch (activeSection) {
       case "account":
         return <AccountSettings />;
-      case "password":
-        return <PasswordSettings />;
       case "notifications":
         return <NotificationSettings />;
       case "privacy":
@@ -24,7 +21,7 @@ const SettingsContent = () => {
   };
 
   return (
-    <div className="h-full w-full flex ">
+    <div className="h-full w-full flex rounded-tl-2xl">
       <SettingsSidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}

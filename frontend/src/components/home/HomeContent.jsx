@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import VideosGrid from "../VideosGrid";
 import CategoriesSlider from "./CategoriesSlider";
 import { AppContext } from "../../context/context";
-import Loader from "../Loader";
 import SkeletonCard from "./SkeletonCard";
 
 const HomeContent = () => {

@@ -83,7 +83,9 @@ const Login = () => {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.stopPropagation()
+    navigate("/");
     setShowLogin(false);
     reset();
   };
@@ -94,7 +96,7 @@ const Login = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 animate-in fade-in duration-200">
       {/* Backdrop */}
       <div
-        onClick={handleClose}
+        onClick={(e)=> handleClose(e)}
         className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-sm cursor-pointer"
       />
 
@@ -103,7 +105,7 @@ const Login = () => {
           <div className="absolute top-0 left-0 right-0 h-15 bg-gradient-to-br from-primary/20 via-primary/30 to-primary/20 opacity-30" />
 
           <button
-            onClick={handleClose}
+            onClick={(e)=>handleClose(e)}
             className="absolute top-2 right-2 z-10 p-1.5 rounded-full transition-all duration-200 cursor-pointer"
             type="button"
           >
@@ -157,6 +159,7 @@ const Login = () => {
                         ? false
                         : "Username is required",
                     minLength: { value: 4, message: "At least 4 characters" },
+                    maxLength: {value: 10, message: "At max 10 characters"},
                     validate: {
                       noInvalidSymbol: (value) =>
                         !value ||
@@ -168,6 +171,7 @@ const Login = () => {
                         "Username cannot start or end with underscore",
                     },
                   })}
+                  autoComplete="username"
                   type="text"
                   placeholder="pranav_mavle"
                   className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
@@ -209,6 +213,7 @@ const Login = () => {
                       message: "Invalid email",
                     },
                   })}
+                  autoComplete="email"
                   type="email"
                   placeholder="you@example.com"
                   className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
@@ -260,6 +265,7 @@ const Login = () => {
                     required: "Password is required",
                     minLength: { value: 6, message: "At least 6 characters" },
                   })}
+                  autoComplete={state === "login" ? "current-password" : "new-password"}
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className={`w-full pl-9 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${

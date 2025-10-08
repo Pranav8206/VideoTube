@@ -20,6 +20,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   }
 
   const videos = await Video.find(filter)
+    .select("-videoFile")
     .skip((page - 1) * limit)
     .limit(limit)
     .sort({ [sortBy]: sortType === "desc" ? -1 : 1 })

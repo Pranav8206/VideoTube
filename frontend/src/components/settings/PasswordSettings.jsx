@@ -1,200 +1,214 @@
+// PasswordSettings.jsx (your modal, enhanced)
 import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import {
+  Lock,
+  X,
+  Loader2,
+  AlertTriangle,
+  Eye,
+  EyeOff,
+  RotateCcwKey,
+} from "lucide-react";
 
-const PasswordSettings = () => {
+const PasswordSettings = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const [showPasswords, setShowPasswords] = useState({
-    current: false,
+    old: false,
     new: false,
     confirm: false,
   });
 
-  const [saveStatus, setSaveStatus] = useState(null);
-
   const {
+    register,
     handleSubmit,
-    control,
-    watch,
-    reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
-  const newPassword = watch("newPassword");
-
-  const onSubmit = (data) => {
-    setSaveStatus("success");
-
-    setTimeout(() => {
-      setSaveStatus(null);
-      reset();
-    }, 3000);
-  };
+    reset,
+  } = useForm();
 
   const toggleShow = (field) =>
     setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
 
-  const renderPasswordField = (name, label, placeholder) => (
-    <div>
-      <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-1 sm:mb-2">
-        {label}
-      </label>
-      <Controller
-        name={name}
-        control={control}
-        rules={{
-          required: `${label} is required`,
-          ...(name === "newPassword" && {
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          }),
-          ...(name === "confirmPassword" && {
-            validate: (value) =>
-              value === newPassword || "Passwords do not match",
-          }),
-        }}
-        render={({ field }) => (
-          <div className="relative">
-            <input
-              {...field}
-              type={
-                showPasswords[
-                  name === "currentPassword"
-                    ? "current"
-                    : name === "newPassword"
-                    ? "new"
-                    : "confirm"
-                ]
-                  ? "text"
-                  : "password"
-              }
-              placeholder={placeholder}
-              className={`w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 rounded-lg border-2 text-sm sm:text-base ${
-                errors[name]
-                  ? "border-red-300 focus:border-red-500"
-                  : "border-gray-400 focus:border-gray-400-dark"
-              } focus:outline-none transition-colors`}
-            />
+  const handleLocalSubmit = (data) => {
+    if (data.newPassword !== data.confirmPassword) {
+      return;
+    }
+    onSubmit(data);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        {/* Header - unchanged */}
+        <div className="bg-gradient-to-r from-primary to-primary/50 px-2 sm:px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1 sm:gap-3 text-lg sm:text-xl font-bold text-white">
+              <RotateCcwKey className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              Change Password
+            </div>
             <button
-              type="button"
-              onClick={() =>
-                toggleShow(
-                  name === "currentPassword"
-                    ? "current"
-                    : name === "newPassword"
-                    ? "new"
-                    : "confirm"
-                )
-              }
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                onClose();
+                reset();
+              }}
+              className="text-white/80 hover:text-white transition-colors cursor-pointer"
             >
-              {showPasswords[
-                name === "currentPassword"
-                  ? "current"
-                  : name === "newPassword"
-                  ? "new"
-                  : "confirm"
-              ] ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
-            {errors[name] && (
-              <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" /> {errors[name].message}
+          </div>
+        </div>
+
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit(handleLocalSubmit)}
+          className="p-6 space-y-3"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Current Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.old ? "text" : "password"}
+                {...register("oldPassword", {
+                  required: "Current password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
+                className="w-full px-4 pr-12 pl-8 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition-colors"
+                placeholder="Enter current password"
+              />
+              <button
+                type="button"
+                onClick={() => toggleShow("old")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+              >
+                {showPasswords.old ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+              <Lock className="absolute left-3 top-4 w-4 h-4 text-gray-400 pointer-events-none " />
+            </div>
+            {errors.oldPassword && (
+              <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <AlertTriangle className="w-4 h-4" />
+                {errors.oldPassword.message}
               </p>
             )}
           </div>
-        )}
-      />
-    </div>
-  );
 
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 p-4 sm:p-8 space-y-8 overflow-y-auto"
-    >
-      {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-700 mb-2">
-          Change Password
-        </h1>
-        <div className="w-16 h-1 bg-gradient-to-r from-primary to-indigo-500 rounded-full"></div>
-      </div>
-
-      <div className="max-w-xl space-y-6">
-        {renderPasswordField(
-          "currentPassword",
-          "Current Password",
-          "Enter current password"
-        )}
-        {renderPasswordField(
-          "newPassword",
-          "New Password",
-          "Enter new password"
-        )}
-        {renderPasswordField(
-          "confirmPassword",
-          "Confirm New Password",
-          "Confirm new password"
-        )}
-
-        {/* Password Requirements */}
-        <div className="flex-1 min-w-[250px] bg-gray-50 rounded-xl border border-gray-200 p-5">
-          <h3 className="font-semibold text-gray-800 mb-3">
-            Password Requirements:
-          </h3>
-          <ul className="text-sm text-gray-600 space-y-2 list-disc pl-5">
-            <li>At least 8 characters long</li>
-            <li>Include uppercase and lowercase letters</li>
-            <li>Include at least one number</li>
-            <li>Include at least one special character</li>
-          </ul>
-        </div>
-
-        {/* Save Status */}
-        {saveStatus && (
-          <div
-            className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base ${
-              saveStatus === "success"
-                ? "bg-green-50 text-green-700 border border-green-200"
-                : "bg-red-50 text-red-700 border border-red-200"
-            }`}
-          >
-            {saveStatus === "success" ? (
-              <>
-                <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">
-                  Password changed successfully!
-                </span>
-              </>
-            ) : (
-              <>
-                <AlertCircle className="w-5 h-5" />
-                <span className="font-medium">Please fix the errors above</span>
-              </>
+          {/* New Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.new ? "text" : "password"}
+                {...register("newPassword", {
+                  required: "New password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+                className="w-full px-4 pr-12 pl-8 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition-colors"
+                placeholder="Enter new password"
+              />
+              <button
+                type="button"
+                onClick={() => toggleShow("new")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+              >
+                {showPasswords.new ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+              <Lock className="absolute left-3 top-4 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+            {errors.newPassword && (
+              <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <AlertTriangle className="w-4 h-4" />
+                {errors.newPassword.message}
+              </p>
             )}
           </div>
-        )}
 
-        {/* Change Password Button */}
-        <button
-          type="submit"
-          className="w-full sm:w-auto bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dark hover:to-indigo-700 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105"
-        >
-          Change Password
-        </button>
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.confirm ? "text" : "password"}
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value, formValues) =>
+                    value === formValues.newPassword ||
+                    "Passwords do not match",
+                })}
+                className="w-full px-4 pr-12 pl-8 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition-colors"
+                placeholder="Confirm new password"
+              />
+              <button
+                type="button"
+                onClick={() => toggleShow("confirm")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+              >
+                {showPasswords.confirm ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+              <Lock className="absolute left-3 top-4 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+            {errors.confirmPassword && (
+              <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <AlertTriangle className="w-4 h-4" />
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          {/* Submit buttons */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                reset();
+              }}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-white px-4 py-3 rounded-lg font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Change"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 

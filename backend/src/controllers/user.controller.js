@@ -43,10 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   if (userExist) {
     if (userExist.username === username) {
-      throw new ApiError(
-        400,
-        "Username is already taken. Please choose another."
-      );
+      throw new ApiError(400, "Username already taken");
     }
 
     if (userExist.email === email) {
@@ -270,8 +267,24 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { username, email, fullName } = req.body;
 
-  if (!username && !email && !fullName) {
+  if (!username || !email || !fullName) {
     throw new ApiError(400, "All field are required");
+  }
+  const userExist = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+  console.log(userExist, req.user);
+  console.log("123");
+  
+  
+  if (userExist && userExist._id.toString() !== req.user._id.toString()) {
+    if (userExist.username === username) {
+      throw new ApiError(400, "Username already taken");
+    }
+
+    if (userExist.email === email) {
+      throw new ApiError(400, "Email already registered");
+    }
   }
 
   const user = await User.findByIdAndUpdate(
@@ -469,6 +482,26 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     );
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  await User.findByIdAndDelete(userId);
+
+  
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, null, "User account deleted successfully")
+    );
+});
+
+
 export {
   registerUser,
   loginUser,
@@ -481,4 +514,5 @@ export {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
+  deleteUser
 };

@@ -4,13 +4,12 @@ import { User, Shield, Bell, Lock, Play } from "lucide-react";
 const SettingsSidebar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
     { id: "account", label: "Account", icon: User },
-    { id: "password", label: "Password", icon: Shield },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "privacy", label: "Privacy", icon: Lock },
   ];
 
   return (
-    <div className="sticky top-0 h-screen w-16 sm:w-54 lg:w-64 bg-gradient-to-b from-purple-50 to-white rounded-l-2xl p-4 sm:p-6 border-r border-purple-100 transition-all duration-300">
+    <div className="sticky top-0 h-screen sm:w-50 p-2 py-5 transition-all duration-300">
       <nav className="space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;

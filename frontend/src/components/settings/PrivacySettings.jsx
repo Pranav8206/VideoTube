@@ -1,80 +1,168 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { CheckCircle, Loader2, Trash2 } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { AppContext } from "../../context/context";
+import { useNavigate } from "react-router-dom";
 
 const PrivacySettings = () => {
-  const [settings, setSettings] = useState({
-    profileVisibility: true,
-    showEmail: false,
-    allowMessages: true,
-    showActivity: true,
+  const { setToken, setUser, token, user } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: {
+      profileVisibility: true,
+      showEmail: false,
+      allowMessages: true,
+      showActivity: true,
+    },
   });
 
-  const handleToggle = (field) => {
-    setSettings((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Watch for changes to mark unsaved changes
+  useEffect(() => {
+    const subscription = watch(() => setHasChanges(true));
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const privacyItems = [
     {
       key: "profileVisibility",
       label: "Public Profile",
-      desc: "Make your profile visible to everyone",
+      description: "Make your profile visible to everyone",
     },
     {
       key: "showEmail",
       label: "Show Email",
-      desc: "Display email on your profile",
+      description: "Display email on your profile",
     },
     {
       key: "allowMessages",
       label: "Allow Messages",
-      desc: "Let others send you direct messages",
+      description: "Let others send you direct messages",
     },
     {
       key: "showActivity",
       label: "Show Activity",
-      desc: "Display your recent activity",
+      description: "Display your recent activity",
     },
   ];
 
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      // Send data to API
+      await axios.patch("/api/v1/users/privacy-settings", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Privacy settings saved successfully!");
+      setHasChanges(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to save settings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete your account? This action is permanent."
+      )
+    )
+      return;
+
+    try {
+      setIsDeleting(true);
+      await axios.delete("/api/v1/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      toast.success("Account deleted successfully");
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem("token");
+      axios.defaults.headers.common["Authorization"] = "";
+
+      navigate("/");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete account");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <div className="flex-1 p-4 sm:p-8 space-y-8 overflow-y-auto">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+    <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl p-3 sm:p-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-5xl mx-auto">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
           Privacy Settings
         </h1>
-        <div className="w-16 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"></div>
-      </div>
-
-      {/* Privacy Options */}
-      <div className="space-y-6 max-w-2xl">
-        <div className="bg-white border-2 border-gray-200 rounded-xl p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
-            Profile Privacy
-          </h3>
-          <div className="space-y-4">
-            {privacyItems.map((item) => (
-              <div
-                key={item.key}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0"
-              >
-                <div>
-                  <p className="font-medium text-gray-800 text-sm sm:text-base">
-                    {item.label}
-                  </p>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {item.desc}
-                  </p>
+        <div className="space-y-4">
+          {privacyItems.map((item) => (
+            <Controller
+              key={item.key}
+              name={item.key}
+              control={control}
+              render={({ field }) => (
+                <div className="flex items-center justify-between gap-1 pl-2 sm:px-4">
+                  <div>
+                    <p className="font-medium text-gray-900">{item.label}</p>
+                    <p className="text-gray-500 text-sm">{item.description}</p>
+                  </div>
+                  <div>
+                    <ToggleSwitch
+                      checked={field.value}
+                      onChange={field.onChange}
+                    />
+                  </div>
                 </div>
-                <ToggleSwitch
-                  checked={settings[item.key]}
-                  onChange={() => handleToggle(item.key)}
-                />
-              </div>
-            ))}
+              )}
+            />
+          ))}
+          {/* Delete Account Button */}
+          <div className="mt-8 px-4 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 cursor-pointer"
+            >
+              {isDeleting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Trash2 className="w-5 h-5" />
+              )}
+              Delete Account
+            </button>
           </div>
         </div>
-      </div>
+
+        {/* Save Button */}
+        {hasChanges && (
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-6 mx-auto py-3 my-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-5 h-5" />
+                Save Changes
+              </>
+            )}
+          </button>
+        )}
+      </form>
     </div>
   );
 };
