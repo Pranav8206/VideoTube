@@ -501,23 +501,24 @@ const getWatchHistory = asyncHandler(async (req, res) => {
           },
           {
             $addFields: {
-              owner: {
-                $first: "$owner",
-              },
+              owner: { $first: "$owner" },
             },
           },
         ],
       },
     },
   ]);
-  res
+
+  if (!user.length) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const [{ watchHistory = [] } = {}] = user;
+
+  return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        user[0].watchHistory,
-        "Watch history fetch successfully"
-      )
+      new ApiResponse(200, watchHistory, "Watch history fetched successfully")
     );
 });
 

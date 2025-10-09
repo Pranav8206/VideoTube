@@ -62,7 +62,7 @@ const Controls = ({
     else
       volumeTimeoutRef.current = setTimeout(() => {
         setShowVolumeSlider(false);
-      }, 500);
+      }, 1000);
   };
 
   // auto-hide after 2 seconds when it’s true
@@ -85,12 +85,12 @@ const Controls = ({
       />
 
       {/* Controls */}
-      <div className="flex items-center justify-between gap-2 sm:gap-3 text-purple-100 max-w-full box-border">
+      <div className="flex items-center justify-between sm:gap-3 text-purple-100 max-w-full box-border">
         {/* Left controls */}
-        <div className="flex items-center sm:gap-3 ml-1 sm:ml-2">
+        <div className="flex items-center sm:gap-3 sm:ml-2">
           <TooltipButton
             onClick={togglePlay}
-            tooltipText={isPlaying ? "Pause (Space)" : "Play (Space)"}
+            tooltipText={isPlaying ? "Pause (__)" : "Play (__)"}
             className="hover:text-primary p-1 cursor-pointer"
           >
             {isPlaying ? <Pause size={18} /> : <Play size={18} />}
@@ -114,23 +114,29 @@ const Controls = ({
 
           {/* Volume */}
           <div
-            className="relative flex items-center"
-            onMouseEnter={() => handleVolumeHover(true)}
-            onMouseLeave={() => handleVolumeHover(false)}
+            className="relative flex items-center px-1"
+            onTouchStart={() => handleVolumeHover(true)}
           >
             <TooltipButton
-              onClick={toggleMute}
               tooltipText={isMuted ? "Unmute (M)" : "Mute (M)"}
               className="hover:text-primary p-1 cursor-pointer"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX size={18} />
+                <VolumeX
+                  size={18}
+                  onClick={toggleMute}
+                  onMouseEnter={() => handleVolumeHover(true)}
+                />
               ) : (
-                <Volume2 size={18} />
+                <Volume2
+                  size={18}
+                  onClick={toggleMute}
+                  onMouseEnter={() => handleVolumeHover(true)}
+                />
               )}
             </TooltipButton>
             {showVolumeSlider && (
-              <div className="w-16 sm:w-20 p-1  rounded shadow-md flex items-center justify-center">
+              <div className="w-14 s:w-16 sm:w-20 p-1  rounded shadow-md flex items-center justify-center">
                 <input
                   type="range"
                   min="0"
@@ -154,7 +160,7 @@ const Controls = ({
           </div>
 
           {/* Time */}
-          <div className="text-xs font-mono">
+          <div className="text-xs font-mono tracking-tighter">
             {formatTime(currentTime)} / {formatTime(duration)}
           </div>
         </div>
@@ -195,7 +201,11 @@ const Controls = ({
           </div>
 
           {/* More menu for small screens */}
-          <div className="sm:hidden relative">
+          <div
+            className={`sm:hidden relative flex items-center ${
+              showMoreMenu && "text-primary"
+            }`}
+          >
             <button
               onClick={() => setShowMoreMenu(!showMoreMenu)}
               className="hover:text-primary cursor-pointer"
@@ -204,7 +214,7 @@ const Controls = ({
             </button>
 
             {showMoreMenu && (
-              <div className="absolute right-0 bottom-11 w-28 items-center justify-center bg-dark rounded shadow-lg flex p-1 gap-1 z-50">
+              <div className="absolute -right-18 bottom-10 w-28 items-center justify-center bg-dark rounded shadow-lg flex p-1 gap-1 z-50 text-white">
                 <TooltipButton
                   onClick={changePlaybackRate}
                   tooltipText="Playback speed"

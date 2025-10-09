@@ -94,7 +94,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`bg-white z-30 sticky top-0 left-0 right-0 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out  ${
+      className={`bg-white z-40 sticky top-0 left-0 right-0 px-2 sm:px-4 h-12 max-sm:h-10 w-full flex justify-between transition-transform duration-300 ease-in-out  ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >

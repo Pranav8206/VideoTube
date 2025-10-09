@@ -11,6 +11,7 @@ import Loader from "../Loader";
 import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
 import { AppContext } from "../../context/context";
+import useIsTouchDevice from "../../hooks/useIsTouchDevice";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const videoRef = useRef(null);
@@ -36,6 +37,8 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   const [pin, setPin] = useState(false);
 
   const { isCinemaMode, setIsCinemaMode } = useContext(AppContext);
+
+  const isTouch = useIsTouchDevice();
 
   // Prepare sources
   const effectiveSources = useMemo(() => {
@@ -196,46 +199,43 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
 
   // Controls visibility
   const resetControlsTimeout = useCallback(() => {
-    // Always clear any running timer
     clearTimeout(controlsTimeoutRef.current);
-    // Controls should stay visible if paused or pinned
-    if (!isPlaying || pin) {
-      setShowControls(true);
-      return;
-    }
-    setShowControls(true);
-    // Auto-hide after a delay (longer on mobile)
-    const timeout = window.innerWidth < 640 ? 3000 : 2000;
-    controlsTimeoutRef.current = setTimeout(() => {
-      setShowControls(false);
-    }, timeout);
-  }, [isPlaying, pin]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => clearTimeout(controlsTimeoutRef.current);
-  }, []);
-
-  // Mouse and touch handling
-  const handleMouseEnter = () => resetControlsTimeout();
-  const handleMouseMove = () => resetControlsTimeout();
-  const handleMouseLeave = () => {
-    if (!pin) setShowControls(false);
-  };
-
-  // On mobile: tap to toggle controls visibility
-  const handleTouchStart = () => {
     if (pin) {
       setShowControls(true);
       return;
     }
-    if (showControls) {
+    setShowControls(true);
+    console.log("start");
+
+    const timeout = isTouch ? 2000 : 1000;
+    controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
-    } else {
-      setShowControls(true);
-      resetControlsTimeout();
+    }, timeout);
+  }, [isPlaying, pin, isTouch]);
+
+  // Mouse and touch handling
+  const handleMouseEnter = useCallback(() => {
+    resetControlsTimeout();
+  }, [resetControlsTimeout]);
+
+  const handleMouseMove = useCallback(() => {
+    resetControlsTimeout();
+  }, [resetControlsTimeout]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!pin && isPlaying) {
+      setShowControls(false);
     }
-  };
+  }, [pin, isPlaying]);
+
+  // Touch handling: Single tap shows controls, resets timeout
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (pin) return;
+      resetControlsTimeout();
+    },
+    [pin, resetControlsTimeout]
+  );
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -293,34 +293,25 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   ]);
 
   // Handlers for click zones
-  const handleZoneClick = () => {
-    if (window.innerWidth > 640) {
-      togglePlay();
-    } else {
-      // Mobile: tap to toggle controls visibility
-      if (showControls) {
-        if (!pin && isPlaying) {
-          setShowControls(false);
-        }
-      } else {
-        resetControlsTimeout();
-      }
-    }
-  };
-
-  const handleCenterZoneClick = () => {
-    if (window.innerWidth > 640) {
-      // Desktop: click to play/pause
-      togglePlay();
-    } else {
-      // Mobile: tap center to play/pause if controls are visible
+  const handleZoneClick = useCallback(() => {
+    if (isTouch) {
+      // On touch devices, rely on handleTouchStart for controls visibility
+      // Only toggle play if controls are visible
       if (showControls) {
         togglePlay();
-      } else {
-        resetControlsTimeout();
       }
+    } else {
+      // Non-touch: Click toggles play
+      togglePlay();
     }
-  };
+  }, [isTouch, showControls, togglePlay]);
+
+  const handleCenterZoneClick = useCallback(() => {
+    // Toggle play only if controls are visible
+    if (showControls) {
+      togglePlay();
+    }
+  }, [showControls, togglePlay]);
 
   return (
     <div
@@ -341,19 +332,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
         ref={videoRef}
         poster={poster}
         src={src}
-        preload="metadata"
-        onLoadedMetadata={(e) => {
-          const vid = e.currentTarget;
-          if (!isNaN(vid.duration)) {
-            setDuration(vid.duration);
-          }
-        }}
-        onDurationChange={(e) => {
-          const vid = e.currentTarget;
-          if (!isNaN(vid.duration)) {
-            setDuration(vid.duration);
-          }
-        }}
         className={`bg-gray-300  ${isFullscreen && "h-screen w-screen"} ${
           isCinemaMode ? "mx-auto h-full" : "h-full w-full object-cover"
         }`}
@@ -420,7 +398,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               onClick={togglePlay}
-              className={`z-20 sm:w-16 w-10 sm:h-16 h-10 bg-black/50 rounded-full flex items-center justify-center text-primary cursor-pointer ${
+              className={`z-30 sm:w-16 w-10 sm:h-16 h-10 bg-black/50 rounded-full flex items-center justify-center text-primary cursor-pointer ${
                 !showControls && "hidden"
               } `}
             >
