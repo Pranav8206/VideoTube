@@ -147,7 +147,7 @@ const VideoCard = ({
             {video.title.charAt(0).toUpperCase() + video.title.slice(1)}
           </h3>
 
-          <div className="flex items-start gap-2 sm:gap-3 h-full   ">
+          <div className="flex items-start gap-2 sm:gap-3 h-full">
             <div className="shrink-0">
               <img
                 src={video.owner?.avatar || "user.png"}

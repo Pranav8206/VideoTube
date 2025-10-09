@@ -24,7 +24,7 @@ const routes = [
       { path: "s/:searchQuery", element: <SearchResults /> },
       { path: "trending", element: <Trending /> },
       { path: "subscription", element: <Subscriptions /> },
-      { path: "c/:channelId", element: <ChannelPage /> },
+      { path: "c/:channelName", element: <ChannelPage /> },
       { path: "p/:playlistId", element: <Playlist /> },
       { path: "upload", element: <Upload /> },
       { path: "setting", element: <Settings /> },

@@ -94,9 +94,7 @@ const Login = () => {
         await fetchCurrentUser();
 
         toast.success(
-          `${
-            state === "login" ? "Login" : "Registration"
-          } successful! Welcome back 👋`
+          `${state === "login" ? "Login" : "Registration"} successful!`
         );
 
         reset();
@@ -200,96 +198,92 @@ const Login = () => {
             )}
 
             {/* Username Field */}
-            <div
-              className={`${
-                state === "login" && loginMode === "email" && "hidden"
-              }`}
-            >
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                Username
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                  <User className="w-4 h-4 text-gray-400" />
+            {!(state === "login" && loginMode === "email") && (
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  Username
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                    <User className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <input
+                    {...register("username", {
+                      required:
+                        state === "login" && loginMode === "email"
+                          ? false
+                          : "Username is required",
+                      minLength: { value: 4, message: "At least 4 characters" },
+                      maxLength: { value: 15, message: "At max 15 characters" },
+                      validate: {
+                        noInvalidSymbol: (value) =>
+                          !value ||
+                          /^[a-zA-Z0-9_]+$/.test(value) ||
+                          "Username can't contain symbols or spaces",
+                        noEdgeUnderscore: (value) =>
+                          !value ||
+                          !/^_|_$/.test(value) ||
+                          "Username cannot start or end with underscore",
+                      },
+                    })}
+                    autoComplete="username"
+                    type="text"
+                    placeholder="pranav_mavle"
+                    className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
+                      errors.username
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                  />
                 </div>
-                <input
-                  {...register("username", {
-                    required:
-                      state === "login" && loginMode === "email"
-                        ? false
-                        : "Username is required",
-                    minLength: { value: 4, message: "At least 4 characters" },
-                    maxLength: { value: 10, message: "At max 10 characters" },
-                    validate: {
-                      noInvalidSymbol: (value) =>
-                        !value ||
-                        /^[a-zA-Z0-9_]+$/.test(value) ||
-                        "Username can't contain symbols or spaces",
-                      noEdgeUnderscore: (value) =>
-                        !value ||
-                        !/^_|_$/.test(value) ||
-                        "Username cannot start or end with underscore",
-                    },
-                  })}
-                  autoComplete="username"
-                  type="text"
-                  placeholder="pranav_mavle"
-                  className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
-                    errors.username
-                      ? "border-red-300 bg-red-50"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                />
+                {errors.username && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.username.message}
+                  </p>
+                )}
               </div>
-              {errors.username && (
-                <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" />
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
+            )}
 
             {/* Email Field */}
-            <div
-              className={`${
-                state === "login" && loginMode === "username" && "hidden"
-              }`}
-            >
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                  <Mail className="w-4 h-4 text-gray-400" />
+            {!(state === "login" && loginMode === "username") && (
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                    <Mail className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <input
+                    {...register("email", {
+                      required:
+                        state === "login" && loginMode === "username"
+                          ? false
+                          : "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Invalid email address",
+                      },
+                    })}
+                    autoComplete="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
+                      errors.email
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                  />
                 </div>
-                <input
-                  {...register("email", {
-                    required:
-                      state === "login" && loginMode === "username"
-                        ? false
-                        : "Email is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Invalid email address",
-                    },
-                  })}
-                  autoComplete="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  className={`w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm ${
-                    errors.email
-                      ? "border-red-300 bg-red-50"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" />
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+            )}
 
             {/* Toggle Login Mode */}
             <div className={`text-end ${state === "register" && "hidden"}`}>

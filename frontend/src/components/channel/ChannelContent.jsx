@@ -1,51 +1,79 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import ChannelBanner from "./ChannelBanner";
 import ChannelInfoCard from "./ChannelInfoCard";
 import ChannelNavigation from "./ChannelNavigation";
 import VideosGrid from "../VideosGrid";
-import { videos as videosData, multiPlaylists } from "../../utils/videosData";
 import PlaylistGrid from "../playlist/PlaylistGrid";
+import Loader from "../Loader";
+import { AppContext } from "../../context/context";
+import { videos as videosData, multiPlaylists } from "../../utils/videosData";
 
 const ChannelContent = () => {
   const [activeTab, setActiveTab] = useState("Videos");
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [channelData, setChannelData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [layout, setLayout] = useState("grid");
 
-  // Sample channel data matching the image
-  const channelData = {
-    name: "OceanX Adventures",
-    subscribers: "1.2M",
-    videoCount: "350",
-    joinDate: "Joined Feb 2018",
-    totalViews: "847M",
-    country: "India",
-    description:
-      "Welcome to OceanX Adventures! We bring you the latest in underwater exploration, marine life documentaries, and ocean conservation. From deep sea discoveries to coral reef adventures, we've got you covered with professional underwater footage and marine science insights.",
-    links: [
-      { title: "Website", url: "#" },
-      { title: "Twitter", url: "#" },
-      { title: "Instagram", url: "#" },
-      { title: "Business Email", url: "#" },
-    ],
-    banner:
-      "https://static.vecteezy.com/system/resources/thumbnails/002/292/582/small/elegant-black-and-gold-banner-background-free-vector.jpg",
-    verified: true,
+  const { channelName } = useParams();
+  const { axios } = useContext(AppContext);
+
+  useEffect(() => {
+    const fetchChannel = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `/api/v1/users/c/${channelName.toLowerCase()}`,
+          {
+            headers: { "x-bypass-interceptor": "true" },
+          }
+        );
+        console.log("Channel data:", res.data);
+        setChannelData(res.data.data);
+      } catch (err) {
+        console.error("Fetch failed:", err);
+        setChannelData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (channelName) {
+      fetchChannel();
+      console.log("Fetching");
+    }
+  }, [channelName]);
+
+  const handleSubscribe = async () => {
+    try {
+      // You can call subscribe/unsubscribe API here
+      // For now, just toggle locally
+      setChannelData((prev) => ({
+        ...prev,
+        isSubscribedTo: !prev.isSubscribedTo,
+      }));
+    } catch (error) {
+      console.error("Subscribe action failed", error);
+    }
   };
 
-  const handleSubscribe = () => {
-    setIsSubscribed(!isSubscribed);
-  };
-
+  if (loading) return <Loader />;
+  if (!channelData)
+    return (
+      <div className="text-center mt-10 text-red-500">
+        Channel not found or failed to load
+      </div>
+    );
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
       <div className="max-w-7xl mx-auto">
-        <ChannelBanner channelBannerLink={channelData.banner} />
+        <ChannelBanner channelBannerLink={channelData.coverImage} />
         <ChannelInfoCard
           channel={channelData}
-          isSubscribed={isSubscribed}
+          isSubscribed={channelData.isSubscribedTo}
           onSubscribe={handleSubscribe}
-          verified={channelData.verified}
+          verified={true}
         />
         <ChannelNavigation
           activeTab={activeTab}
@@ -59,7 +87,7 @@ const ChannelContent = () => {
         <div className="px-0.5 s:px-4 md:px-6 pb-8">
           {activeTab === "Videos" && (
             <VideosGrid
-              videos={videosData}
+              videos={channelData.videos}
               layout={layout}
               searchQuery={searchQuery}
             />
@@ -81,7 +109,7 @@ const ChannelContent = () => {
                   Description
                 </h2>
                 <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg">
-                  {channelData.description}
+                  {channelData.description || "No description provided."}
                 </p>
               </div>
 
@@ -94,33 +122,28 @@ const ChannelContent = () => {
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
                     <div className="flex justify-between text-sm sm:text-base">
-                      <span className="text-gray-600">Joined</span>
+                      <span className="text-gray-600">Subscribers</span>
                       <span className="text-primary font-semibold">
-                        {channelData.joinDate}
+                        {channelData.subscribersCount}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm sm:text-base">
-                      <span className="text-gray-600">Total views</span>
+                      <span className="text-gray-600">Subscribed to</span>
                       <span className="text-primary font-semibold">
-                        {channelData.totalViews}
+                        {channelData.channelSubscribedTo}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm sm:text-base">
-                      <span className="text-gray-600">Country</span>
-                      <span className="text-primary font-semibold">
-                        {channelData.country}
-                      </span>
-                    </div>
+                    {/* Add more stats if needed */}
                   </div>
                 </div>
 
-                {/* Links */}
+                {/* Links (optional, you can fetch from backend) */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 border border-gray-100 shadow-sm">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                     Links
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
-                    {channelData.links.map((link, index) => (
+                    {channelData.links?.map((link, index) => (
                       <a
                         key={index}
                         href={link.url}

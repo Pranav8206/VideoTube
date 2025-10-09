@@ -366,7 +366,7 @@ const AccountSettings = () => {
                   {...register("username", {
                     required: "Username is required",
                     minLength: { value: 4, message: "At least 4 characters" },
-                    maxLength: { value: 10, message: "At max 10 characters" },
+                    maxLength: { value: 15, message: "At max 15 characters" },
                     validate: {
                       noInvalidSymbol: (value) =>
                         !value ||

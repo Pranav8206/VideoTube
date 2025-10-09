@@ -41,6 +41,6 @@ router
 router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
 
-router.route("/").delete(verifyJWT, deleteUser)
+router.route("/").delete(verifyJWT, deleteUser);
 
 export default router;

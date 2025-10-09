@@ -117,6 +117,7 @@ const PrivacySettings = () => {
           {/* Delete Account Button */}
           <div className="flex w-full xs:justify-end">
             <button
+              type="button"
               onClick={handleDeleteAccount}
               disabled={isDeleting}
               className="flex items-center  justify-end gap-2 mx-2 px-3 sm:px-6 py-2 sm:py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 cursor-pointer"

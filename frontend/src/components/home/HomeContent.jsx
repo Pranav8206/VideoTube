@@ -44,6 +44,7 @@ const HomeContent = () => {
   return (
     <div className="w-full min-h-screen py-0.5 s:py-2">
       <div className="mb-3 px-2 s:px-2 ">
+        {console.log(videos)}
         {/* Category Filters with Slider */}
         {categories.length > 0 && (
           <div className="w-full">
@@ -59,9 +60,7 @@ const HomeContent = () => {
       {loading && (
         <div className="w-full grid gap-4 s:gap-2 sm:gap-6 grid-cols-1 s:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 ">
           {[...Array(12)].map((_, i) => (
-            <div
-              key={`skeleton-${i}`}
-            >
+            <div key={`skeleton-${i}`}>
               <SkeletonCard />
             </div>
           ))}

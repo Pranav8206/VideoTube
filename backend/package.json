@@ -1,7 +1,7 @@
 {
-  "name": "3professionalbackendsetup",
+  "name": "videotube_backend_setup",
   "version": "1.0.0",
-  "description": "Learning how to create Professional backend setup.",
+  "description": "Creating Professional backend setup of VideoTube.",
   "main": "index.js",
   "type": "module",
   "scripts": {

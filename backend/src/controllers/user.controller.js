@@ -362,14 +362,12 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
   if (!username?.trim()) {
-    throw new ApiError(400, "getUserChannelProfile :: Username is missing");
+    throw new ApiError(400, "Username is missing");
   }
 
-  const channel = await User.aggregate([
+  const channelAgg = await User.aggregate([
     {
-      $match: {
-        username: username?.toLowerCase(),
-      },
+      $match: { username: username.toLowerCase() },
     },
     {
       $lookup: {
@@ -383,24 +381,44 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "subscribers",
+        foreignField: "subscriber",
         as: "subscribedTo",
       },
     },
     {
+      $lookup: {
+        from: "videos",
+        localField: "_id",
+        foreignField: "owner",
+        as: "videos",
+      },
+    },
+    {
       $addFields: {
-        subscribersCount: {
-          $size: "$subscribers",
-        },
-        channelSubscribedTo: {
-          $size: "$subscribedTo",
-        },
+        subscribersCount: { $size: "$subscribers" },
+        channelSubscribedTo: { $size: "$subscribedTo" },
         isSubscribedTo: {
           $cond: {
-            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            if: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: "$subscribers",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.subscriber", req.user?._id] },
+                    },
+                  },
+                },
+                0,
+              ],
+            },
             then: true,
             else: false,
           },
+        },
+        videos: {
+          $sortArray: { input: "$videos", sortBy: { createdAt: -1 } },
         },
       },
     },
@@ -408,23 +426,46 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       $project: {
         fullName: 1,
         username: 1,
+        email: 1,
+        avatar: 1,
+        coverImage: 1,
         subscribersCount: 1,
         channelSubscribedTo: 1,
         isSubscribedTo: 1,
-        avatar: 1,
-        coverImage: 1,
-        email: 1,
+        videos: {
+          $map: {
+            input: "$videos",
+            as: "video",
+            in: {
+              _id: "$$video._id",
+              title: "$$video.title",
+              description: "$$video.description",
+              thumbnail: "$$video.thumbnail",
+              duration: "$$video.duration",
+              views: "$$video.views",
+              createdAt: "$$video.createdAt",
+              isPublished: "$$video.isPublished",
+              owner: {
+                _id: "$_id",
+                username: "$username",
+                avatar: "$avatar",
+                email: "$email",
+              },
+            },
+          },
+        },
       },
     },
   ]);
 
-  if (!channel?.length) {
-    throw new ApiError(404, "channel does not exist");
+  const channel = channelAgg?.[0];
+  if (!channel) {
+    throw new ApiError(404, "Channel does not exist");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, channel[0], "User channel fetch successfully "));
+    .json(new ApiResponse(200, channel, "User channel fetched successfully"));
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {

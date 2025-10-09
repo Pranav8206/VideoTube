@@ -360,7 +360,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       />
 
       {/* pin/ unpin controls */}
-      <div className="absolute top-1 right-1 sm:right-3 z-30 flex items-center gap-2">
+      <div className="absolute top-1 right-1 sm:right-3 z-20 flex items-center gap-2">
         <span
           className={`text-xs text-white bg-black/60 px-2 rounded-md whitespace-nowrap transition-all duration-300 ${
             pin

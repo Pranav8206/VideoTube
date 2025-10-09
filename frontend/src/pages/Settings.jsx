@@ -8,10 +8,10 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    if (!user) {
-      setShowLogin(true);
-    } else {
+    if (user) {
       setShowLogin(false);
+    } else {
+      setShowLogin(true);
     }
     setLoading(false);
   });
@@ -22,6 +22,7 @@ const Settings = () => {
         <Loader />
       </>
     );
+
   return (
     <div>
       <SettingsContent />

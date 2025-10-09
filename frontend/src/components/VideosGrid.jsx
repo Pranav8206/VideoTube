@@ -17,7 +17,17 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
             : "w-full flex flex-col gap-2  "
         }
       >
-        {filteredVideos.length === 0 ? (
+        {filteredVideos ? (
+          filteredVideos.length === 0 ? (
+            <div className="col-span-full text-center text-gray-500 py-6 text-xl font-medium">
+              Video not uploaded yet.
+            </div>
+          ) : (
+            filteredVideos.map((video, i) => (
+              <VideoCard key={video.id || i} video={video} layout={layout} />
+            ))
+          )
+        ) : (
           <div className="col-span-full text-center text-gray-500 py-26 text-xl font-medium">
             Server is not responding.
             <p className="text-sm mt-4 gap-2">
@@ -29,10 +39,6 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
               <span>again later.</span>
             </p>
           </div>
-        ) : (
-          filteredVideos.map((video, i) => (
-            <VideoCard key={video.id || i} video={video} layout={layout} />
-          ))
         )}
       </div>
     </div>
