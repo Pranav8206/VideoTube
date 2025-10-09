@@ -93,7 +93,7 @@ All endpoints (except auth endpoints) require JWT authentication via Bearer toke
 | -------- | ----------------------- | --------------------- | ------------- |
 | `GET`    | `/videos`               | Get all videos        | No            |
 | `POST`   | `/videos/publish`       | Upload video          | Yes           |
-| `GET`    | `/videos/:videoId`      | Get video details     | Yes           |
+| `GET`    | `/videos/:videoId`      | Get video details     | No           |
 | `PATCH`  | `/videos/:videoId/edit` | Update video          | Yes           |
 | `DELETE` | `/videos/:videoId`      | Delete video          | Yes           |
 | `PATCH`  | `/videos/:videoId`      | Toggle publish status | Yes           |

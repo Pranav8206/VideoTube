@@ -3,7 +3,7 @@ import React from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";
 
-const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
+const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "", forChannelPage=false}) => {
   const filteredVideos = videos.filter((video) =>
     video.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -24,7 +24,7 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "" }) => {
             </div>
           ) : (
             filteredVideos.map((video, i) => (
-              <VideoCard key={video.id || i} video={video} layout={layout} />
+              <VideoCard key={video.id || i} video={video} layout={layout} forChannelPage={forChannelPage}/>
             ))
           )
         ) : (

@@ -90,6 +90,7 @@ const ChannelContent = () => {
               videos={channelData.videos}
               layout={layout}
               searchQuery={searchQuery}
+              forChannelPage={true}
             />
           )}
 
