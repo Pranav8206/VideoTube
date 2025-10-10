@@ -187,13 +187,13 @@ const AccountSettings = () => {
   }, [countdown, showMessage]);
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-50 rounded-tl-2xl">
+    <div className="flex-1 overflow-y-auto sm:bg-gray-50 sm:rounded-tl-2xl">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-5xl mx-auto rounded-tl-2xl"
+        className="max-w-5xl mx-auto sm:rounded-tl-2xl"
       >
         {/* Cover Image */}
-        <div className="relative h-30 s:h-35 sm:h-45 md:h-50 lg:h-60 overflow-hidden aspect-video w-full bg-gradient-to-r from-primary to-purple-600 rounded-tl-2xl">
+        <div className="relative h-30 s:h-35 sm:h-45 md:h-50 lg:h-60 overflow-hidden aspect-video w-full bg-gradient-to-r from-primary to-purple-600 sm:rounded-tl-2xl">
           {coverPreview && (
             <img
               src={coverPreview}

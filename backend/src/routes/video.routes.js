@@ -29,7 +29,9 @@ router.route("/publish").post(
   publishAVideo
 );
 
-router.route("/:videoId/edit").patch(verifyJWT, updateVideo);
+router
+  .route("/:videoId/edit")
+  .patch(verifyJWT, upload.single("thumbnail"), updateVideo);
 
 router
   .route("/:videoId")

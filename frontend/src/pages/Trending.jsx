@@ -39,9 +39,9 @@ const Trending = () => {
 
   if (loading)
     return (
-      <>
+      <div className="relative h-screen">
         <Loader />
-      </>
+      </div>
     );
   if (error)
     return <div className="text-center py-8 text-red-500">{error}</div>;

@@ -10,9 +10,7 @@ import {
   CircleChevronDown,
   CircleChevronUp,
   AlertCircle,
-  Loader2,
   Loader,
-  LoaderPinwheel,
 } from "lucide-react";
 
 const UploadContent = ({ isLogin = false }) => {
@@ -55,27 +53,18 @@ const UploadContent = ({ isLogin = false }) => {
 
   const onSubmit = async (data) => {
     if (!isLogin) {
-      setError("Please login to upload a video.");
-      toast.error("Please login to upload a video.", {
-        position: "top-right",
-        duration: 4000,
-      });
+      setError("Login to upload a video.");
+      toast.error("Login to upload video.");
       return;
     }
     if (!videoFile) {
       setError("Please select video.");
-      toast.error("Missing video file!", {
-        position: "top-right",
-        duration: 4000,
-      });
+      toast.error("Missing video file!");
       return;
     }
     if (!thumbnailFile) {
       setError("Please select thumbnail.");
-      toast.error("Missing thumbnail file!", {
-        position: "top-right",
-        duration: 4000,
-      });
+      toast.error("Missing thumbnail file!");
       return;
     }
 
@@ -83,6 +72,12 @@ const UploadContent = ({ isLogin = false }) => {
     setUploadProgress(0);
     setError(null);
 
+    let simulatedProgress = 0;
+    const dummyInterval = setInterval(() => {
+      simulatedProgress += Math.floor(Math.random() * 5) + 1; // increment 1-5%
+      if (simulatedProgress >= 20) simulatedProgress = 20; // cap dummy at 20%
+      setUploadProgress(simulatedProgress);
+    }, 300);
     try {
       const formData = new FormData();
       formData.append("video", videoFile);
@@ -92,25 +87,24 @@ const UploadContent = ({ isLogin = false }) => {
       formData.append("category", data.category);
       formData.append("isPublished", data.isPublished);
 
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      clearInterval(dummyInterval);
+
       const response = await axios.post("/api/v1/videos/publish", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.min(
             Math.round((progressEvent.loaded * 100) / progressEvent.total),
-            99
+            92
           );
           setUploadProgress(percentCompleted);
         },
       });
 
       setUploadProgress(100);
-      toast.success(response.data.message || "Video published successfully!", {
-        position: "top-right",
-        duration: 4000,
-      });
+      toast.success(response.data.message || "Video published successfully!");
 
       reset();
       setVideoFile(null);
@@ -144,7 +138,7 @@ const UploadContent = ({ isLogin = false }) => {
                 Upload Video
               </h1>
               <p className="text-gray-600">
-                Share your content with the world on{" "}
+                Share your content on{" "}
                 <span className="inline-flex items-baseline">
                   <span className="font-bold text-gray-800 text-lg tracking-tight">
                     Video
@@ -283,8 +277,8 @@ const UploadContent = ({ isLogin = false }) => {
               {isLoading && (
                 <div className="w-52 space-y-2">
                   <div className="flex items-center ml-10 text-sm font-medium text-gray-700">
-                    <div className="flex h-10  w-10  justify-center animate-spin">
-                      <LoaderPinwheel className="w-6 h-6 text-primary animate-[pulse_2.5s_infinite]" />
+                    <div className="flex h-7 w-7 justify-center animate-spin">
+                      <Loader className="w-6 h-6 text-primary animate-pulse" />
                     </div>
                     <span className="whitespace-nowrap">
                       {uploadProgress < 99 ? "Uploading..." : "Processing..."}

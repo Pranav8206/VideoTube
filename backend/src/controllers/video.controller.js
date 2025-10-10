@@ -110,8 +110,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-
-  const { title, description } = req.body;
+  const { title, description, category } = req.body;
   const thumbnail = req.file?.path;
 
   if (!title || !description) {
@@ -119,24 +118,28 @@ const updateVideo = asyncHandler(async (req, res) => {
   } else if (title.length < 10) {
     throw new ApiError(400, "Title must be at least 10 characters long.");
   }
+  if (!category) {
+    throw new ApiError(400, "Please select category");
+  }
+  const updateData = { title, description, category };
 
   if (thumbnail) {
-    // upload new thumbnail to cloudinary
     let uploadedThumbnail = await uploadeOnCloudinary(thumbnail);
     if (!uploadedThumbnail) {
       throw new ApiError(500, "Failed to upload thumbnail to cloud storage!");
     }
+    updateData.thumbnail = uploadedThumbnail.url;
   }
 
-  await Video.findByIdAndUpdate(
+  const updatedVideo = await Video.findByIdAndUpdate(
     videoId,
-    { $set: { title, description, thumbnail: uploadedThumbnail?.url } },
+    { $set: updateData },
     { new: true }
   );
 
   return res
     .status(200)
-    .json(new ApiResponse(200, null, "Video updated successfully."));
+    .json(new ApiResponse(200, updatedVideo, "Video updated successfully."));
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {

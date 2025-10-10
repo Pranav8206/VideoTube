@@ -11,7 +11,9 @@ const Loader = ({
   };
 
   return (
-    <div className={`absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 ${className}`}>
+    <div
+      className={`absolute inset-0 z-40 flex flex-col items-center bg-white/10 justify-center gap-4 ${className}`}
+    >
       <div className={`relative ${sizeClasses[size]}`}>
         <div className="absolute inset-0 border-[3px] border-gray-700 rounded-full"></div>
         <div className="absolute inset-0 border-[3px] border-transparent border-t-primary border-r-primary/70 rounded-full animate-spin"></div>

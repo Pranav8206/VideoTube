@@ -381,7 +381,11 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
         </div>
       )}
 
-      {!error && isLoading && <Loader className="" size="small" />}
+      {!error && isLoading && (
+        <div className="relative h-full w-full">
+          <Loader />
+        </div>
+      )}
       <SkipAnimation
         direction={skipAnimation}
         onAnimationEnd={() => setSkipAnimation(null)}

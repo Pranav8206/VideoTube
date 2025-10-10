@@ -12,6 +12,7 @@ const VideoCard = ({
   inSubscription,
   inSidebar = false,
   forChannelPage = false,
+  showMoreIcon = true,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -145,7 +146,7 @@ const VideoCard = ({
               forChannelPage && "min-h-8"
             } ${inSidebar ? "text-base " : "text-sm sm:text-base"} `}
           >
-            {video.title.charAt(0).toUpperCase() + video.title.slice(1)}
+            {video.title?.charAt(0).toUpperCase() + video.title?.slice(1)}
           </h3>
           {isList && (
             <h2 className="hidden sm:flex min-h-0 text-gray-600 text-xs sm:text-sm leading-snug line-clamp-2 text-ellipsis tracking-tight max-h-10">
@@ -181,10 +182,10 @@ const VideoCard = ({
                 }}
               >
                 {inSubscription
-                  ? video.channel?.name.charAt(0).toUpperCase() +
-                    video.channel?.name.slice(1)
-                  : video.owner.username.charAt(0).toUpperCase() +
-                    video.owner.username.slice(1)}
+                  ? video.channel?.name?.charAt(0).toUpperCase() +
+                    video.channel?.name?.slice(1)
+                  : video.owner.username?.charAt(0).toUpperCase() +
+                    video.owner.username?.slice(1)}
               </p>
 
               <p
@@ -201,7 +202,11 @@ const VideoCard = ({
         </div>
 
         {/* More button */}
-        <div className={`flex ${isList ? "items-start" : "items-end"} gap-1`}>
+        <div
+          className={`flex ${isList ? "items-start" : "items-end"} ${
+            !showMoreIcon && "hidden"
+          } gap-1`}
+        >
           <div className="relative">
             <button
               onClick={(e) => {
@@ -214,7 +219,7 @@ const VideoCard = ({
               <MoreVertical size={16} className="text-gray-600" />
             </button>
 
-            {showOptions && (
+            {showOptions && showMoreIcon && (
               <div
                 className={`absolute right-0 ${
                   isList ? "top-8" : "bottom-6"

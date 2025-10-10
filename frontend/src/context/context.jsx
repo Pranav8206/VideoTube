@@ -22,6 +22,7 @@ const ContextProvider = ({ children }) => {
   const isRefreshingRef = useRef(false);
   const failedQueueRef = useRef([]);
 
+  // --- Utility ---
   const timeAgo = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -39,41 +40,29 @@ const ContextProvider = ({ children }) => {
 
     for (const interval of intervals) {
       const count = Math.floor(seconds / interval.seconds);
-      if (count >= 1) {
+      if (count >= 1)
         return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
-      }
     }
     return "just now";
   };
 
-  // Process queued requests after token refresh completes
+  // --- Queue handler ---
   const processQueue = (error, token = null) => {
     failedQueueRef.current.forEach((prom) => {
-      if (error) {
-        prom.reject(error);
-      } else {
-        prom.resolve(token);
-      }
+      if (error) prom.reject(error);
+      else prom.resolve(token);
     });
     failedQueueRef.current = [];
   };
 
-  //    API calls-----------------------------------------------------
-
+  // --- API Calls ---
   const fetchAllVideos = async () => {
     try {
-      const response = await axios.get("/api/v1/videos");
+      const response = await axios.get("/api/v1/videos?limit=100");
+      const { success, data: videos, message } = response.data || {};
+      const publicVideo = videos.filter((video) => video.isPublished === true);
 
-      if (!response || !response.data) {
-        console.warn("No response from server");
-        return [];
-      }
-
-      const { success, data: videos, message } = response.data;
-
-      if (success && Array.isArray(videos)) {
-        return videos;
-      }
+      if (success && Array.isArray(videos)) return publicVideo;
       console.warn("Failed to fetch videos:", message || "Unknown error");
       return [];
     } catch (error) {
@@ -85,17 +74,8 @@ const ContextProvider = ({ children }) => {
   const fetchVideo = async (videoId) => {
     try {
       const response = await axios.get(`/api/v1/videos/${videoId}`);
-      if (!response || !response.data) {
-        console.warn("No response from server");
-        return null;
-      }
-      const { success, data: video, message } = response.data;
-
-      if (success && video) {
-        return video;
-      }
-      console.warn("Failed to fetch video:", message || "Unknown error");
-      return null;
+      const { success, data: video } = response.data || {};
+      return success ? video : null;
     } catch (error) {
       console.error("Error fetching video:", error);
       return null;
@@ -105,26 +85,15 @@ const ContextProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const response = await axios.get("/api/v1/users/current-user");
-
-      if (!response || !response.data) {
-        return null;
-      }
-
-      const { success, data: userData } = response.data;
-
+      const { success, data: userData } = response.data || {};
       if (success && userData) {
         setUser(userData);
         return userData;
       }
-
-      // success: false means not logged in (not an error)
       return null;
     } catch (error) {
-      // Silently fail for non-authenticated users (first-time visitors)
-      // Only log in debug mode, not as an error
-      if (error.response?.status !== 401) {
+      if (error.response?.status !== 401)
         console.error("Error fetching user:", error.message);
-      }
       return null;
     }
   };
@@ -141,14 +110,24 @@ const ContextProvider = ({ children }) => {
       console.error("Logout failed:", error.message);
     }
 
-    // Clear user state and reset refresh flags
+    // Cleanup
     setUser(null);
+    delete axios.defaults.headers.common["Authorization"];
     isRefreshingRef.current = false;
     failedQueueRef.current = [];
   };
 
-  // TOKEN REFRESH HANDLER ----------------------
+  // --- Keep Axios Auth Header Synced ---
+  useEffect(() => {
+    if (user?.accessToken || user?.token) {
+      const token = user.accessToken || user.token;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [user]);
 
+  // --- Refresh Token Interceptor ---
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
       (res) => res,
@@ -156,13 +135,12 @@ const ContextProvider = ({ children }) => {
         const originalRequest = error.config;
         const url = originalRequest?.url || "";
 
-        // Never try to refresh for these auth endpoints to avoid loops
         const isAuthEndpoint =
           url.includes("/api/v1/users/refresh-token") ||
           url.includes("/api/v1/users/logout") ||
           url.includes("/api/v1/users/login") ||
           url.includes("/api/v1/users/register") ||
-          url.includes("/api/v1/users/current-user"); // Don't refresh on initial auth check
+          url.includes("/api/v1/users/current-user");
 
         if (isAuthEndpoint) {
           if (url.includes("/api/v1/users/refresh-token")) {
@@ -174,11 +152,9 @@ const ContextProvider = ({ children }) => {
           return Promise.reject(error);
         }
 
-        // Only attempt refresh once per original request
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
-          // If already refreshing, queue this request
           if (isRefreshingRef.current) {
             return new Promise((resolve, reject) => {
               failedQueueRef.current.push({ resolve, reject });
@@ -195,11 +171,8 @@ const ContextProvider = ({ children }) => {
               {},
               { withCredentials: true }
             );
-
             isRefreshingRef.current = false;
             processQueue(null, true);
-
-            // Retry original request with new token
             return axios(originalRequest);
           } catch (refreshErr) {
             isRefreshingRef.current = false;

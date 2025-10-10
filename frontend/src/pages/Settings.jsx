@@ -18,9 +18,9 @@ const Settings = () => {
 
   if (loading)
     return (
-      <>
+      <div className="relative h-screen">
         <Loader />
-      </>
+      </div>
     );
 
   return (
