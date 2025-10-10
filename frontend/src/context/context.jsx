@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Frown } from "lucide-react";
@@ -56,7 +62,7 @@ const ContextProvider = ({ children }) => {
   };
 
   // --- API Calls ---
-  const fetchAllVideos = async () => {
+  const fetchAllVideos = useCallback(async () => {
     try {
       const response = await axios.get("/api/v1/videos?limit=100");
       const { success, data: videos, message } = response.data || {};
@@ -69,7 +75,7 @@ const ContextProvider = ({ children }) => {
       console.error("Error fetching videos:", error.message);
       return [];
     }
-  };
+  }, []);
 
   const fetchVideo = async (videoId) => {
     try {
@@ -82,8 +88,10 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-  const fetchCurrentUser = async () => {
+  const fetchCurrentUser = useCallback(async () => {
     try {
+      console.log("fetchCurrentUser called");
+
       const response = await axios.get("/api/v1/users/current-user");
       const { success, data: userData } = response.data || {};
       if (success && userData) {
@@ -96,7 +104,7 @@ const ContextProvider = ({ children }) => {
         console.error("Error fetching user:", error.message);
       return null;
     }
-  };
+  }, []);
 
   const logout = async () => {
     try {

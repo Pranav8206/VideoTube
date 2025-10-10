@@ -52,11 +52,7 @@ const UploadContent = ({ isLogin = false }) => {
   const description = watch("description");
 
   const onSubmit = async (data) => {
-    if (!isLogin) {
-      setError("Login to upload a video.");
-      toast.error("Login to upload video.");
-      return;
-    }
+    
     if (!videoFile) {
       setError("Please select video.");
       toast.error("Missing video file!");
@@ -72,12 +68,8 @@ const UploadContent = ({ isLogin = false }) => {
     setUploadProgress(0);
     setError(null);
 
-    let simulatedProgress = 0;
-    const dummyInterval = setInterval(() => {
-      simulatedProgress += Math.floor(Math.random() * 5) + 1; // increment 1-5%
-      if (simulatedProgress >= 20) simulatedProgress = 20; // cap dummy at 20%
-      setUploadProgress(simulatedProgress);
-    }, 300);
+    let dummyInterval = null;
+
     try {
       const formData = new FormData();
       formData.append("video", videoFile);
@@ -87,21 +79,44 @@ const UploadContent = ({ isLogin = false }) => {
       formData.append("category", data.category);
       formData.append("isPublished", data.isPublished);
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      clearInterval(dummyInterval);
-
       const response = await axios.post("/api/v1/videos/publish", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.min(
-            Math.round((progressEvent.loaded * 100) / progressEvent.total),
-            92
+          // Clear dummy interval once real upload starts
+          if (dummyInterval) {
+            clearInterval(dummyInterval);
+            dummyInterval = null;
+          }
+
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
           );
-          setUploadProgress(percentCompleted);
+
+          // Cap at 95% until we get success response
+          const cappedProgress = Math.min(percentCompleted, 95);
+          setUploadProgress(cappedProgress);
+
+          // Start dummy progress for the last 5% (server processing)
+          if (cappedProgress >= 95 && !dummyInterval) {
+            let processingProgress = 95;
+            dummyInterval = setInterval(() => {
+              processingProgress += 0.5;
+              if (processingProgress >= 99) {
+                processingProgress = 99;
+                clearInterval(dummyInterval);
+              }
+              setUploadProgress(processingProgress);
+            }, 500);
+          }
         },
       });
+
+      // Clear any remaining interval
+      if (dummyInterval) {
+        clearInterval(dummyInterval);
+      }
 
       setUploadProgress(100);
       toast.success(response.data.message || "Video published successfully!");
@@ -109,8 +124,13 @@ const UploadContent = ({ isLogin = false }) => {
       reset();
       setVideoFile(null);
       setThumbnailFile(null);
-      setTimeout(() => setUploadProgress(0), 2000); // Clear progress after 2s
+      setTimeout(() => setUploadProgress(0), 2000);
     } catch (err) {
+      // Clear interval on error
+      if (dummyInterval) {
+        clearInterval(dummyInterval);
+      }
+
       const errorMessage =
         err.response?.data?.message ||
         "An error occurred while uploading the video.";
@@ -273,15 +293,19 @@ const UploadContent = ({ isLogin = false }) => {
               thumbnailPreview={thumbnailPreview}
             />
 
-            <div className="flex flex-wrap gap-4 pt-4 items-center  max-sm:justify-center">
-              {isLoading && (
+            <div className="flex flex-wrap gap-4 pt-4 items-center max-sm:justify-center">
+              {isLoading && uploadProgress > 0 && (
                 <div className="w-52 space-y-2">
                   <div className="flex items-center ml-10 text-sm font-medium text-gray-700">
                     <div className="flex h-7 w-7 justify-center animate-spin">
                       <Loader className="w-6 h-6 text-primary animate-pulse" />
                     </div>
                     <span className="whitespace-nowrap">
-                      {uploadProgress < 99 ? "Uploading..." : "Processing..."}
+                      {uploadProgress < 95
+                        ? "Uploading..."
+                        : uploadProgress < 100
+                        ? "Processing..."
+                        : "Complete!"}
                     </span>
                   </div>
 
@@ -291,7 +315,7 @@ const UploadContent = ({ isLogin = false }) => {
                       style={{ width: `${uploadProgress}%` }}
                     />
                     <span className="absolute top-1/2 -translate-y-1/2 text-xs font-semibold text-gray-800 left-1/2 -translate-x-1/2">
-                      {uploadProgress}%
+                      {Math.round(uploadProgress)}%
                     </span>
                   </div>
                 </div>

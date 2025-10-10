@@ -4,21 +4,25 @@ import { AppContext } from "../context/context";
 import Loader from "../components/Loader";
 
 const Settings = () => {
-  const { setShowLogin, user } = useContext(AppContext);
-  const [loading, setLoading] = useState(false);
+  const { setShowLogin, user, fetchCurrentUser } = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    setLoading(true);
-    if (user) {
-      setShowLogin(false);
-    } else {
-      setShowLogin(true);
-    }
-    setLoading(false);
-  });
+    const initializeUser = async () => {
+      try {
+        const currentUser = await fetchCurrentUser();
+        if (currentUser) {
+          setShowLogin(false);
+        } else setShowLogin(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initializeUser();
+  }, [fetchCurrentUser]);
 
   if (loading)
     return (
-      <div className="relative h-screen">
+      <div className="relative h-[88vh]">
         <Loader />
       </div>
     );
