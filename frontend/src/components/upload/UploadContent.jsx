@@ -13,7 +13,7 @@ import {
   Loader,
 } from "lucide-react";
 
-const UploadContent = ({ isLogin = false }) => {
+const UploadContent = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -52,7 +52,6 @@ const UploadContent = ({ isLogin = false }) => {
   const description = watch("description");
 
   const onSubmit = async (data) => {
-    
     if (!videoFile) {
       setError("Please select video.");
       toast.error("Missing video file!");

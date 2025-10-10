@@ -99,7 +99,7 @@ const Login = () => {
 
         reset();
         setShowLogin(false);
-        navigate("/");
+        navigate("/setting");
       } else {
         setError("root", {
           type: "manual",

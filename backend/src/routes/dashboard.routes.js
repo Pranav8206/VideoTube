@@ -12,5 +12,8 @@ router.use(verifyJWT);
 router.route("/stats/:userId").get(getChannelStats);
 
 router.route("/videos/:userId").get(getChannelVideos);
+//not using, because modified the fetchAllVideos to fetch using userId
+// also create at users/c/:username to fetch user all info because, i forget that this route exist
+// be mindful when creating route and write it down for clarity
 
 export default router;

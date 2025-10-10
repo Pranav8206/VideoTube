@@ -18,6 +18,7 @@ import { AppContext } from "../../context/context";
 import axios from "axios";
 import PasswordSettings from "./PasswordSettings";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AccountSettings = () => {
   const { user, setUser, logout } = useContext(AppContext);
@@ -30,6 +31,7 @@ const AccountSettings = () => {
   const saveRef = useRef();
   const [showMessage, setShowMessage] = useState(false);
   const [countdown, setCountdown] = useState(3);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -167,6 +169,7 @@ const AccountSettings = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
+      navigate("/");
     }
   };
 
