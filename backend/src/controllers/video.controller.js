@@ -19,6 +19,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
     filter.owner = userId;
   }
 
+  // filter.isPublished = true;
+
   const videos = await Video.find(filter)
     .select("-videoFile")
     .skip((page - 1) * limit)
@@ -32,7 +34,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, category, isPublished = true } = req.body;
+  console.log("here is 3");
 
   //check title is available
   const existingVideo = await Video.findOne({ title });
@@ -44,7 +47,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const ThumbnailFilePath = req.files?.thumbnail?.[0]?.path;
 
   if (!title || !description) {
-    throw new ApiError(400, "Title and description cannot be empty.");
+    throw new ApiError(400, "Title or description cannot be empty.");
   } else if (title.length < 10) {
     throw new ApiError(400, "Title must be at least 10 characters long.");
   }
@@ -55,11 +58,13 @@ const publishAVideo = asyncHandler(async (req, res) => {
       "Both a video and a thumbnail are required to proceed!"
     );
   }
-
+  console.log("here is 2");
   const videoInfo = await uploadeOnCloudinary(VideoFilePath);
   const thumbnail = await uploadeOnCloudinary(ThumbnailFilePath);
 
   if (!videoInfo || !thumbnail) {
+    console.log("here is ");
+
     throw new ApiError(500, "Failed to  upload media to cloud storage!");
   }
 
@@ -67,10 +72,11 @@ const publishAVideo = asyncHandler(async (req, res) => {
     videoFile: videoInfo.url,
     thumbnail: thumbnail.url,
     owner: req.user?._id,
-    title: title,
-    description: description,
+    title,
+    description,
     duration: videoInfo.duration || 0,
-    // view :
+    category,
+    isPublished,
   });
 
   if (!video) {

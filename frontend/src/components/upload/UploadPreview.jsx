@@ -1,4 +1,4 @@
-import { Play } from "lucide-react";
+import { Play, Edit, Trash2, MoreHorizontal, MoreVertical } from "lucide-react";
 import React, { useState } from "react";
 
 const UploadPreview = ({ title, description, thumbnailPreview }) => {
@@ -7,35 +7,34 @@ const UploadPreview = ({ title, description, thumbnailPreview }) => {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Preview:
+        Preview*
       </label>
 
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+      <div className="flex flex-col gap-4">
         {/* Thumbnail Card */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 hover:shadow-md transition">
-          <div className="relative w-40 md:w-1/2 aspect-video rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+        <div
+          className="relative bg-white rounded-xl border border-gray-200 shadow-sm flex items-start gap-1 sm:gap-4 hover:shadow-md transition-all"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Thumbnail */}
+          <div className="relative w-28 xs:w-35 s:w-40 sm:w-48 aspect-video rounded-l-xl overflow-hidden bg-gray-100 ">
             {thumbnailPreview ? (
               <>
                 <img
                   src={thumbnailPreview}
                   alt={title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-150"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-
                 {/* Duration Tag */}
-                <span className="absolute bg-black/70 text-white rounded font-medium bottom-1 right-1 text-[10px] sm:text-xs px-1.5 py-0.5">
+                <span className="absolute bottom-2 right-2 bg-black/70 text-white rounded font-medium text-xs sm:text-sm px-2 py-1">
                   0:00
                 </span>
-
                 {/* Hover Overlay */}
                 {isHovered && (
                   <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <div className="bg-purple-600 hover:bg-purple-700 transition rounded-full flex items-center justify-center w-10 h-10 shadow-lg">
-                      <Play size={20} className="text-white" />
+                    <div className="bg-purple-600 hover:bg-purple-700 transition rounded-full flex items-center justify-center w-8 h-8 shadow-md">
+                      <Play size={16} className="text-white" />
                     </div>
                   </div>
                 )}
@@ -48,13 +47,36 @@ const UploadPreview = ({ title, description, thumbnailPreview }) => {
           </div>
 
           {/* Video Info */}
-          <div className="min-w-1/2 flex-1 h-full pt-1">
-            <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-1">
+          <div className="flex-1 space-y-1 sm:space-y-3 px-1">
+            <div className="font-semibold text-gray-900 line-clamp-2 leading-tight text-sm sm:text-base mt-1">
               {title || "Untitled Video"}
             </div>
-            <div className="text-xs text-gray-500 line-clamp-2">
+            <div className="max-s:hidden text-xs sm:text-sm text-gray-500 line-clamp-1">
               {description || "No description provided."}
             </div>
+
+            <div className="flex items-start gap-1 sm:gap-2">
+              <div className="shrink-0">
+                <img
+                  src="user.png"
+                  alt="default user"
+                  className="rounded-full w-6 h-6 sm:w-8 sm:h-8 border border-primary"
+                />
+              </div>
+              <div className="flex flex-col justify-center">
+                <p className="font-semibold text-primary cursor-pointer line-clamp-1 text-xs sm:text-sm">
+                  Your channel name
+                </p>
+                <p className="text-gray-500 text-xs sm:text-sm flex items-center gap-1 leading-tight whitespace-nowrap">
+                  <span>0 views</span>
+                  <span>•</span>
+                  <span>0 sec ago</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-2 right-2 flex gap-2 cursor-pointer hover:bg-gray-200 rounded-full p-0.5">
+            <MoreVertical size={16} className="text-gray-600" />
           </div>
         </div>
       </div>

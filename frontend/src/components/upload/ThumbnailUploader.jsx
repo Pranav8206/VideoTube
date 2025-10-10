@@ -9,10 +9,10 @@ const ThumbnailUploader = ({
   <div className="flex justify-between flex-wrap">
     <div className="">
       <label
-        htmlFor="thumb"
+        htmlFor="thumbnail"
         className="text-sm font-medium text-gray-700 flex items-center "
       >
-        Custom Thumbnail:
+        Custom Thumbnail*
         {thumbnailPreview ? (
           <span>
             {" "}
@@ -25,9 +25,9 @@ const ThumbnailUploader = ({
           " "
         )}
       </label>
-      <div className="mt-1 flex items-center gap-3">
+      <div className=" flex items-center gap-3">
         <button
-          id="thumb"
+          id="thumbnail"
           type="button"
           onClick={() => thumbnailInputRef.current?.click()}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer"

@@ -39,6 +39,10 @@ const videoSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    category: {
+      type: String,
+      default: "all",
+    },
   },
   { timestamps: true }
 );

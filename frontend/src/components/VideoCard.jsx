@@ -68,7 +68,7 @@ const VideoCard = ({
 
   return (
     <div
-      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer hover:border-gray-200 hover:shadow-md
+      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer h-full hover:border-gray-200 hover:shadow-md
         ${
           isList
             ? "flex justify-between gap-2 hover:bg-gray-50 my-1"
@@ -84,8 +84,8 @@ const VideoCard = ({
       {/* Thumbnail */}
       <div
         className={`relative ${
-          isList ? "flex-shrink-0 w-[40%] max-w-[320px]" : ""
-        }`}
+          isList ? "flex-shrink-0 w-[42%] sm:w-[50%] max-w-[320px]" : ""
+        }  `}
       >
         <div
           className={`overflow-hidden bg-gray-100 aspect-video ${
@@ -136,59 +136,61 @@ const VideoCard = ({
       {/* Info + Actions */}
       <div
         className={`flex-1 ${
-          isList ? "flex pt-1 justify-between" : "p-1 flex justify-between "
+          isList ? "flex s:pt-1 justify-between" : "p-1 flex justify-between "
         }`}
       >
-        <div className="flex-col justify-between pl-1 overflow-hidden">
+        <div className="flex-col justify-between s:pl-1 overflow-hidden">
           <h3
             className={`font-semibold text-gray-900 line-clamp-2 overflow-ellipsis leading-tight ${
-              forChannelPage && "min-h-10"
-            } ${inSidebar ? "text-base " : "text-base sm:text-lg"} `}
+              forChannelPage && "min-h-8"
+            } ${inSidebar ? "text-base " : "text-sm sm:text-base"} `}
           >
             {video.title.charAt(0).toUpperCase() + video.title.slice(1)}
           </h3>
+          {isList && (
+            <h2 className="hidden sm:flex min-h-0 text-gray-600 text-xs sm:text-sm leading-snug line-clamp-2 text-ellipsis tracking-tight max-h-10">
+              {video.description || ""}
+            </h2>
+          )}
 
           <div className="flex items-start gap-2 sm:gap-3 h-full">
-            {!forChannelPage && (
-              <div className="shrink-0">
-                <img
-                  src={video.owner?.avatar || "user.png"}
-                  alt={video.owner?.username}
-                  className={`rounded-full w-8 h-8 border border-primary ${
-                    inSidebar ? "" : " sm:w-9 sm:h-9"
-                  }`}
-                  onMouseEnter={showNameRefUnderline}
-                  onMouseLeave={hideNameRefUnderline}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/c/${video.owner?.username}`);
-                  }}
-                />
-              </div>
-            )}
+            <div className="shrink-0">
+              <img
+                src={video.owner?.avatar || "user.png"}
+                alt={video.owner?.username}
+                className={`rounded-full w-7 h-7 border border-primary ${
+                  inSidebar ? "" : " sm:w-9 sm:h-9"
+                }`}
+                onMouseEnter={showNameRefUnderline}
+                onMouseLeave={hideNameRefUnderline}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/c/${video.owner?.username}`);
+                }}
+              />
+            </div>
 
-            <div className="flex flex-col peer-hover:underline justify-center">
-              {!forChannelPage && (
-                <p
-                  ref={nameRef}
-                  className={`font-semibold text-primary cursor-pointer line-clamp-1 leading-tight ${
-                    inSidebar ? "text-xs" : "text-sm sm:text-base"
-                  } `}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  {inSubscription
-                    ? video.channel?.name.charAt(0).toUpperCase() +
-                      video.channel?.name.slice(1)
-                    : video.owner.username.charAt(0).toUpperCase() +
-                      video.owner.username.slice(1)}
-                </p>
-              )}
+            <div className="flex flex-col justify-center">
+              <p
+                ref={nameRef}
+                className={`font-semibold text-primary cursor-pointer line-clamp-1 leading-tight ${
+                  inSidebar ? "text-xs" : "text-xs sm:text-sm"
+                } `}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                {inSubscription
+                  ? video.channel?.name.charAt(0).toUpperCase() +
+                    video.channel?.name.slice(1)
+                  : video.owner.username.charAt(0).toUpperCase() +
+                    video.owner.username.slice(1)}
+              </p>
+
               <p
                 className={`text-gray-500 ${
                   inSidebar ? "text-xs" : "text-xs sm:text-sm"
-                } flex items-center gap-1 leading-tight`}
+                } flex items-center gap-1 leading-tight whitespace-nowrap overflow-ellipsis`}
               >
                 <span>{video.views} views</span>
                 <span>•</span>

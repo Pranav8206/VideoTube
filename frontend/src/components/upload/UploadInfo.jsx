@@ -8,7 +8,7 @@ const UploadInfo = () => {
         <h3 className="font-semibold text-gray-800 mb-3">Upload Guidelines</h3>
         <ul className="text-sm text-gray-600 space-y-2 list-disc pl-5">
           <li>Video formats: MP4, MOV, MKV, WEBM</li>
-          <li>Max file size: 10GB</li>
+          <li>Max file size: 2GB</li>
           <li>Recommended resolution: 1080p or 4K</li>
         </ul>
       </div>
