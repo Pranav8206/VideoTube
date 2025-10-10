@@ -24,10 +24,7 @@ const ChannelContent = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `/api/v1/users/c/${channelName.toLowerCase()}`,
-          {
-            headers: { "x-bypass-interceptor": "true" },
-          }
+          `/api/v1/users/c/${channelName.toLowerCase()}`
         );
         console.log("Channel data:", res.data);
         setChannelData(res.data.data);
@@ -66,7 +63,7 @@ const ChannelContent = () => {
       </div>
     );
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto">
         <ChannelBanner channelBannerLink={channelData.coverImage} />
         <ChannelInfoCard

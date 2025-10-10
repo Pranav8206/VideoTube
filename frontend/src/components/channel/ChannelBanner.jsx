@@ -2,24 +2,15 @@ import React from "react";
 
 const ChannelBanner = ({ channelBannerLink }) => {
   return (
-    <div className="relative h-48 md:h-64 overflow-hidden">
+    <div className="relative z-20 h-30 s:h-35 sm:h-45 md:h-50 rounded-2xl mx-[4%] lg:h-60 overflow-hidden aspect-video w-[92%] bg-gradient-to-r from-primary to-purple-600">
       {/* Banner Image */}
-      {channelBannerLink && (
+      {channelBannerLink && ( 
         <img
           src={channelBannerLink}
-          alt="Channel Banner"
-          className="absolute inset-0 w-full h-full object-cover"
+          alt="Banner"
+          className="absolute inset-0 object-cover w-full"
         />
       )}
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/60 via-purple-600/60 to-indigo-700/60"></div>
-
-      {/* Wave-like patterns */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-400/30 to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-l from-indigo-400/30 to-transparent"></div>
-      </div>
     </div>
   );
 };

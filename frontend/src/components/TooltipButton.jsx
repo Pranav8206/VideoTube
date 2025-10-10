@@ -26,7 +26,7 @@ const TooltipButton = ({
           className={`
             absolute ${
               position === "top" ? "-top-7 left-1/2" : " top-0 -left-[230%] "
-            }  -translate-x-1/2 z-40 invisible opacity-0 scale-95 pointer-events-none transition-all -150 ease-out peer-hover:visible peer-hover:opacity-100 peer-hover:scale-100 bg-dark/90 text-primary rounded-md px-2 py-1 text-xs font-medium shadow-md whitespace-nowrap `}
+            }  -translate-x-1/2 z-40 invisible opacity-0 scale-95 pointer-events-none transition-all duration-200 ease-out peer-hover:visible peer-hover:opacity-100 peer-hover:scale-100 bg-dark/90 text-primary rounded-md px-2 py-1 text-xs font-medium shadow-md whitespace-nowrap `}
         >
           {tooltipText}
         </span>

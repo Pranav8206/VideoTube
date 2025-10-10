@@ -28,17 +28,17 @@ const ChannelInfoCard = ({ channel, isSubscribed, onSubscribe, verified }) => {
   const videos = channel?.videoCount || 0;
 
   return (
-    <div className="relative -mt-10 mb-8">
-      <div className="bg-white rounded-2xl border border-gray-200 px-6 py-3 xs:py-5 mx-3 xs:mx-6 md:mx-10 lg:mx-20 shadow-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-6 ">
+    <div className="relative -mt-1 sm:-mt-4 mb-2 mx-auto container ">
+      <div className="z-10 rounded-2xl border-2 border-white border-t-gray-100/60 px-6 py-1 s:py-3 flex flex-col sm:flex-row items-center gap-2 sm:gap-6 sm:justify-center mx-auto w-fit">
         {/* Left side: Avatar + Info */}
-        <div className="flex items-start sm:items-center gap-4 sm:gap-6 flex-1 min-w-0">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-6">
           {/* Channel Avatar */}
-          <div className="relative flex-shrink-0">
+          <div className="relative">
             {channel?.avatar ? (
               <img
                 src={channel.avatar}
                 alt={channelName}
-                className="w-16 h-16 md:w-18 md:h-18 rounded-full object-cover border-2 border-purple-600"
+                className="w-16 h-16 s:w-18 s:h-18 rounded-full object-cover border-2 border-purple-600"
               />
             ) : (
               <div className="w-16 h-16 md:w-18 md:h-18 bg-primary rounded-full flex items-center justify-center">
@@ -56,7 +56,7 @@ const ChannelInfoCard = ({ channel, isSubscribed, onSubscribe, verified }) => {
           </div>
 
           {/* Channel Info */}
-          <div className="min-w-0">
+          <div>
             <TooltipButton
               tooltipText={channelName}
               className=" cursor-pointer"
@@ -73,6 +73,7 @@ const ChannelInfoCard = ({ channel, isSubscribed, onSubscribe, verified }) => {
                 )}
               </h1>
             </TooltipButton>
+            <div className="text-sm text-gray-600">@{channel.username}</div>
             <div className="text-gray-600 text-sm sm:text-base">
               <span className="font-semibold">{subscribers}</span>{" "}
               {subscribers.length > 1 || subscribers > 1
@@ -84,7 +85,7 @@ const ChannelInfoCard = ({ channel, isSubscribed, onSubscribe, verified }) => {
         </div>
 
         {/* Right side: Action Buttons */}
-        <div className="flex items-center gap-3 md:justify-end ">
+        <div className="flex gap-3  w-52">
           {/* Subscribe Button */}
           <div className="relative">
             <button
@@ -134,6 +135,7 @@ const ChannelInfoCard = ({ channel, isSubscribed, onSubscribe, verified }) => {
           </button>
         </div>
       </div>
+      <div className="h-0.5 w-[100%]  mx-auto rounded-b-2xl bg-primary/3" />
     </div>
   );
 };

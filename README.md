@@ -83,9 +83,9 @@ All endpoints (except auth endpoints) require JWT authentication via Bearer toke
 | `PATCH` | `/users/update-account`  | Update account       | Yes           |
 | `PATCH` | `/users/avatar`          | Update avatar        | Yes           |
 | `PATCH` | `/users/cover-image`     | Update cover image   | Yes           |
-| `GET`   | `/users/c/:username`     | Get channel profile  | Yes           |
+| `GET`   | `/users/c/:username`     | Get channel profile  | No            |
 | `GET`   | `/users/history`         | Get watch history    | Yes           |
-| `DELETE`   | `/users`              | Delete account & videos| Yes           |
+| `DELETE`| `/users`                 | Delete account & videos| Yes         |
 
 ### Video Endpoints
 

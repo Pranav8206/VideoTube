@@ -47,7 +47,7 @@ const ChannelNavigation = ({
         </div>
 
         {/* Search and View Controls */}
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex items-center gap-3 max-sm:mx-11 max-md:mx-20 md:w-auto ">
           {/* Search */}
           <div className="relative flex-1 md:flex-none">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
