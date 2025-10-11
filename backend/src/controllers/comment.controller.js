@@ -20,21 +20,26 @@ const getVideoComments = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Video not exist or deleted");
   }
 
-  const comment = await Comment.find({ video: videoId })
+  // Get total comments count
+  const totalComments = await Comment.countDocuments({ video: videoId });
+
+  const comments = await Comment.find({ video: videoId })
+    .populate("owner", "username avatar fullName")
     .skip(parseInt(skip))
     .limit(parseInt(limit))
+    .sort({ createdAt: -1 })
     .lean();
 
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        comments: comment,
-        totalComments,
+        comments: comments,
+        totalComments: totalComments,
         page: parseInt(page),
-        totalPages: Math.ceil(totalComments / limit),
+        totalPages: Math.ceil(totalComments / parseInt(limit)),
       },
-      "Comment fetched successfully"
+      "Comments fetched successfully"
     )
   );
 });
@@ -42,8 +47,10 @@ const getVideoComments = asyncHandler(async (req, res) => {
 const addComment = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { content } = req.body;
+  console.log("here 2");
 
   if (!videoId || !mongoose.isValidObjectId(videoId)) {
+    console.log("here");
     throw new ApiError(400, "Invalid video Id");
   }
 
@@ -62,9 +69,15 @@ const addComment = asyncHandler(async (req, res) => {
     owner: req.user._id,
   });
 
+  // Populate owner details before sending response
+  const populatedComment = await comment.populate(
+    "owner",
+    "username avatar fullName"
+  );
+
   return res
     .status(201)
-    .json(new ApiResponse(201, comment, "Comment added successfully"));
+    .json(new ApiResponse(201, populatedComment, "Comment added successfully"));
 });
 
 const updateComment = asyncHandler(async (req, res) => {
@@ -84,15 +97,20 @@ const updateComment = asyncHandler(async (req, res) => {
   });
 
   if (!comment) {
-    throw new ApiError(404, "Comment is not exist or deleted");
+    throw new ApiError(404, "Comment does not exist or has been deleted");
   }
 
   comment.content = content.trim();
   await comment.save();
 
+  const updatedComment = await comment.populate(
+    "owner",
+    "username avatar fullName"
+  );
+
   return res
     .status(200)
-    .json(new ApiResponse(200, comment, "Comment is updated successfully"));
+    .json(new ApiResponse(200, updatedComment, "Comment updated successfully"));
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
@@ -104,7 +122,9 @@ const deleteComment = asyncHandler(async (req, res) => {
 
   const comment = await Comment.findOne({
     _id: commentId,
+    owner: req.user._id,
   });
+
   if (!comment) {
     throw new ApiError(404, "Comment not found");
   }
@@ -118,11 +138,11 @@ const deleteComment = asyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to delete this comment");
   }
 
-  await comment.deleteOne();
+  await Comment.findByIdAndDelete(commentId);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, null, "Deleted successfully"));
+    .json(new ApiResponse(200, null, "Comment deleted successfully"));
 });
 
 export { getVideoComments, addComment, updateComment, deleteComment };

@@ -3,7 +3,7 @@ import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 import PlaylistSidebar from "../components/playlist/PlaylistSidebar";
 import CommentsSection from "../components/CommentSection";
 import VideoActions from "../components/VideoPlayer/VideoActions";
-import { onePlaylist, currentVideo, dummyComments } from "../utils/videosData";
+import { onePlaylist } from "../utils/videosData";
 import { AppContext } from "../context/context";
 import { useParams } from "react-router-dom";
 
@@ -11,7 +11,6 @@ const VideoPlayerPage = () => {
   const [video, setVideo] = useState({});
   const { isCinemaMode, fetchVideo } = useContext(AppContext);
   const { videoId } = useParams();
-
   const currentId = onePlaylist.videos?.[1]?.id || onePlaylist.videos?.[0]?.id;
 
   useEffect(() => {
@@ -21,7 +20,6 @@ const VideoPlayerPage = () => {
       if (!ignore) setVideo(fetched);
     };
     loadVideo();
-
     return () => {
       ignore = true;
     };
@@ -41,13 +39,14 @@ const VideoPlayerPage = () => {
             : "md-plus:flex-1 md-plus:min-w-[50vw]"
         }`}
       >
-        {" "}
         <div className={`relative ${isCinemaMode ? "" : "rounded-lg"} `}>
           <VideoPlayer src={video.videoFile} poster={video.thumbnail} />
         </div>
         <div className={`block  ${isCinemaMode ? "md-plus:hidden" : " block"}`}>
           <VideoActions video={video} />
-          <CommentsSection comments={dummyComments} />
+          {video._id && (
+            <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+          )}
         </div>
       </div>
 
@@ -75,7 +74,9 @@ const VideoPlayerPage = () => {
         }`}
       >
         <VideoActions video={video} />
-        <CommentsSection comments={dummyComments} />
+        {video._id && (
+          <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+        )}
       </div>
     </div>
   );

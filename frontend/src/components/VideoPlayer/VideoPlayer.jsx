@@ -205,8 +205,6 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
       return;
     }
     setShowControls(true);
-    console.log("start");
-
     const timeout = isTouch ? 2000 : 1000;
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
@@ -223,7 +221,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   }, [resetControlsTimeout]);
 
   const handleMouseLeave = useCallback(() => {
-    if (!pin && isPlaying) {
+    if (!pin) {
       setShowControls(false);
     }
   }, [pin, isPlaying]);
@@ -316,12 +314,12 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden group select-none transition-all duration-300 ease-in-out aspect-video mx-auto shadow-2xl ${
+      className={`relative overflow-hidden group select-none transition-all duration-300 ease-in-out aspect-video mx-auto  ${
         isFullscreen
           ? "fixed inset-0 z-[1100]"
           : isCinemaMode
-          ? "max-h-[70vh] max-lg:w-full w-screen rounded-xs"
-          : "max-h-[60vh] rounded-lg mx-auto"
+          ? "max-h-[70vh] max-lg:w-full w-screen rounded-xs shadow-2xl"
+          : "max-h-[70vh] rounded-lg mx-auto"
       }`}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
@@ -354,7 +352,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
             e.stopPropagation();
             setPin((prev) => !prev);
           }}
-          className="flex items-center justify-center bg-black/20 text-white p-1 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out backdrop-blur-sm"
+          className="flex items-center justify-center bg-black/20 text-white p-1 rounded-full  cursor-pointer transition-all duration-200 ease-in-out backdrop-blur-sm"
           aria-label={pin ? "Unpin controls" : "Pin controls"}
           title={pin ? "" : "Pin controls"}
           aria-pressed={pin}
