@@ -18,26 +18,18 @@ const ChannelInfoCard = ({
   const [subscribing, setSubscribing] = useState(false);
   const [localIsSubscribed, setLocalIsSubscribed] = useState(isSubscribed);
 
-  const { axios, user } = useContext(AppContext);
+  const { user, getAllSubscribedChannels, toggleSubscribeChannel } =
+    useContext(AppContext);
 
   // Fetch subscribed channels and check if current channel is subscribed
   const getAllSubscribeChannel = useCallback(async () => {
-    if (!user) return; // Skip if no user
-    try {
-      const res = await axios.get("/api/v1/subscriptions");
-      const subscribedChannels = res.data?.data?.channels || [];
-      const isChannelSubscribed = subscribedChannels.some(
-        (sub) => sub.channel._id === channel._id
-      );
-      setLocalIsSubscribed(isChannelSubscribed);
-      // console.log("Subscribed channels:", subscribedChannels, "Is subscribed:", isChannelSubscribed);
-    } catch (error) {
-      console.error("Failed to fetch subscriptions:", error);
-      toast.error(
-        error.response?.data?.message || "Failed to fetch subscription status"
-      );
-    }
-  }, [axios, user, channel._id]);
+    if (!user) return;
+    const subscribedChannels = await getAllSubscribedChannels();
+    const isChannelSubscribed = subscribedChannels.some(
+      (sub) => sub.channel._id === channel._id
+    );
+    setLocalIsSubscribed(isChannelSubscribed);
+  }, [getAllSubscribedChannels, user, channel._id]);
 
   useEffect(() => {
     getAllSubscribeChannel();
@@ -54,48 +46,37 @@ const ChannelInfoCard = ({
     }
 
     if (user._id === channel._id || user.username === channel.username) {
-      toast.error("Cannot subscribe to your own channel");
+      toast.error("Can't subscribe to yourself");
       return;
     }
 
     setSubscribing(true);
+    const subscribed = await toggleSubscribeChannel(channel._id);
 
-    try {
-      const res = await axios.post(`/api/v1/subscriptions/${channel._id}`);
-      const subscribed = res.data?.data?.subscribed;
-
-      setLocalIsSubscribed(subscribed);
-
-      if (subscribed) {
-        setAnimateBell(true);
-        setAnimateStars(true);
-        setTimeout(() => setAnimateBell(false), 1500);
-        setTimeout(() => setAnimateStars(false), 800);
-      } else {
-        setNotificationsOn(false);
-      }
-
-      // Re-fetch subscriptions to ensure consistency
-      await getAllSubscribeChannel();
-
-      // Call parent callback if provided
-      if (onSubscribe) {
-        onSubscribe();
-      }
-    } catch (error) {
-      console.error("Subscribe error:", error);
-      toast.error(
-        error.response?.data?.message || "Failed to update subscription"
-      );
-    } finally {
+    if (subscribed === null) {
       setSubscribing(false);
+      return;
     }
+
+    setLocalIsSubscribed(subscribed);
+
+    if (subscribed) {
+      setAnimateBell(true);
+      setAnimateStars(true);
+      setTimeout(() => setAnimateBell(false), 1500);
+      setTimeout(() => setAnimateStars(false), 800);
+    } else {
+      setNotificationsOn(false);
+    }
+
+    await getAllSubscribeChannel();
+
+    if (onSubscribe) onSubscribe();
+    setSubscribing(false);
   };
 
   const toggleNotifications = () => {
-    if (localIsSubscribed) {
-      setNotificationsOn((prev) => !prev);
-    }
+    if (localIsSubscribed) setNotificationsOn((prev) => !prev);
   };
 
   const formatNumber = (num) => {
@@ -109,7 +90,6 @@ const ChannelInfoCard = ({
   const subscribers = channel?.subscribersCount || channel?.subscribers || 0;
   const videos = channel?.videos?.length || channel?.videoCount || 0;
 
-  // Check if this is the logged-in user's own channel
   const isOwnChannel =
     user && (user._id === channel._id || user.username === channel.username);
 
@@ -118,7 +98,6 @@ const ChannelInfoCard = ({
       <div className="z-10 rounded-2xl border-2 border-white border-t-gray-100/60 px-6 py-1 s:py-3 flex flex-col sm:flex-row items-center gap-2 sm:gap-6 sm:justify-center mx-auto w-fit">
         {/* Left side: Avatar + Info */}
         <div className="flex items-start sm:items-center gap-3 sm:gap-6">
-          {/* Channel Avatar */}
           <div className="relative">
             {channel?.avatar ? (
               <img
@@ -133,7 +112,6 @@ const ChannelInfoCard = ({
                 </span>
               </div>
             )}
-            {/* Verification Badge */}
             {verified && (
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-white shadow">
                 <Check className="w-3 h-3 text-white" />
@@ -141,7 +119,6 @@ const ChannelInfoCard = ({
             )}
           </div>
 
-          {/* Channel Info */}
           <div>
             <div className="flex items-center gap-2">
               <TooltipButton
@@ -175,10 +152,8 @@ const ChannelInfoCard = ({
           </div>
         </div>
 
-        {/* Right side: Action Buttons */}
         {!isOwnChannel && (
           <div className="flex gap-3 w-52">
-            {/* Subscribe Button */}
             <div className="relative">
               <button
                 onClick={handleSubscribe}
@@ -190,10 +165,9 @@ const ChannelInfoCard = ({
                       : "bg-primary text-white"
                   }`}
               >
-                {localIsSubscribed ? "Unsubscribe" : "Subscribe"}
+                {localIsSubscribed ? "Subscribed" : "Subscribe"}
               </button>
 
-              {/* Shining Stars Effect */}
               {animateStars && (
                 <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                   <Sparkles className="text-yellow-400 w-5 h-5 animate-ping absolute -top-2 -left-1" />
@@ -203,7 +177,6 @@ const ChannelInfoCard = ({
               )}
             </div>
 
-            {/* Bell Icon */}
             <button
               onClick={toggleNotifications}
               disabled={!localIsSubscribed}

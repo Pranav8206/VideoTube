@@ -12,16 +12,20 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.use(verifyJWT);
-
 router
   .route("/comment/:commentId")
-  .post(toggleCommentLike)
+  .post(verifyJWT, toggleCommentLike)
   .get(getCommentLikeCount);
 
-router.route("/tweet/:tweetId").post(toggleTweetLike).get(getTweetLikeCount);
+router
+  .route("/tweet/:tweetId")
+  .post(verifyJWT, toggleTweetLike)
+  .get(getTweetLikeCount);
 
-router.route("/video/:videoId").post(toggleVideoLike).get(getVideoLikeCount);
+router
+  .route("/video/:videoId")
+  .post(verifyJWT, toggleVideoLike)
+  .get(getVideoLikeCount);
 
 router.route("/").get(getLikedVideos);
 

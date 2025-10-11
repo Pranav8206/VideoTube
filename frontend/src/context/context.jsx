@@ -125,6 +125,34 @@ const ContextProvider = ({ children }) => {
     failedQueueRef.current = [];
   };
 
+  // Fetch all subscribed channels
+  const getAllSubscribedChannels = async () => {
+    try {
+      const res = await axios.get("/api/v1/subscriptions");
+      return res.data?.data?.channels || [];
+    } catch (error) {
+      console.error("Failed to fetch subscriptions:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to fetch subscriptions"
+      );
+      return [];
+    }
+  };
+
+  // Subscribe or unsubscribe to a channel
+  const toggleSubscribeChannel = async (channelId) => {
+    try {
+      const res = await axios.post(`/api/v1/subscriptions/${channelId}`);
+      return res.data?.data?.subscribed;
+    } catch (error) {
+      console.error("Subscribe error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to update subscription"
+      );
+      return null;
+    }
+  };
+
   // --- Keep Axios Auth Header Synced ---
   useEffect(() => {
     if (user?.accessToken || user?.token) {
@@ -229,6 +257,8 @@ const ContextProvider = ({ children }) => {
     user,
     setUser,
     logout,
+    getAllSubscribedChannels,
+    toggleSubscribeChannel
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

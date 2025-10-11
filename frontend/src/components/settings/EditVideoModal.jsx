@@ -64,15 +64,15 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-200/50 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-gray-200/50 flex items-center justify-center z-50 animate-fade-in">
       <div className="bg-white rounded-xl w-[90vw] sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+        <div className="flex items-center justify-between p-2 sm:p-4 sticky top-0 bg-white z-10">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 px-2 sm:px-5 pt-1">
             Edit Video
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full transition-all"
+            className="p-1 hover:bg-gray-100 rounded-full transition-all cursor-pointer"
             aria-label="Close edit modal"
             disabled={updateLoading}
           >
@@ -80,7 +80,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
           </button>
         </div>
 
-        <form onSubmit={handleUpdateVideo} className="p-4 sm:p-6 space-y-4">
+        <form onSubmit={handleUpdateVideo} className="px-4 sm:px-6 space-y-4">
           {error && (
             <div className="p-3 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
               <svg
@@ -110,7 +110,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
               onChange={(e) =>
                 setEditForm({ ...editForm, title: e.target.value })
               }
-              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm"
+              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-xs sm:text-sm"
               required
               minLength={10}
               disabled={updateLoading}
@@ -132,7 +132,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
                 setEditForm({ ...editForm, description: e.target.value })
               }
               rows={4}
-              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm resize-none"
+              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg  focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-xs sm:text-sm  "
               required
               disabled={updateLoading}
               aria-required="true"
@@ -149,7 +149,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
               onChange={(e) =>
                 setEditForm({ ...editForm, category: e.target.value })
               }
-              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm text-gray-900 bg-white"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-xs sm:text-sm text-gray-900 bg-white cursor-pointer"
               required
               disabled={updateLoading}
               aria-required="true"
@@ -177,18 +177,18 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
               onChange={(e) =>
                 setEditForm({ ...editForm, thumbnail: e.target.files[0] })
               }
-              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer file:mr-3 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all text-xs sm:text-sm file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer file:mr-3 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-lg file:border-0 file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all text-xs sm:text-sm file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed "
               disabled={updateLoading}
             />
             {editForm.thumbnail && (
-              <div className="mt-2 p-2 bg-blue-50 rounded-lg flex items-center justify-between">
-                <p className="text-xs text-blue-700 truncate flex-1">
+              <div className="mt-2 p-2 bg-purple-50 rounded-lg flex items-center justify-between">
+                <p className="text-xs text-purple-700 truncate flex-1">
                   {editForm.thumbnail.name}
                 </p>
                 <button
                   type="button"
                   onClick={() => setEditForm({ ...editForm, thumbnail: null })}
-                  className="ml-2 text-blue-700 hover:text-blue-900"
+                  className="ml-2 text-purple-700 hover:text-purple-900"
                   disabled={updateLoading}
                 >
                   <X size={14} />
@@ -201,7 +201,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all text-gray-700 text-xs sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-700 text-xs sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               disabled={updateLoading}
               aria-label="Cancel edit"
             >
@@ -209,7 +209,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
             </button>
             <button
               type="submit"
-              className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium"
+              className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary text-white rounded-lg hover:bg-primary/70 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium cursor-pointer"
               disabled={updateLoading}
               aria-label="Update video"
             >

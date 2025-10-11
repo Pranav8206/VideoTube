@@ -188,7 +188,7 @@ const UserVideo = () => {
               </div>
 
               {/* Mobile menu */}
-              <div className="absolute bottom-1 right-1 sm:hidden">
+              <div className="absolute bottom-1 right-1 sm:hidden ">
                 <button
                   onClick={() => toggleMenu(video._id)}
                   className="p-1 rounded-full bg-gray-100 cursor-pointer"
@@ -199,16 +199,15 @@ const UserVideo = () => {
                 </button>
 
                 {showMenu === video._id && (
-                  <div className="absolute top-0 right-full w-40 bg-white rounded-lg shadow-xl  z-10 animate-fade-in">
+                  <div className="absolute top-0 right-full w-35 bg-white rounded-lg shadow-xl  z-10 animate-fade-in border border-primary">
                     <button
                       onClick={() => handleEdit(video)}
                       className="w-full px-5 py-2 text-left cursor-pointer  flex items-center gap-3 text-sm "
                       aria-label="Edit video"
                     >
-                      <Edit size={16} className="text-blue-500" />
+                      <Edit size={16} />
                       Edit Video
                     </button>
-                    <hr className="text-gray-300" />
                     <button
                       onClick={() =>
                         setConfirmModal({
@@ -225,13 +224,13 @@ const UserVideo = () => {
                     >
                       {video.isPublished ? (
                         <>
-                          <EyeOff size={16} className="text-gray-500" />
-                          private
+                          <EyeOff size={16} className="text-yellow-500" />
+                          Private
                         </>
                       ) : (
                         <>
                           <Eye size={16} className="text-green-500" />
-                          public
+                          Public
                         </>
                       )}
                     </button>
@@ -256,11 +255,11 @@ const UserVideo = () => {
               <div className="hidden sm:flex absolute bottom-1 right-1 gap-2">
                 <button
                   onClick={() => handleEdit(video)}
-                  className="p-1.5 rounded-full hover:bg-blue-50 hover:scale-105 cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-gray-50   cursor-pointer"
                   disabled={!!actionLoading[video._id]}
                   aria-label="Edit video"
                 >
-                  <Edit size={16} className="text-blue-500" />
+                  <Edit size={16} />
                 </button>
                 <button
                   onClick={() =>
@@ -271,7 +270,7 @@ const UserVideo = () => {
                       } ?`,
                     })
                   }
-                  className="p-1.5 rounded-full hover:bg-gray-100 hover:scale-105 cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-gray-100   cursor-pointer"
                   disabled={!!actionLoading[video._id]}
                   aria-label={
                     video.isPublished ? "private video" : "public video"
@@ -290,7 +289,7 @@ const UserVideo = () => {
                       message: "Delete this video? This cannot be undone.",
                     })
                   }
-                  className="p-1.5 rounded-full hover:bg-red-50 hover:scale-105 cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-red-50   cursor-pointer"
                   disabled={!!actionLoading[video._id]}
                   aria-label="Delete video"
                 >

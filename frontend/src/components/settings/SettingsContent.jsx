@@ -24,7 +24,7 @@ const SettingsContent = () => {
   };
 
   return (
-    <div className="h-full w-full flex max-sm:flex-col sm:rounded-tl-2xl">
+    <div className="relative h-full w-full flex max-sm:flex-col sm:rounded-tl-2xl">
       <SettingsSidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}

@@ -225,7 +225,7 @@ const VideoCard = ({
               <div
                 className={`absolute right-4 ${
                   isList ? "top-0" : "bottom-6"
-                } bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
+                } bg-white  shadow-lg border border-primary rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <button

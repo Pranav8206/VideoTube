@@ -101,15 +101,15 @@ const CommentsSection = ({ videoId, videoOwnerId }) => {
       <div className="px-4 sm:px-6 md:px-10 py-3 sm:py-4 shadow-xs">
         <div className="flex gap-3 sm:gap-5 items-start">
           {/* Avatar */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary flex items-center justify-center shadow-md cursor-pointer">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full  flex items-center justify-center cursor-pointer">
             {user ? (
               <img
                 src={user?.avatar}
                 alt="user"
-                className="overflow-hidden h-full w-full rounded-full object-cover"
+                className="overflow-hidden h-full w-full rounded-full object-cover border border-gray-300"
               />
             ) : (
-              <User size={20} className="text-white" />
+              <User size={20} className="text-white bg-primary" />
             )}
           </div>
           <div className="flex-1">

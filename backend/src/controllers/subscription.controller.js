@@ -20,7 +20,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
   // Prevent self-subscription
   if (channelId === req.user._id.toString()) {
-    throw new ApiError(400, "Cannot subscribe to your own channel");
+    throw new ApiError(400, "Can't subscribe to yourself");
   }
 
   const deletedSubscription = await Subscription.findOneAndDelete({

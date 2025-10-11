@@ -47,7 +47,7 @@ const CommentCard = ({ data, onDelete, onUpdate }) => {
         <img
           src={data.owner.avatar}
           alt={data.owner.username}
-          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover cursor-pointer border border-gray-300"
         />
       </Link>
       <div className="flex-1" onMouseLeave={() => setShowMenu(false)}>
