@@ -66,14 +66,18 @@ const ChannelContent = () => {
 
   const handleSubscribe = async () => {
     try {
-      // You can call subscribe/unsubscribe API here
-      // For now, just toggle locally
-      setChannelData((prev) => ({
-        ...prev,
-        isSubscribedTo: !prev.isSubscribedTo,
-      }));
+      // Refetch channel data to get updated subscription status and count
+      const res = await axios.get(
+        `/api/v1/users/c/${channelName.toLowerCase()}`
+      );
+      setChannelData(res.data.data);
+
+      // Also refetch stats if needed
+      if (res.data.data?._id) {
+        fetchChannelStats(res.data.data._id);
+      }
     } catch (error) {
-      console.error("Subscribe action failed", error);
+      console.error("Failed to refresh channel data", error);
     }
   };
 

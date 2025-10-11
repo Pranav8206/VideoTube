@@ -117,18 +117,20 @@ const AccountSettings = () => {
         "/api/v1/users/update-account",
         accountUpdateData
       );
-      let updatedUser = accountResponse.data.data;
+      let updatedUser = { ...user, ...accountResponse.data.data };
 
       if (data.avatar instanceof File) {
         const avatarResponse = await uploadFile(data.avatar, "avatar");
-        updatedUser = avatarResponse.data.data;
+        updatedUser = { ...updatedUser, ...avatarResponse.data.data };
       }
       if (data.coverImage instanceof File) {
         const coverResponse = await uploadFile(data.coverImage, "cover-image");
-        updatedUser = coverResponse.data.data;
+        updatedUser = { ...updatedUser, ...coverResponse.data.data };
       }
 
-      setUser(updatedUser);
+      setUser({ ...updatedUser });
+      console.log("2332",updatedUser, "updated user");
+      
       toast.success("Updated successfully");
       setSaveStatus("success");
       setHasChanges(false);
@@ -143,6 +145,7 @@ const AccountSettings = () => {
     } finally {
       setIsLoading(false);
     }
+    navigate("/setting")
   };
 
   const onPasswordSubmit = async (data) => {

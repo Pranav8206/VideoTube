@@ -24,19 +24,20 @@ const Navbar = () => {
     setSearchQuery,
     showingSearchResults,
     setShowingSearchResults,
-    showVoiceSearchBox,
+    user,
     setShowVoiceSearchBox,
   } = useContext(AppContext);
 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const inputRef = useRef(null);
   const params = useLocation();
   const navigate = useNavigate();
 
   // Navbar hide/show on scroll
   useEffect(() => {
+    let lastScrollY = 0;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
@@ -48,12 +49,17 @@ const Navbar = () => {
         setIsVisible(true);
       }
 
-      setLastScrollY(currentScrollY);
+      lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
+
+  useEffect(() => {
+    
+  }, [user])
+  
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -240,8 +246,22 @@ const Navbar = () => {
             </div>
 
             <Link to="/setting">
-              <button className="w-7 h-7 bg-gray-400 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
-                <User size={24} className="text-gray-100" fill="#f3f4f6" strokeWidth={2} />
+              <button className="w-7 h-7  border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
+                {console.log("aldjfsdf", user)}
+                {!user ? (
+                  <User
+                    size={24}
+                    className="text-gray-100 bg-gray-400 h-full w-full rounded-full"
+                    fill="#f3f4f6"
+                    strokeWidth={2}
+                  />
+                ) : (
+                  <img
+                    src={`${user?.avatar}?v=${Date.now()}`}
+                    alt="user"
+                    className="overflow-hidden rounded-full w-7 h-7 object-cover"
+                  />
+                )}
               </button>
             </Link>
           </div>

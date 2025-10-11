@@ -69,7 +69,7 @@ const VideoCard = ({
 
   return (
     <div
-      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer h-full hover:border-gray-200 hover:shadow-md
+      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer h-full max-w-full overflow-hidden hover:border-gray-200 hover:shadow-md
         ${
           isList
             ? "flex justify-between gap-2 hover:bg-gray-50 my-1"
@@ -85,7 +85,9 @@ const VideoCard = ({
       {/* Thumbnail */}
       <div
         className={`relative ${
-          isList ? "flex-shrink-0 w-[42%] sm:w-[50%] max-w-[320px]" : ""
+          isList
+            ? "flex-shrink-0 w-[38%] s:w-[42%] sm:w-[50%] max-w-[320px]"
+            : ""
         }  `}
       >
         <div
@@ -221,8 +223,8 @@ const VideoCard = ({
 
             {showOptions && showMoreIcon && (
               <div
-                className={`absolute right-0 ${
-                  isList ? "top-8" : "bottom-6"
+                className={`absolute right-4 ${
+                  isList ? "top-0" : "bottom-6"
                 } bg-white shadow-lg border border-gray-200 rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
                 onClick={(e) => e.stopPropagation()}
               >

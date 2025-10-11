@@ -201,7 +201,9 @@ const ContextProvider = ({ children }) => {
   //  INITIALIZE ----------------------
 
   useEffect(() => {
-    fetchCurrentUser();
+    (async () => {
+      await fetchCurrentUser();
+    })();
   }, []);
 
   const value = {
