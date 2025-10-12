@@ -72,7 +72,9 @@ const PrivacySettings = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete("/api/v1/users");
+      await axios.delete("/api/v1/users", {
+        withCredentials: true,
+      });
 
       setUser(null);
       toast.success("Account deleted successfully");

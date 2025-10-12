@@ -54,7 +54,9 @@ const ChannelContent = () => {
   const fetchChannelStats = async (userId) => {
     try {
       setStatsLoading(true);
-      const res = await axios.get(`/api/v1/dashboard/stats/${userId}`);
+      const res = await axios.get(`/api/v1/dashboard/stats/${userId}`, {
+        withCredentials: true,
+      });
       console.log("Channel stats:", res.data);
       setChannelStats(res.data.data);
     } catch (err) {
@@ -136,9 +138,7 @@ const ChannelContent = () => {
             />
           )}
 
-          {activeTab === "Tweets" && (
-            <UserTweets />
-          )}
+          {activeTab === "Tweets" && <UserTweets />}
 
           {activeTab === "About" && (
             <div className="max-w-4xl px-4">

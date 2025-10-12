@@ -79,9 +79,7 @@ const UserVideo = () => {
 
     try {
       await axios.delete(`/api/v1/videos/${videoId}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token || user?.accessToken}`,
-        },
+        withCredentials: true,
       });
       toast.success("Video deleted successfully");
     } catch (err) {
@@ -106,9 +104,7 @@ const UserVideo = () => {
         `/api/v1/videos/${videoId}`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${user?.token || user?.accessToken}`,
-          },
+          withCredentials: true,
         }
       );
     } catch (err) {

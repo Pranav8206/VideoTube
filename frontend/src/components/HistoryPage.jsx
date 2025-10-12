@@ -12,7 +12,9 @@ const HistoryPage = () => {
     const fetchHistory = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("/api/v1/users/history"); // adjust endpoint
+        const res = await axios.get("/api/v1/users/history",  {
+        withCredentials: true,
+      }); // adjust endpoint
         setVideos(res.data.data || []);
       } catch (err) {
         console.error(err);

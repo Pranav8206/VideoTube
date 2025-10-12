@@ -157,7 +157,7 @@ const Login = () => {
 
       <div className="relative w-full max-w-sm animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[95vh]">
         <div className="relative bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-15 bg-gradient-to-br from-primary/20 via-primary/30 to-primary/20 opacity-30" />
+          <div className="absolute top-0 left-0 right-0 h-12 sm:h-15 bg-gradient-to-br from-primary/20 via-primary/30 to-primary/20 opacity-30" />
 
           <button
             onClick={(e) => handleClose(e)}
@@ -174,7 +174,7 @@ const Login = () => {
           >
             {/* Header */}
             <div className="text-center space-y-1">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br bg-primary border border-primary">
+              <div className="inline-flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br bg-primary border border-primary">
                 <User className="h-full w-full fill-white text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">

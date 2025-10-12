@@ -24,7 +24,7 @@ const VideosGrid = ({ videos = [], layout = "grid", searchQuery = "", forChannel
             </div>
           ) : (
             filteredVideos.map((video, i) => (
-              <VideoCard key={video.id || i} video={video} layout={layout} forChannelPage={forChannelPage}/>
+              <VideoCard key={video._id || i} video={video} layout={layout} forChannelPage={forChannelPage}/>
             ))
           )
         ) : (

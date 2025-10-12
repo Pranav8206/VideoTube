@@ -100,6 +100,7 @@ const AccountSettings = () => {
     formData.append(fieldName, file);
     const response = await axios.patch(`/api/v1/users/${endpoint}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
     });
     return response.data;
   };
@@ -115,7 +116,10 @@ const AccountSettings = () => {
       };
       const accountResponse = await axios.patch(
         "/api/v1/users/update-account",
-        accountUpdateData
+        accountUpdateData,
+        {
+          withCredentials: true,
+        }
       );
       let updatedUser = { ...user, ...accountResponse.data.data };
 
@@ -129,8 +133,8 @@ const AccountSettings = () => {
       }
 
       setUser({ ...updatedUser });
-      console.log("2332",updatedUser, "updated user");
-      
+      console.log("2332", updatedUser, "updated user");
+
       toast.success("Updated successfully");
       setSaveStatus("success");
       setHasChanges(false);
@@ -145,7 +149,7 @@ const AccountSettings = () => {
     } finally {
       setIsLoading(false);
     }
-    navigate("/setting")
+    navigate("/setting");
   };
 
   const onPasswordSubmit = async (data) => {
@@ -155,10 +159,16 @@ const AccountSettings = () => {
     }
     setIsLoading(true);
     try {
-      await axios.post("/api/v1/users/change-password", {
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword,
-      });
+      await axios.post(
+        "/api/v1/users/change-password",
+        {
+          oldPassword: data.oldPassword,
+          newPassword: data.newPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       alert("Password changed successfully!");
       setShowPasswordModal(false);
       resetPassword();

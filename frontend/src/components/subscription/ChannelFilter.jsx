@@ -43,7 +43,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
-          className="absolute my-2 -left-2 z-10 px-1 py-3 rounded-full bg-gray-200 border border-purple-400 shadow-2xl hover:shadow-md transition-all duration-300 cursor-pointer"
+          className="absolute my-2 -left-2 z-10 px-1 py-3 rounded-full bg-gray-200 border border-primary/80 shadow-2xl hover:shadow-md transition-all duration-300 cursor-pointer"
         >
           <ChevronLeft size={16} className="text-gray-800" />
         </button>
@@ -65,7 +65,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
               onClick={() => setActiveFilter("all")}
               className={`flex items-center justify-center rounded-full border transition-all duration-300 shadow-sm cursor-pointer ${
                 activeFilter === "all"
-                  ? "p-3 bg-purple-600 text-white border-purple-600 shadow-md"
+                  ? "p-3 bg-primary text-white border-primary shadow-md"
                   : "p-2 m-1 bg-white text-gray-700 border-gray-200 hover:shadow"
               }`}
             >
@@ -80,7 +80,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
             </button>
           </span>
           <div
-            className={`h-1 w-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-300  ${
+            className={`h-1 w-3 bg-gradient-to-r from-primary to-indigo-500 rounded-full transition-all duration-300  ${
               activeFilter === "all" ? "" : "hidden"
             }`}
           ></div>
@@ -97,13 +97,13 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
               key={channel.id}
               className={`${
                 activeFilter === channel.id ? "border-4" : "border-2"
-              } border-purple-600 transition-all duration-100 rounded-full flex  flex-shrink-0`}
+              } border-primary transition-all duration-100 rounded-full flex  flex-shrink-0`}
             >
               <button
                 onClick={() => setActiveFilter(channel.id)}
                 className={`relative w-10 h-10 rounded-full transition-all duration-300 cursor-pointer ${
                   activeFilter === channel.id
-                    ? "w-13 h-13 border-purple-600"
+                    ? "w-13 h-13 border-primary"
                     : "m-1 border-transparent"
                 }`}
               >
@@ -113,14 +113,14 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
                   className="w-full h-full object-cover rounded-full"
                 />
                 {channel.newVideos > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
                     {channel.newVideos}
                   </span>
                 )}
               </button>
             </span>
             <div
-              className={`h-1 w-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full  ${
+              className={`h-1 w-3 bg-gradient-to-r from-primary to-indigo-500 rounded-full  ${
                 activeFilter === channel.id ? "" : "hidden"
               }`}
             ></div>
@@ -132,7 +132,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
           <div className="relative flex-shrink-0">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-all duration-300"
+              className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-primary transition-all duration-300"
             >
               <Filter className="w-4 h-4" />
               <ChevronDown
@@ -160,7 +160,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
                         className="w-full h-full object-cover"
                       />
                       {channel.newVideos > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                        <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
                           {channel.newVideos}
                         </span>
                       )}
@@ -177,7 +177,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
-          className="absolute my-2 -right-2 z-10 flex-shrink-0 px-1 py-3 rounded-full bg-gray-200 border border-purple-400 shadow-2xl hover:shadow-md transition-all duration-300 cursor-pointer"
+          className="absolute my-2 -right-2 z-10 flex-shrink-0 px-1 py-3 rounded-full bg-gray-200 border border-primary/80 shadow-2xl hover:shadow-md transition-all duration-300 cursor-pointer"
         >
           <ChevronRight size={16} className="text-black" />
         </button>

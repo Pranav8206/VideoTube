@@ -91,7 +91,9 @@ const VideoActions = ({ video }) => {
       const { data } = await axios.post(
         `/api/v1/likes/video/${video._id}`,
         {},
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        {
+          withCredentials: true,
+        }
       );
 
       if (data.message.includes("unliked")) {
@@ -120,12 +122,14 @@ const VideoActions = ({ video }) => {
       await axios.post(
         `/api/v1/likes/video/${video._id}`,
         {},
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        {
+          withCredentials: true,
+        }
       );
       setLiked(false);
       setLikeCount((prev) => prev - 1);
     }
-    setActionCooldown(false)
+    setActionCooldown(false);
   };
 
   // ✅ Subscribe

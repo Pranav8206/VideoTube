@@ -166,9 +166,13 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, video, "Publish mode toggled successfully"));
 });
-// updateVideo,
-// deleteVideo,
-// togglePublishStatus
+
+const incrementVideoViews = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+  res.status(200).json({ message: "View incremented" });
+});
+
 
 export {
   getAllVideos,
@@ -177,4 +181,5 @@ export {
   getVideoById,
   deleteVideo,
   togglePublishStatus,
+  incrementVideoViews
 };

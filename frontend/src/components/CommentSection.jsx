@@ -68,7 +68,9 @@ const CommentsSection = ({ videoId, videoOwnerId }) => {
   // Delete comment
   const handleDeleteComment = async (commentId) => {
     try {
-      await axios.delete(`/api/v1/comments/c/${commentId}`);
+      await axios.delete(`/api/v1/comments/c/${commentId}`, {
+        withCredentials: true,
+      });
       setComments(comments.filter((c) => c._id !== commentId));
       setTotalComments(totalComments - 1);
     } catch (err) {
@@ -80,9 +82,15 @@ const CommentsSection = ({ videoId, videoOwnerId }) => {
   // Update comment
   const handleUpdateComment = async (commentId, newContent) => {
     try {
-      const response = await axios.patch(`/api/v1/comments/c/${commentId}`, {
-        content: newContent,
-      });
+      const response = await axios.patch(
+        `/api/v1/comments/c/${commentId}`,
+        {
+          content: newContent,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       setComments(
         comments.map((c) => (c._id === commentId ? response.data.data : c))
@@ -109,7 +117,10 @@ const CommentsSection = ({ videoId, videoOwnerId }) => {
                 className="overflow-hidden h-full w-full rounded-full object-cover border border-gray-300"
               />
             ) : (
-              <User size={14} className="bg-gray-400 border-gray-400 h-full w-full object-cover rounded-full text-white fill-white" />
+              <User
+                size={14}
+                className="bg-gray-400 border-gray-400 h-full w-full object-cover rounded-full text-white fill-white"
+              />
             )}
           </div>
           <div className="flex-1">

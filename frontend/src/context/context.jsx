@@ -79,6 +79,19 @@ const ContextProvider = ({ children }) => {
 
   const fetchVideo = async (videoId) => {
     try {
+      const viewedVideos = JSON.parse(
+        localStorage.getItem("viewedVideos") || "[]"
+      );
+
+      // Increment view if not viewed before
+      if (!viewedVideos.includes(videoId)) {
+        await axios.post(`/api/v1/videos/${videoId}/incrementViews`);
+        localStorage.setItem(
+          "viewedVideos",
+          JSON.stringify([...viewedVideos, videoId])
+        );
+      }
+
       const response = await axios.get(`/api/v1/videos/${videoId}`);
       const { success, data: video } = response.data || {};
       return success ? video : null;
@@ -92,7 +105,9 @@ const ContextProvider = ({ children }) => {
     try {
       console.log("fetchCurrentUser called");
 
-      const response = await axios.get("/api/v1/users/current-user");
+      const response = await axios.get("/api/v1/users/current-user", {
+        withCredentials: true,
+      });
       const { success, data: userData } = response.data || {};
       if (success && userData) {
         setUser(userData);
@@ -120,7 +135,6 @@ const ContextProvider = ({ children }) => {
 
     // Cleanup
     setUser(null);
-    delete axios.defaults.headers.common["Authorization"];
     isRefreshingRef.current = false;
     failedQueueRef.current = [];
   };
@@ -152,16 +166,6 @@ const ContextProvider = ({ children }) => {
       return null;
     }
   };
-
-  // --- Keep Axios Auth Header Synced ---
-  useEffect(() => {
-    if (user?.accessToken || user?.token) {
-      const token = user.accessToken || user.token;
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common["Authorization"];
-    }
-  }, [user]);
 
   // --- Refresh Token Interceptor ---
   useEffect(() => {
@@ -258,7 +262,7 @@ const ContextProvider = ({ children }) => {
     setUser,
     logout,
     getUserAllSubscribedChannels,
-    toggleSubscribeChannel
+    toggleSubscribeChannel,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
