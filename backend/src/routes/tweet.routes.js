@@ -11,7 +11,7 @@ const router = Router();
 
 router.route("/").post(verifyJWT, createTweet);
 
-router.get("/user/:username", verifyJWT, getUserTweets);
+router.get("/user/:username", getUserTweets);
 
 router
   .route("/:tweetId")

@@ -45,7 +45,7 @@ const CommentCard = ({ data, onDelete, onUpdate }) => {
     <div className="flex gap-3 sm:gap-5 items-start sm:p-2 relative">
       <Link to={`/c/${data.owner.username}`}>
         <img
-          src={data.owner.avatar}
+          src={data.owner?.avatar}
           alt={data.owner.username}
           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover cursor-pointer border border-gray-300"
         />

@@ -174,8 +174,8 @@ const Login = () => {
           >
             {/* Header */}
             <div className="text-center space-y-1">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80">
-                <User className="w-6 h-6 text-white" />
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br bg-primary border border-primary">
+                <User className="h-full w-full fill-white text-white" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 {state === "login" ? "Welcome Back" : "Create Account"}

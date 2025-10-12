@@ -18,18 +18,18 @@ const ChannelInfoCard = ({
   const [subscribing, setSubscribing] = useState(false);
   const [localIsSubscribed, setLocalIsSubscribed] = useState(isSubscribed);
 
-  const { user, getAllSubscribedChannels, toggleSubscribeChannel } =
+  const { user, getUserAllSubscribedChannels, toggleSubscribeChannel } =
     useContext(AppContext);
 
   // Fetch subscribed channels and check if current channel is subscribed
   const getAllSubscribeChannel = useCallback(async () => {
     if (!user) return;
-    const subscribedChannels = await getAllSubscribedChannels();
+    const subscribedChannels = await getUserAllSubscribedChannels();
     const isChannelSubscribed = subscribedChannels.some(
       (sub) => sub.channel._id === channel._id
     );
     setLocalIsSubscribed(isChannelSubscribed);
-  }, [getAllSubscribedChannels, user, channel._id]);
+  }, [getUserAllSubscribedChannels, user, channel._id]);
 
   useEffect(() => {
     getAllSubscribeChannel();
@@ -101,7 +101,7 @@ const ChannelInfoCard = ({
           <div className="relative">
             {channel?.avatar ? (
               <img
-                src={channel.avatar}
+                src={channel?.avatar}
                 alt={channelName}
                 className="w-16 h-16 s:w-18 s:h-18 rounded-full object-cover border-2 border-purple-600"
               />
@@ -158,7 +158,7 @@ const ChannelInfoCard = ({
               <button
                 onClick={handleSubscribe}
                 disabled={subscribing}
-                className={`px-5 py-2 w-30 rounded-lg font-semibold transition-all shadow relative overflow-hidden cursor-pointer text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed
+                className={`px-5 py-2 w-30 rounded-full font-semibold transition-all shadow relative overflow-hidden cursor-pointer text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed
                   ${
                     localIsSubscribed
                       ? "bg-gray-200 text-gray-800 hover:bg-gray-300"

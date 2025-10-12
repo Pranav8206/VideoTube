@@ -126,7 +126,7 @@ const ContextProvider = ({ children }) => {
   };
 
   // Fetch all subscribed channels
-  const getAllSubscribedChannels = async () => {
+  const getUserAllSubscribedChannels = async () => {
     try {
       const res = await axios.get("/api/v1/subscriptions");
       return res.data?.data?.channels || [];
@@ -257,7 +257,7 @@ const ContextProvider = ({ children }) => {
     user,
     setUser,
     logout,
-    getAllSubscribedChannels,
+    getUserAllSubscribedChannels,
     toggleSubscribeChannel
   };
 

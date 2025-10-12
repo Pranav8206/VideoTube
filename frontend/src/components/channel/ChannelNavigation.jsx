@@ -9,7 +9,7 @@ const ChannelNavigation = ({
   viewMode,
   onViewModeChange,
 }) => {
-  const tabs = ["Videos", "Playlists", "About"];
+  const tabs = ["Videos", "Playlists", "About", "Tweets"];
 
   // ✅ Force viewMode to "list" if screen is below custom "s" breakpoint
   useEffect(() => {

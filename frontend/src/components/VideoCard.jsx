@@ -1,6 +1,14 @@
 // VideoCard.jsx
 import React, { useState, useRef, useContext } from "react";
-import { Download, Flag, Clock, Minus, MoreVertical, Play } from "lucide-react";
+import {
+  Download,
+  Flag,
+  Clock,
+  Minus,
+  MoreVertical,
+  Play,
+  User,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/context";
 import toast from "react-hot-toast";
@@ -158,10 +166,8 @@ const VideoCard = ({
 
           <div className="flex items-start gap-2 sm:gap-3 h-full">
             <div className="shrink-0">
-              <img
-                src={video.owner?.avatar || "user.png"}
-                alt={video.owner?.username}
-                className={`rounded-full w-7 h-7 border border-primary ${
+              <button
+                className={`rounded-full w-7 h-7  border border-primary object-cover relative cursor-pointer ${
                   inSidebar ? "" : " sm:w-9 sm:h-9"
                 }`}
                 onMouseEnter={showNameRefUnderline}
@@ -170,7 +176,20 @@ const VideoCard = ({
                   e.stopPropagation();
                   navigate(`/c/${video.owner?.username}`);
                 }}
-              />
+              >
+                {video.owner?.avatar ? (
+                  <img
+                    src={video.owner?.avatar}
+                    alt={video.owner?.username}
+                    className="rounded-full  object-cover h-full w-full"
+                  />
+                ) : (
+                  <User
+                    size={14}
+                    className="bg-gray-400 border-gray-400 h-full w-full object-cover rounded-full text-white fill-white"
+                  />
+                )}
+              </button>
             </div>
 
             <div className="flex flex-col justify-center">

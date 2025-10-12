@@ -9,6 +9,7 @@ import PlaylistGrid from "../playlist/PlaylistGrid";
 import Loader from "../Loader";
 import { AppContext } from "../../context/context";
 import { multiPlaylists } from "../../utils/videosData";
+import UserTweets from "./UserTweets";
 
 const ChannelContent = () => {
   const [activeTab, setActiveTab] = useState("Videos");
@@ -133,6 +134,10 @@ const ChannelContent = () => {
               layout={layout}
               searchQuery={searchQuery}
             />
+          )}
+
+          {activeTab === "Tweets" && (
+            <UserTweets />
           )}
 
           {activeTab === "About" && (

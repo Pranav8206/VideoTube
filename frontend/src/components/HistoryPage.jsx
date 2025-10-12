@@ -1,7 +1,8 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import VideosGrid from "./VideosGrid"; // adjust path as needed
 import toast from "react-hot-toast";
+import { Loader } from "lucide-react";
 
 const HistoryPage = () => {
   const [videos, setVideos] = useState([]);
@@ -26,8 +27,11 @@ const HistoryPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[60vh] text-gray-500">
-        Loading watch history...
+      <div className="px-6 py-4">
+        <h2 className="text-2xl font-semibold mb-4">Watch History</h2>
+        <div className="flex justify-center items-center h-[60vh] text-primary ">
+          <Loader size={30} className="animate-spin" />
+        </div>
       </div>
     );
   }

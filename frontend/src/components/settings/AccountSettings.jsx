@@ -78,7 +78,7 @@ const AccountSettings = () => {
       setValue("username", user.username || "");
       setValue("email", user.email || "");
       setValue("fullName", user.fullName || "");
-      if (user.avatar) setAvatarPreview(user.avatar);
+      if (user?.avatar) setAvatarPreview(user?.avatar);
       if (user.coverImage) setCoverPreview(user.coverImage);
       setHasChanges(false);
     }
@@ -119,8 +119,8 @@ const AccountSettings = () => {
       );
       let updatedUser = { ...user, ...accountResponse.data.data };
 
-      if (data.avatar instanceof File) {
-        const avatarResponse = await uploadFile(data.avatar, "avatar");
+      if (data?.avatar instanceof File) {
+        const avatarResponse = await uploadFile(data?.avatar, "avatar");
         updatedUser = { ...updatedUser, ...avatarResponse.data.data };
       }
       if (data.coverImage instanceof File) {

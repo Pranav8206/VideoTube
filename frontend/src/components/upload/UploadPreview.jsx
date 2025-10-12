@@ -1,4 +1,11 @@
-import { Play, Edit, Trash2, MoreHorizontal, MoreVertical } from "lucide-react";
+import {
+  Play,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  MoreVertical,
+  User,
+} from "lucide-react";
 import React, { useState } from "react";
 
 const UploadPreview = ({ title, description, thumbnailPreview }) => {
@@ -57,11 +64,9 @@ const UploadPreview = ({ title, description, thumbnailPreview }) => {
 
             <div className="flex items-start gap-1 sm:gap-2">
               <div className="shrink-0">
-                <img
-                  src="user.png"
-                  alt="default user"
-                  className="rounded-full w-6 h-6 sm:w-8 sm:h-8 border border-primary"
-                />
+                <div className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br bg-gray-400 border border-primary">
+                  <User className="h-full w-full fill-white text-white" />
+                </div>
               </div>
               <div className="flex flex-col justify-center">
                 <p className="font-semibold text-primary cursor-pointer line-clamp-1 text-xs sm:text-sm">

@@ -108,7 +108,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
                 }`}
               >
                 <img
-                  src={channel.avatar}
+                  src={channel?.avatar}
                   alt={channel.name}
                   className="w-full h-full object-cover rounded-full"
                 />
@@ -155,7 +155,7 @@ const ChannelFilter = ({ channels, activeFilter, setActiveFilter }) => {
                   >
                     <div className="relative w-8 h-8 rounded-full overflow-hidden">
                       <img
-                        src={channel.avatar}
+                        src={channel?.avatar}
                         alt={channel.name}
                         className="w-full h-full object-cover"
                       />

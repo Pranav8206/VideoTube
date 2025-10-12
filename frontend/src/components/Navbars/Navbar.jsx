@@ -56,10 +56,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    
-  }, [user])
-  
+  useEffect(() => {}, [user]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -247,8 +244,7 @@ const Navbar = () => {
 
             <Link to="/setting">
               <button className="w-7 h-7  border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
-                {console.log("aldjfsdf", user)}
-                {!user ? (
+                {!user?.avatar ? (
                   <User
                     size={24}
                     className="text-gray-100 bg-gray-400 h-full w-full rounded-full"
