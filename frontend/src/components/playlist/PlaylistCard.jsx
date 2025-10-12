@@ -14,9 +14,9 @@ const PlaylistCard = ({
   playlist,
   layout = "list",
   video,
-  index,
-  isPlaying,
-  onPlay,
+  // index,
+  // isPlaying,
+  // onPlay,
   onRemove,
 }) => {
   const [isHovered, setIsHovered] = useState(false);

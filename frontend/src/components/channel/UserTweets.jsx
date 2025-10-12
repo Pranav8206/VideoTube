@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 
 const UserTweets = () => {
   const { axios, user } = useContext(AppContext);

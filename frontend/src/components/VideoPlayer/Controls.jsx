@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Seekbar from "./Seekbar";
 import TooltipButton from "../TooltipButton";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 
 const Controls = ({
   isPlaying,
@@ -30,8 +30,8 @@ const Controls = ({
   isLoop,
   isPiP,
   isFullscreen,
-  effectiveSources,
-  currentSourceIndex,
+  // effectiveSources,
+  // currentSourceIndex,
   togglePlay,
   toggleMute,
   handleVolumeChange,
@@ -39,7 +39,7 @@ const Controls = ({
   seek,
   formatTime,
   changePlaybackRate,
-  handleChangeQuality,
+  // handleChangeQuality,
   togglePiP,
   toggleCinemaMode,
   toggleFullscreen,

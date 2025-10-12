@@ -7,7 +7,7 @@ import ChannelNavigation from "./ChannelNavigation";
 import VideosGrid from "../VideosGrid";
 import PlaylistGrid from "../playlist/PlaylistGrid";
 import Loader from "../Loader";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import { multiPlaylists } from "../../utils/videosData";
 import UserTweets from "./UserTweets";
 

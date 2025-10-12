@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import { AlertCircle, Eye, EyeOff, User, Mail, Lock, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";

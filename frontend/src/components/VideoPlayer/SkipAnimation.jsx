@@ -3,10 +3,11 @@ import { RotateCcw, RotateCw } from "lucide-react";
 
 const SkipAnimation = ({ direction, onAnimationEnd, duration = 600 }) => {
   // default duration bumped to 600ms for better UX; caller can override
-  const id =
-    typeof useId === "function"
-      ? useId().replace(/[:]/g, "-")
-      : `skip-${Math.random().toString(36).slice(2, 8)}`;
+  const generatedId = useId();
+  const id = generatedId
+    ? generatedId.replace(/[:]/g, "-")
+    : `skip-${Math.random().toString(36).slice(2, 8)}`;
+
   const endedRef = useRef(false);
   const timeoutRef = useRef(null);
 

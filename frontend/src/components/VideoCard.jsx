@@ -10,7 +10,7 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
 const VideoCard = ({

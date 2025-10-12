@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MobSearchNav from "./MobSearchNav";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import TooltipButton from "../TooltipButton";
 
 const Navbar = () => {

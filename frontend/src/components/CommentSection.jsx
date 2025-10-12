@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { User, ChevronDown } from "lucide-react";
 import CommentCard from "./CommentCard";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 
-const CommentsSection = ({ videoId, videoOwnerId }) => {
+const CommentsSection = ({ videoId }) => {
   const { axios, user } = useContext(AppContext);
 
   const [showAll, setShowAll] = useState(false);
@@ -33,6 +33,7 @@ const CommentsSection = ({ videoId, videoOwnerId }) => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch comments");
       console.error("Error fetching comments:", err);
+      console.log(page === totalPages);//remove it later
     } finally {
       setLoading(false);
     }

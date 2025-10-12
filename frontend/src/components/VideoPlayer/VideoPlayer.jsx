@@ -10,7 +10,7 @@ import { Pin, PinOff, Play } from "lucide-react";
 import Loader from "../Loader";
 import SkipAnimation from "./SkipAnimation";
 import Controls from "./Controls";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import useIsTouchDevice from "../../hooks/useIsTouchDevice";
 
 const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
@@ -228,7 +228,7 @@ const VideoPlayer = ({ src, sources, poster, onTheaterModeChange }) => {
 
   // Touch handling: Single tap shows controls, resets timeout
   const handleTouchStart = useCallback(
-    (e) => {
+    () => {
       if (pin) return;
       resetControlsTimeout();
     },

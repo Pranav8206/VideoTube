@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import VideosGrid from "../components/VideosGrid";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import Loader from "../components/Loader";
 
 const Trending = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import VideoCard from "./VideoCard";
 import PlaylistCard from "./playlist/PlaylistCard";
 import { searchData } from "../utils/videosData";
@@ -8,10 +8,10 @@ const SearchResultsContent = () => {
     <div className={`p-4 py-10 min-h-screen bg-gray-50 text-gray-800`}>
       {/* Search Results */}
       <div className="grid gap-2">
-        {searchData.playlists.map((playlist, index) => (
+        {searchData.playlists.map((playlist) => (
           <PlaylistCard key={playlist.id} playlist={playlist} />
         ))}
-        {searchData.videos.map((video, index) => (
+        {searchData.videos.map((video) => (
           <VideoCard key={video.id} video={video} />
         ))}
       </div>

@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import PlaylistContent from "../components/playlist/PlaylistContent";
 import { useNavigate, useParams } from "react-router-dom";
 import HistoryPage from "../components/HistoryPage";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
 const Playlist = () => {

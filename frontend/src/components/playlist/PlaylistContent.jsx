@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import PlaylistHeader from "./PlaylistHeader";
 import PlaylistSettings from "./PlaylistSettings";
 import VideoList from "./VideoList";
-import { onePlaylist, multiPlaylists, playlist } from "../../utils/videosData";
+import { onePlaylist, playlist } from "../../utils/videosData";
 import PlaylistSidebar from "./PlaylistSidebar";
 
 const PlaylistPage = () => {
@@ -36,7 +36,7 @@ const PlaylistPage = () => {
     setPlaylistData((prev) => ({ ...prev, isPublic: !prev.isPublic }));
 
   const handleAddVideos = () => console.log("Add videos");
-
+  setWatchedVideos([1, 2, 3]); // delete later
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto ">

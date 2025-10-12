@@ -14,7 +14,7 @@ import {
   Info,
 } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import PasswordSettings from "./PasswordSettings";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ const AccountSettings = () => {
     control,
     setValue,
     watch,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       username: "",
@@ -49,19 +49,6 @@ const AccountSettings = () => {
       coverImage: null,
       emailNotifications: true,
       pushNotifications: true,
-    },
-  });
-
-  const {
-    register: registerPassword,
-    handleSubmit: handlePasswordSubmit,
-    formState: { errors: passwordErrors },
-    reset: resetPassword,
-  } = useForm({
-    defaultValues: {
-      oldPassword: "",
-      newPassword: "",
-      confirmPassword: "",
     },
   });
 
@@ -171,7 +158,6 @@ const AccountSettings = () => {
       );
       alert("Password changed successfully!");
       setShowPasswordModal(false);
-      resetPassword();
     } catch (error) {
       alert(error.response?.data?.message || "Failed to change password");
     } finally {
@@ -508,18 +494,30 @@ const AccountSettings = () => {
         </div>
 
         {/* Save Status & Button */}
-        {hasChanges && (
-          <div className="rounded-t-xl shadow-lg flex items-center justify-center">
+
+        <div className="flex flex-col items-center justify-center my-4">
+          {saveStatus === "success" && (
+            <p className="text-green-600 text-sm mb-2">Saved successfully!</p>
+          )}
+          {saveStatus === "error" && (
+            <p className="text-red-600 text-sm mb-2">Failed to save changes.</p>
+          )}
+
+          {hasChanges && (
             <button
               ref={saveRef}
               type="submit"
               disabled={isLoading}
-              className="px-6 mx-auto py-3 my-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+              className={`px-6 py-3 rounded-lg font-semibold text-white flex items-center gap-2 transition-all ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 hover:shadow-lg"
+              }`}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Saving Changes...
+                  Saving....
                 </>
               ) : (
                 <>
@@ -528,18 +526,16 @@ const AccountSettings = () => {
                 </>
               )}
             </button>
-          </div>
-        )}
+          )}
+        </div>
+        
       </form>
 
       {/* Password Modal */}
       {showPasswordModal && (
         <PasswordSettings
           isOpen={showPasswordModal}
-          onClose={() => {
-            setShowPasswordModal(false);
-            resetPassword();
-          }}
+          onClose={() => setShowPasswordModal(false)}
           onSubmit={onPasswordSubmit}
           isLoading={isLoading}
         />

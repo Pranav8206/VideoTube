@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect } from "react";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import { ChevronUp } from "lucide-react";
 
 const NotificationModal = ({ message }) => {

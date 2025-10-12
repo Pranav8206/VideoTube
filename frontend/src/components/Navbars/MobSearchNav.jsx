@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {  useEffect, useRef, useContext } from "react";
 import {
   ArrowLeft,
   Search,
@@ -7,7 +7,7 @@ import {
   SendHorizonal,
   MoreVertical,
 } from "lucide-react";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 
 const MobSearchNav = ({ showMobileSearch, onClose, handleSearch }) => {
   const {

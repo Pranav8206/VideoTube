@@ -4,19 +4,17 @@ import PlaylistSidebar from "../components/playlist/PlaylistSidebar";
 import CommentsSection from "../components/CommentSection";
 import VideoActions from "../components/VideoPlayer/VideoActions";
 import { onePlaylist } from "../utils/videosData";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import { useParams } from "react-router-dom";
 
 const VideoPlayerPage = () => {
   const [video, setVideo] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const { isCinemaMode, fetchVideo } = useContext(AppContext);
   const { videoId } = useParams();
   const currentId = onePlaylist.videos?.[1]?.id || onePlaylist.videos?.[0]?.id;
 
   useEffect(() => {
     let ignore = false;
-    setIsLoading(true);
     const loadVideo = async () => {
       const fetched = await fetchVideo(videoId);
       if (!ignore) setVideo(fetched);
@@ -24,7 +22,6 @@ const VideoPlayerPage = () => {
     loadVideo();
     return () => {
       ignore = true;
-      setIsLoading(false);
     };
   }, [videoId, fetchVideo]);
 

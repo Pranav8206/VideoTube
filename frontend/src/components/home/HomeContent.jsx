@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 // import { videos } from "../../utils/videosData";
 import VideosGrid from "../VideosGrid";
 import CategoriesSlider from "./CategoriesSlider";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import SkeletonCard from "./SkeletonCard";
 
 const HomeContent = () => {
@@ -32,8 +32,9 @@ const HomeContent = () => {
       try {
         const allVideos = await fetchAllVideos();
         setVideos(allVideos);
-      } catch (err) {
+      } catch (error) {
         setError("Failed to load videos. Please try again.");
+        console.log(error);
       } finally {
         setLoading(false);
       }

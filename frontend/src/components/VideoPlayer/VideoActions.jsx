@@ -12,7 +12,7 @@ import {
   Loader,
   User,
 } from "lucide-react";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

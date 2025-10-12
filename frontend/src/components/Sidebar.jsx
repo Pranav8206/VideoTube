@@ -1,6 +1,6 @@
 import React, { useContext, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import { menuItems } from "../utils/videosData";
 import { Menu } from "lucide-react";
 

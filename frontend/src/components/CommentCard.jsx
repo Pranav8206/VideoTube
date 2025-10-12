@@ -6,7 +6,7 @@ import {
   Edit2,
   Trash2,
 } from "lucide-react";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 import { Link } from "react-router-dom";
 
 const CommentCard = ({ data, onDelete, onUpdate }) => {

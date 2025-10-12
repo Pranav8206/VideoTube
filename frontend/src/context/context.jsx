@@ -1,18 +1,11 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Frown } from "lucide-react";
+import { AppContext } from "./AppContext";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
-
-export const AppContext = createContext();
 
 const ContextProvider = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

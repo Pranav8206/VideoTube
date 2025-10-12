@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import VideoCard from "../VideoCard";
 import EditVideoModal from "./EditVideoModal";
 import {
@@ -110,6 +110,7 @@ const UserVideo = () => {
     } catch (err) {
       await fetchVideos().catch(() => {});
       setError(err.response?.data?.message || "Failed to toggle public status");
+      console.log(video);//delete later
     } finally {
       setVideoLoading(videoId, false);
     }

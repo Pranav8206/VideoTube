@@ -8,7 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AppContext } from "../context/context";
+import { AppContext } from "../context/AppContext";
 
 // Game constants
 const GAME_DURATION_MS = 10000; // 10s

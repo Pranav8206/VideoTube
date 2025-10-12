@@ -5,7 +5,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import { Mic, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

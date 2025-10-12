@@ -2,15 +2,15 @@ import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Bell, BellOff, Check, Sparkles } from "lucide-react";
 import { toast } from "react-hot-toast";
 import TooltipButton from "../TooltipButton";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 
 const ChannelInfoCard = ({
   channel,
   isSubscribed,
   onSubscribe,
   verified = false,
-  stats = null,
-  statsLoading = false,
+  // stats = null,
+  // statsLoading = false,
 }) => {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [animateBell, setAnimateBell] = useState(false);

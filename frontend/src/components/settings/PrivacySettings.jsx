@@ -4,7 +4,7 @@ import { CheckCircle, Loader2, Trash2 } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { AppContext } from "../../context/context";
+import { AppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const PrivacySettings = () => {

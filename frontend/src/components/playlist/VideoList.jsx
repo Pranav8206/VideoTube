@@ -6,9 +6,9 @@ import VideoCard from "../VideoCard";
 const VideoList = ({
   videos,
   currentVideoId,
-  watchedVideos,
-  onVideoPlay,
-  onVideoRemove,
+  // watchedVideos,
+  // onVideoPlay,
+  // onVideoRemove,
 }) => {
   return (
     <div className="space-y-3">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-const EditVideoModal = ({ video, onUpdate, onClose, axios, user }) => {
+const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
   const [editForm, setEditForm] = useState({
     title: video.title || "",
     description: video.description || "",
