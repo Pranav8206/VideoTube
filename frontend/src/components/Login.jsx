@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const { setShowLogin, showLogin, axios, fetchCurrentUser } =
+  const { setShowLogin, showLogin, axios, fetchCurrentUser, logout } =
     useContext(AppContext);
 
   const [state, setState] = useState("login");
@@ -48,6 +48,7 @@ const Login = () => {
 
   const onSubmit = async (formData) => {
     // Validate that required field is provided based on login mode
+    await logout(); ////
     if (state === "login") {
       if (loginMode === "email" && !formData.email) {
         setError("root", {

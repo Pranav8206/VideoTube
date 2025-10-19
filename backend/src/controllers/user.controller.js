@@ -114,6 +114,8 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (req.cookies.accessToken) {
+    console.log(req.cookies);//
+    req.cookies = null;//
     throw new ApiError(400, "You are already logged in.");
   }
 
