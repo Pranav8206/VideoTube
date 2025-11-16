@@ -97,19 +97,25 @@ const ContextProvider = ({ children }) => {
   const fetchCurrentUser = useCallback(async () => {
     try {
       console.log("fetchCurrentUser called");
-
       const response = await axios.get("/api/v1/users/current-user", {
         withCredentials: true,
       });
       const { success, data: userData } = response.data || {};
+      console.log("fetchCurrentUser response:", success, userData);
+
       if (success && userData) {
         setUser(userData);
         return userData;
       }
       return null;
     } catch (error) {
-      if (error.response?.status !== 401)
+      if (error.response?.status !== 401) {
         console.error("Error fetching user:", error.message);
+        document.cookie =
+          "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
       return null;
     }
   }, []);
@@ -117,6 +123,20 @@ const ContextProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post("/api/v1/users/logout", {}, { withCredentials: true });
+
+      document.cookie =
+        "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" +
+        window.location.hostname;
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" +
+        window.location.hostname;
+
+      // If in production with sameSite=None
+      document.cookie =
+        "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
+
       toast.success("Logged out successfully", {
         icon: (
           <Frown size={28} className="text-yellow-500/90" strokeWidth={3} />
@@ -124,12 +144,11 @@ const ContextProvider = ({ children }) => {
       });
     } catch (error) {
       console.error("Logout failed:", error.message);
+    } finally {
+      setUser(null);
+      isRefreshingRef.current = false;
+      failedQueueRef.current = [];
     }
-
-    // Cleanup
-    setUser(null);
-    isRefreshingRef.current = false;
-    failedQueueRef.current = [];
   };
 
   // Fetch all subscribed channels
@@ -168,32 +187,36 @@ const ContextProvider = ({ children }) => {
         const originalRequest = error.config;
         const url = originalRequest?.url || "";
 
-        const isAuthEndpoint =
-          url.includes("/api/v1/users/refresh-token") ||
-          url.includes("/api/v1/users/logout") ||
-          url.includes("/api/v1/users/login") ||
-          url.includes("/api/v1/users/register") ||
-          url.includes("/api/v1/users/current-user");
+        console.log("Axios interceptor caught error:", error);
 
-        if (isAuthEndpoint) {
-          if (url.includes("/api/v1/users/refresh-token")) {
-            console.error("Token refresh failed");
-            isRefreshingRef.current = false;
-            processQueue(error, null);
-            logout();
-          }
+        const isRefreshEndpoint = url.includes("/api/v1/users/refresh-token");
+
+        if (isRefreshEndpoint) {
+          console.error("Refresh token endpoint returned error");
+          isRefreshingRef.current = false;
+          processQueue(error, null);
+          await logout();
           return Promise.reject(error);
         }
 
+        // If status is 401 and request hasn't been retried yet, attempt refresh flow
         if (error.response?.status === 401 && !originalRequest._retry) {
+          
+          if (url.includes("/current-user") && !user) {
+            console.log("Initial auth check failed, skipping retry");
+            return Promise.reject(error);
+          }
+
           originalRequest._retry = true;
 
           if (isRefreshingRef.current) {
+            // Queue this request while a refresh is in progress
             return new Promise((resolve, reject) => {
-              failedQueueRef.current.push({ resolve, reject });
-            })
-              .then(() => axios(originalRequest))
-              .catch((err) => Promise.reject(err));
+              failedQueueRef.current.push({
+                resolve: () => resolve(axios(originalRequest)),
+                reject: (err) => reject(err),
+              });
+            });
           }
 
           isRefreshingRef.current = true;
@@ -211,7 +234,7 @@ const ContextProvider = ({ children }) => {
             isRefreshingRef.current = false;
             processQueue(refreshErr, null);
             console.error("Token refresh failed:", refreshErr?.message);
-            logout();
+            await logout();
             return Promise.reject(refreshErr);
           }
         }
@@ -223,11 +246,12 @@ const ContextProvider = ({ children }) => {
     return () => axios.interceptors.response.eject(interceptor);
   }, []);
 
-  //  INITIALIZE ----------------------
-
+  // INITIALIZE: run fetchCurrentUser on mount only (not on user changes)
   useEffect(() => {
     (async () => {
-      await fetchCurrentUser();
+      console.log("Context init: fetching current user");
+      const current = await fetchCurrentUser();
+      console.log("fetchCurrentUser result:", current);
     })();
   }, []);
 

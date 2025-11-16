@@ -8,14 +8,14 @@ import Login from "./components/Login.jsx";
 
 function App() {
   return (
-    <>
+    <div className="bg-white text-black">
       <Navbar />
       <NotificationModal />
       <Sidebar />
       <VoiceSearchBox />
       <Login/>
       <Outlet />
-    </>
+    </div>
   );
 }
 

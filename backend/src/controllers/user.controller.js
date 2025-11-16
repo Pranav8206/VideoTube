@@ -74,10 +74,12 @@ const registerUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
+  const isProd = process.env.NODE_ENV === "production";
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None"
+    secure: isProd, // true only on production HTTPS
+    sameSite: isProd ? "None" : "Lax",
+    path: "/",
   };
 
   return res
@@ -113,12 +115,6 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password must be at least 6 characters long");
   }
 
-  if (req.cookies.accessToken) {
-    console.log(req.cookies);//
-    req.cookies = null;//
-    throw new ApiError(400, "You are already logged in.");
-  }
-
   const user = await User.findOne({ $or: [{ username }, { email }] });
 
   if (!user) {
@@ -138,10 +134,12 @@ const loginUser = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
   console.log(loggedInUser.username, "You loged in successfully!");
+  const isProd = process.env.NODE_ENV === "production";
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None"
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
+    path: "/",
   };
   return res
     .status(200)
@@ -164,8 +162,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -173,22 +171,26 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   );
 
+  const isProd = process.env.NODE_ENV === "production";
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None"
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
+    path: "/",
+    maxAge: 0,
   };
 
   return res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, "User logged out successfully."));
+    .json(new ApiResponse(200, {}, "User logged out successfully."));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
+  console.log("Incoming refresh token:", incomingRefreshToken);
   if (!incomingRefreshToken) {
     throw new ApiError(400, "Login to continue");
   }
@@ -208,10 +210,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Refresh token is expired or used");
     }
 
+    const isProd = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None"
+      secure: isProd,
+      sameSite: isProd ? "None" : "Lax",
+      path: "/",
     };
 
     const { accessToken, refreshToken: newrefreshToken } =

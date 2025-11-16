@@ -1,11 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { lazy, Suspense, useContext, useEffect, useState } from "react";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
-import PlaylistSidebar from "../components/playlist/PlaylistSidebar";
-import CommentsSection from "../components/CommentSection";
 import VideoActions from "../components/VideoPlayer/VideoActions";
 import { onePlaylist } from "../utils/videosData";
 import { AppContext } from "../context/AppContext";
 import { useParams } from "react-router-dom";
+
+const PlaylistSidebar = lazy(() =>
+  import("../components/playlist/PlaylistSidebar")
+);
+const CommentsSection = lazy(() => import("../components/CommentSection"));
 
 const VideoPlayerPage = () => {
   const [video, setVideo] = useState({});
@@ -45,7 +48,9 @@ const VideoPlayerPage = () => {
         <div className={`block  ${isCinemaMode ? "md-plus:hidden" : " block"}`}>
           <VideoActions video={video} />
           {video._id && (
-            <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+            <Suspense fallback={<div></div>}>
+              <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+            </Suspense>
           )}
         </div>
       </div>
@@ -58,11 +63,13 @@ const VideoPlayerPage = () => {
             : "md-plus:order-2 md-plus:w-[36vw] "
         }`}
       >
-        <PlaylistSidebar
-          playlist={onePlaylist}
-          currentVideoId={currentId}
-          onVideoSelect={() => {}}
-        />
+        <Suspense fallback={<div></div>}>
+          <PlaylistSidebar
+            playlist={onePlaylist}
+            currentVideoId={currentId}
+            onVideoSelect={() => {}}
+          />
+        </Suspense>
       </aside>
 
       {/* Item 3: Video Actions + Comments */}
@@ -75,7 +82,9 @@ const VideoPlayerPage = () => {
       >
         <VideoActions video={video} />
         {video._id && (
-          <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+          <Suspense fallback={<div></div>}>
+            <CommentsSection videoId={video._id} videoOwnerId={video.owner} />
+          </Suspense>
         )}
       </div>
     </div>

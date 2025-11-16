@@ -15,7 +15,7 @@ import ConfirmModal from "../ConfirmModel";
 import toast from "react-hot-toast";
 
 const UserVideo = () => {
-  const { user, axios, fetchCurrentUser } = useContext(AppContext);
+  const { user, axios } = useContext(AppContext);
 
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,32 +42,30 @@ const UserVideo = () => {
         );
       }
     },
-    [axios, user]
+    [axios, user?._id]
   );
 
   useEffect(() => {
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
     const initializeData = async () => {
       setLoading(true);
-      await fetchCurrentUser();
-
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const controller = new AbortController();
-
       try {
         await fetchVideos(controller.signal);
       } finally {
         setLoading(false);
       }
-
-      return () => controller.abort();
     };
 
     initializeData();
-  }, [user?._id]); // Only re-run when user ID changes
+
+    return () => controller.abort();
+  }, [user?._id, fetchVideos]);
 
   const setVideoLoading = (videoId, val) =>
     setActionLoading((prev) => ({ ...prev, [videoId]: val }));
@@ -84,7 +82,7 @@ const UserVideo = () => {
       toast.success("Video deleted successfully");
     } catch (err) {
       setVideos(prev);
-      setError(err.response?.data?.message || "Failed to delete video");
+      toast.error(err.response?.data?.message || "Failed to delete video");
     } finally {
       setVideoLoading(videoId, false);
     }
@@ -103,14 +101,17 @@ const UserVideo = () => {
       await axios.patch(
         `/api/v1/videos/${videoId}`,
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
+      toast.success(`Video is now ${video.isPublished ? "private" : "public"}`);
     } catch (err) {
-      await fetchVideos().catch(() => {});
-      setError(err.response?.data?.message || "Failed to toggle public status");
-      console.log(video);//delete later
+      // Revert on error
+      setVideos((prev) =>
+        prev.map((v) =>
+          v._id === videoId ? { ...v, isPublished: video.isPublished } : v
+        )
+      );
+      toast.error(err.response?.data?.message || "Failed to update video");
     } finally {
       setVideoLoading(videoId, false);
     }
@@ -126,6 +127,7 @@ const UserVideo = () => {
       prev.map((v) => (v._id === updatedVideo._id ? updatedVideo : v))
     );
     setEditModal(null);
+    toast.success("Video updated successfully");
   };
 
   const toggleMenu = (videoId) => {
@@ -185,7 +187,7 @@ const UserVideo = () => {
               </div>
 
               {/* Mobile menu */}
-              <div className="absolute bottom-1 right-1 sm:hidden ">
+              <div className="absolute bottom-1 right-1 sm:hidden">
                 <button
                   onClick={() => toggleMenu(video._id)}
                   className="p-1 rounded-full bg-gray-100 cursor-pointer"
@@ -216,18 +218,20 @@ const UserVideo = () => {
                       }
                       className="w-full px-5 py-2 text-left cursor-pointer flex items-center gap-3 text-sm "
                       aria-label={
-                        video.isPublished ? "private video" : "public video"
+                        video.isPublished
+                          ? "Make video private"
+                          : "Make video public"
                       }
                     >
                       {video.isPublished ? (
                         <>
                           <EyeOff size={16} className="text-yellow-500" />
-                          Private
+                          Make Private
                         </>
                       ) : (
                         <>
                           <Eye size={16} className="text-green-500" />
-                          Public
+                          Make Public
                         </>
                       )}
                     </button>
@@ -270,7 +274,9 @@ const UserVideo = () => {
                   className="p-1.5 rounded-full hover:bg-gray-100   cursor-pointer"
                   disabled={!!actionLoading[video._id]}
                   aria-label={
-                    video.isPublished ? "private video" : "public video"
+                    video.isPublished
+                      ? "Make video private"
+                      : "Make video public"
                   }
                 >
                   {video.isPublished ? (

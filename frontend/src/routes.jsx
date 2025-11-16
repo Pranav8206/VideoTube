@@ -1,10 +1,9 @@
-// routes.js
 import { lazy } from "react";
 import App from "./App.jsx";
+import Home from "./pages/Home.jsx";
+import VideoPlayerPage from "./pages/VideoPlayerPage.jsx";
 
 // Lazy-loaded pages
-const Home = lazy(() => import("./pages/Home.jsx"));
-const VideoPlayerPage = lazy(() => import("./pages/VideoPlayerPage.jsx"));
 const SearchResults = lazy(() => import("./pages/SearchResults.jsx"));
 const Trending = lazy(() => import("./pages/Trending.jsx"));
 const Subscriptions = lazy(() => import("./pages/Subscriptions.jsx"));
