@@ -120,7 +120,6 @@ const AccountSettings = () => {
       }
 
       setUser({ ...updatedUser });
-      console.log("2332", updatedUser, "updated user");
 
       toast.success("Updated successfully");
       setSaveStatus("success");

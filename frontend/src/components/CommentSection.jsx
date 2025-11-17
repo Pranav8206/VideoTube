@@ -33,7 +33,6 @@ const CommentsSection = ({ videoId }) => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch comments");
       console.error("Error fetching comments:", err);
-      console.log(page === totalPages);//remove it later
     } finally {
       setLoading(false);
     }

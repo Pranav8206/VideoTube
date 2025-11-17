@@ -35,7 +35,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description, category, isPublished = true } = req.body;
-  console.log("here is 3");
 
   //check title is available
   const existingVideo = await Video.findOne({ title });
@@ -58,13 +57,11 @@ const publishAVideo = asyncHandler(async (req, res) => {
       "Both a video and a thumbnail are required to proceed!"
     );
   }
-  console.log("here is 2");
+  
   const videoInfo = await uploadeOnCloudinary(VideoFilePath);
   const thumbnail = await uploadeOnCloudinary(ThumbnailFilePath);
 
   if (!videoInfo || !thumbnail) {
-    console.log("here is ");
-
     throw new ApiError(500, "Failed to  upload media to cloud storage!");
   }
 

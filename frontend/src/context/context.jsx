@@ -201,7 +201,6 @@ const ContextProvider = ({ children }) => {
 
         // If status is 401 and request hasn't been retried yet, attempt refresh flow
         if (error.response?.status === 401 && !originalRequest._retry) {
-          
           if (url.includes("/current-user") && !user) {
             console.log("Initial auth check failed, skipping retry");
             return Promise.reject(error);
@@ -249,9 +248,7 @@ const ContextProvider = ({ children }) => {
   // INITIALIZE: run fetchCurrentUser on mount only (not on user changes)
   useEffect(() => {
     (async () => {
-      console.log("Context init: fetching current user");
-      const current = await fetchCurrentUser();
-      console.log("fetchCurrentUser result:", current);
+      await fetchCurrentUser();
     })();
   }, []);
 

@@ -34,7 +34,6 @@ const HomeContent = () => {
         setVideos(allVideos);
       } catch (error) {
         setError("Failed to load videos. Please try again.");
-        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -45,7 +44,6 @@ const HomeContent = () => {
   return (
     <div className="w-full min-h-screen py-0.5 s:py-2">
       <div className="mb-3 px-2 s:px-2 ">
-        {console.log(videos)}
         {/* Category Filters with Slider */}
         {categories.length > 0 && (
           <div className="w-full">

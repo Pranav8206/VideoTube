@@ -87,7 +87,6 @@ const Login = () => {
       const { data } = await axios.post(`/api/v1/users/${state}`, payload, {
         withCredentials: true,
       });
-      console.log("in login comp data:", data);
 
       if (data?.success) {
         if (data?.data?.user) {

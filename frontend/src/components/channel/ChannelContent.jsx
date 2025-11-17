@@ -30,7 +30,6 @@ const ChannelContent = () => {
         const res = await axios.get(
           `/api/v1/users/c/${channelName.toLowerCase()}`
         );
-        console.log("Channel data:", res.data);
         setChannelData(res.data.data);
 
         // Fetch stats after getting channel data
@@ -47,7 +46,6 @@ const ChannelContent = () => {
 
     if (channelName) {
       fetchChannel();
-      console.log("Fetching");
     }
   }, [channelName]);
 
@@ -57,7 +55,6 @@ const ChannelContent = () => {
       const res = await axios.get(`/api/v1/dashboard/stats/${userId}`, {
         withCredentials: true,
       });
-      console.log("Channel stats:", res.data);
       setChannelStats(res.data.data);
     } catch (err) {
       console.error("Stats fetch failed:", err);

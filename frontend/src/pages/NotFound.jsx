@@ -45,11 +45,9 @@ const NotFound = () => {
     if (timerRef.current) window.clearInterval(timerRef.current); // Clear any existing interval
     const start = Date.now();
     const end = start + 10000;
-    console.log(score);
 
     timerRef.current = window.setInterval(() => {
       const now = Date.now();
-      console.log(start, end, now, score, highestScore);
       const remaining = Math.max(0, Math.ceil((end - now) / 1000));
       if (isMounted) setTimeLeft(remaining);
       if (now > end) {
@@ -100,7 +98,6 @@ const NotFound = () => {
     if (!playing) return;
     setScore((s) => {
       const newScore = s + 1;
-      console.log("Score incremented to", newScore);
       return newScore;
     });
     setGameMessage("Nice!");
