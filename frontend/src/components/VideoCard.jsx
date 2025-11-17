@@ -76,11 +76,11 @@ const VideoCard = ({
 
   return (
     <div
-      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer h-full max-w-full overflow-hidden hover:border-gray-200 hover:shadow-md
+      className={`bg-white w-full rounded-xl border border-gray-100 transition-all duration-300 cursor-pointer h-full max-w-full hover:border-gray-200 hover:shadow-md relative
         ${
           isList
             ? "flex justify-between gap-2 hover:bg-gray-50 my-1"
-            : "flex-col w-full group overflow-hidden"
+            : "flex-col w-full group"
         }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -99,7 +99,7 @@ const VideoCard = ({
       >
         <div
           className={`overflow-hidden bg-gray-100 aspect-video ${
-            isList ? "rounded-l-lg shadow-sm" : ""
+            isList ? "rounded-l-lg shadow-sm" : "rounded-t-lg"
           }`}
         >
           <img
@@ -179,8 +179,8 @@ const VideoCard = ({
                 {video.owner?.avatar ? (
                   <img
                     src={video.owner?.avatar}
-                    alt={video.owner?.username || "this is the problem"}
-                    className="rounded-full  object-cover h-full w-full"
+                    alt={video.owner?.username || "Avatar"}
+                    className="rounded-full object-cover h-full w-full"
                   />
                 ) : (
                   <User
@@ -199,11 +199,12 @@ const VideoCard = ({
                 } `}
                 onClick={(e) => {
                   e.stopPropagation();
+                  navigate(`/c/${video.owner?.username}`);
                 }}
               >
                 {inSubscription
                   ? video.channel?.name
-                  : video.owner?.username || "or this"}
+                  : video.owner?.username || "Unknown"}
               </p>
 
               <p
@@ -232,33 +233,35 @@ const VideoCard = ({
                 setShowOptions((s) => !s);
               }}
               className="sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 p-1"
-              aria-label="More"
+              aria-label="More options"
             >
               <MoreVertical size={16} className="text-gray-600" />
             </button>
 
             {showOptions && showMoreIcon && (
               <div
-                className={`absolute right-4 ${
-                  isList ? "top-0" : "bottom-6"
-                } bg-white  shadow-lg border border-primary rounded-lg mx-1 z-10 w-40 sm:w-48 cursor-pointer`}
+                className={`absolute ${
+                  isList ? "right-0 top-8" : "right-0 bottom-8"
+                } bg-white shadow-xl border border-borderColor rounded-lg z-50 w-40 sm:w-48 cursor-pointer`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer"
+                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2 cursor-pointer transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast.success("Saved in watch later");
+                    setShowOptions(false);
+                    toast.success("Saved to Watch Later");
                   }}
                 >
                   <Clock size={16} />
                   Watch later
                 </button>
                 <button
-                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
+                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-                    //downolad video
+                    setShowOptions(false);
+                    toast.success("Download started");
                   }}
                 >
                   <Download size={16} />
@@ -266,12 +269,11 @@ const VideoCard = ({
                 </button>
                 <hr className="text-gray-300" />
                 <button
-                  className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 rounded-b-lg flex items-center gap-2 cursor-pointer"
+                  className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2 cursor-pointer transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-
+                    setShowOptions(false);
                     const t1 = toast.loading("Analyzing the video...");
-
                     setTimeout(() => {
                       toast.dismiss(t1);
                       toast.success("Video looks fine");
@@ -284,15 +286,22 @@ const VideoCard = ({
                   <Flag size={16} />
                   Report
                 </button>
-                {onRemove && <hr className="my-1" />}
+
                 {onRemove && (
-                  <button
-                    onClick={() => onRemove(video._id)}
-                    className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer"
-                  >
-                    <Minus size={16} />
-                    Remove
-                  </button>
+                  <>
+                    <hr className="border-gray-200" />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowOptions(false);
+                        onRemove(video._id);
+                      }}
+                      className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2 cursor-pointer transition-colors"
+                    >
+                      <Minus size={16} />
+                      Remove
+                    </button>
+                  </>
                 )}
               </div>
             )}

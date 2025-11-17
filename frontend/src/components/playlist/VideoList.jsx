@@ -10,34 +10,26 @@ const VideoList = ({
   // onVideoRemove,
 }) => {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {videos.map((video, index) => {
         const isPlaying = currentVideoId === video.id;
 
-        // <VideoItem
-        //   key={v.id}
-        //   video={v}
-        //   index={i}
-        //   isPlaying={currentVideoId === v.id}
-        //   onPlay={onVideoPlay}
-        //   onRemove={onVideoRemove}
-        // />
         return (
           <div
-            className={`group flex items-center gap-4 rounded-xl border transition-all duration-200 ${
+            className={`group flex items-center rounded-xl border transition-all duration-200 ${
               isPlaying
                 ? "bg-primary/10 border-primary shadow-md"
                 : "bg-white border-borderColor hover:shadow-sm"
             }`}
             key={video.id}
           >
-            <div className="flex max-s:flex-col-reverse items-center gap-3 p-2">
+            <div className="flex max-s:flex-col-reverse items-center">
               <GripVertical
                 size={18}
                 className="text-gray-300 opacity-0 group-hover:opacity-100 hover:scale-125 transition-all duration-200 cursor-grab"
               />
               <span
-                className={`font-semibold text-sm min-w-[1.5rem] text-center ${
+                className={`font-semibold text-sm sm:mr-1 text-center ${
                   isPlaying ? "text-primary" : "text-gray-600"
                 }`}
               >
@@ -45,7 +37,7 @@ const VideoList = ({
               </span>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 scale-y-110 hover:scale-y-105 transition-all duration-350">
               <VideoCard video={video} />
             </div>
           </div>

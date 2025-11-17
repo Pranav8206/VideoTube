@@ -73,7 +73,8 @@ const PlaylistPage = ({ playlistId }) => {
               />
             </div>
 
-            <section className="px-1 xs:px-2 sm:px-6">
+            {/* All videos in playlist */}
+            <section className="px-0.5 sm:px-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                   Videos ({playlistData.videoCount})
@@ -94,11 +95,11 @@ const PlaylistPage = ({ playlistId }) => {
           </main>
         </div>
       </div>
-      <PlaylistSidebar
+      {/* <PlaylistSidebar
         playlist={onePlaylist}
         currentVideoId={currentVideoId}
         onVideoSelect={handleVideoPlay}
-      />
+      /> */}
     </div>
   );
 };
