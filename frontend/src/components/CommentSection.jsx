@@ -97,6 +97,7 @@ const CommentsSection = ({ videoId }) => {
       setComments(
         comments.map((c) => (c._id === commentId ? response.data.data : c))
       );
+      toast.success("Comment updated successfully");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update comment");
       console.error("Error updating comment:", err);
