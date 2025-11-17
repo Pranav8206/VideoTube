@@ -1,37 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import SettingsContent from "../components/settings/SettingsContent";
 import { AppContext } from "../context/AppContext";
 import Loader from "../components/Loader";
 
 const Settings = () => {
-  const { setShowLogin, fetchCurrentUser, user } = useContext(AppContext);
-  const [loading, setLoading] = useState(true);
-  
+  const { setShowLogin, user, isLoadingUser } = useContext(AppContext);
+
   useEffect(() => {
-    const initializeUser = async () => {
-      try {
-        console.log("Settings: Current user state before fetch:", user);
-        const currentUser = await fetchCurrentUser();
-        console.log("Settings: Fetched user:", currentUser);
-
-        if (currentUser) {
-          console.log("Settings: User exists, hiding login");
-          setShowLogin(false);
-        } else {
-          console.log("Settings: No user, showing login");
-          setShowLogin(true);
-        }
-      } catch (error) {
-        console.error("Settings: Error during initialization:", error);
+    if (!isLoadingUser) {
+      if (!user) {
         setShowLogin(true);
-      } finally {
-        setLoading(false);
       }
-    };
-    initializeUser();
-  }, []);
+    }
+  }, [user, isLoadingUser, setShowLogin]);
 
-  if (loading)
+  // Show loader while context is still loading user
+  if (isLoadingUser)
     return (
       <div className="relative h-[88vh]">
         <Loader />

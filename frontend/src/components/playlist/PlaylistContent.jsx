@@ -1,5 +1,4 @@
-// PlaylistPage.jsx
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import PlaylistHeader from "./PlaylistHeader";
 import PlaylistSettings from "./PlaylistSettings";
 import VideoList from "./VideoList";
@@ -8,38 +7,54 @@ import PlaylistSidebar from "./PlaylistSidebar";
 
 const PlaylistPage = ({ playlistId }) => {
   const [currentVideoId, setCurrentVideoId] = useState(1);
-  const [watchedVideos, setWatchedVideos] = useState([1, 2, 3]);
+  const [watchedVideos] = useState([1, 2, 3]); // Removed setter if not used
   const [isLooping, setIsLooping] = useState(false);
-
   const [playlistData, setPlaylistData] = useState(playlist);
 
-  // handlers
-  const handlePlayAll = () => setCurrentVideoId(playlistData.videos[0].id);
+  // ✅ Use useCallback to memoize handlers
+  const handlePlayAll = useCallback(() => {
+    if (playlistData.videos.length > 0) {
+      setCurrentVideoId(playlistData.videos[0].id);
+    }
+  }, [playlistData.videos]);
 
-  const handleShuffle = () =>
-    setCurrentVideoId(
-      playlistData.videos[
-        Math.floor(Math.random() * playlistData.videos.length)
-      ].id
-    );
+  const handleShuffle = useCallback(() => {
+    if (playlistData.videos.length > 0) {
+      const randomIndex = Math.floor(
+        Math.random() * playlistData.videos.length
+      );
+      setCurrentVideoId(playlistData.videos[randomIndex].id);
+    }
+  }, [playlistData.videos]);
 
-  const handleVideoPlay = (id) => setCurrentVideoId(id);
+  const handleVideoPlay = useCallback((id) => {
+    setCurrentVideoId(id);
+  }, []);
 
-  const handleVideoRemove = (id) =>
+  const handleVideoRemove = useCallback((id) => {
     setPlaylistData((prev) => ({
       ...prev,
       videos: prev.videos.filter((v) => v.id !== id),
       videoCount: prev.videoCount - 1,
     }));
+  }, []);
 
-  const handlePrivacyToggle = () =>
+  const handlePrivacyToggle = useCallback(() => {
     setPlaylistData((prev) => ({ ...prev, isPublic: !prev.isPublic }));
+  }, []);
 
-  const handleAddVideos = () => console.log("Add videos");
-  setWatchedVideos([1, 2, 3]); // delete later
+  const handleLoopToggle = useCallback(() => {
+    setIsLooping((s) => !s);
+  }, []);
+
+  const handleAddVideos = useCallback(() => {
+    console.log("Add videos");
+  }, []);
+
+  const watchedCount = useMemo(() => watchedVideos.length, [watchedVideos]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {playlistId}
       <div className="max-w-7xl mx-auto ">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           <main className="xl:col-span-3 space-y-3">
@@ -47,7 +62,7 @@ const PlaylistPage = ({ playlistId }) => {
               playlist={playlistData}
               onPlayAll={handlePlayAll}
               onShuffle={handleShuffle}
-              onLoop={() => setIsLooping((s) => !s)}
+              onLoop={handleLoopToggle}
               isLooping={isLooping}
             />
             <div className="px-4 sm:px-8 md:px-10 lg:px-56">
@@ -64,7 +79,7 @@ const PlaylistPage = ({ playlistId }) => {
                   Videos ({playlistData.videoCount})
                 </h2>
                 <div className="text-sm text-gray-600">
-                  {watchedVideos.length} of {playlistData.videoCount} watched
+                  {watchedCount} of {playlistData.videoCount} watched
                 </div>
               </div>
 
@@ -81,9 +96,8 @@ const PlaylistPage = ({ playlistId }) => {
       </div>
       <PlaylistSidebar
         playlist={onePlaylist}
-        currentVideoId={
-          onePlaylist.videos?.[currentVideoId]?.id || onePlaylist.videos[0].id
-        }
+        currentVideoId={currentVideoId}
+        onVideoSelect={handleVideoPlay}
       />
     </div>
   );

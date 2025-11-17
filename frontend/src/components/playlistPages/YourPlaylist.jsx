@@ -1,5 +1,4 @@
-// YourPlaylists.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Loader as LoaderIcon,
@@ -77,7 +76,7 @@ const YourPlaylists = () => {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center justify-center w-full max-sm:self-end border max-sm:max-w-25 gap-2 bg-primary cursor-pointer text-white px-0 sm:px-6 py-2 sm:py-3 rounded-lg font-medium"
+            className="flex items-center justify-center w-full max-sm:self-end border max-sm:max-w-25 max-w-45 gap-2 bg-primary cursor-pointer text-white px-0 sm:px-6 py-2 sm:py-3 rounded-lg font-medium"
           >
             <PlusCircle size={20} />
             <span>

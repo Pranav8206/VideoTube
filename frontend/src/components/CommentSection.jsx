@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { User, ChevronDown } from "lucide-react";
 import CommentCard from "./CommentCard";
 import { AppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const CommentsSection = ({ videoId }) => {
   const { axios, user } = useContext(AppContext);
@@ -73,6 +74,7 @@ const CommentsSection = ({ videoId }) => {
       });
       setComments(comments.filter((c) => c._id !== commentId));
       setTotalComments(totalComments - 1);
+      toast.success("Comment deleted successfully");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete comment");
       console.error("Error deleting comment:", err);

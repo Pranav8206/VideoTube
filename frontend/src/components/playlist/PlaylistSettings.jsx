@@ -1,10 +1,9 @@
-// PlaylistSettings.jsx
 import React from "react";
 import { Plus } from "lucide-react";
 
 const PlaylistSettings = ({ playlist, onPrivacyToggle, onAddVideos }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6 mb-6">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
       <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">
         Playlist Settings
       </h3>
@@ -22,12 +21,14 @@ const PlaylistSettings = ({ playlist, onPrivacyToggle, onAddVideos }) => {
 
           <button
             onClick={onPrivacyToggle}
-            className={`relative w-12 h-6 rounded-full transition cursor-pointer ${
+            type="button"
+            aria-label={`Make playlist ${playlist.isPublic ? "private" : "public"}`}
+            className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
               playlist.isPublic ? "bg-primary" : "bg-gray-300"
             }`}
           >
             <div
-              className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition ${
+              className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-200 ${
                 playlist.isPublic ? "left-6" : "left-0.5"
               }`}
             />
@@ -43,10 +44,11 @@ const PlaylistSettings = ({ playlist, onPrivacyToggle, onAddVideos }) => {
           </div>
           <button
             onClick={onAddVideos}
-            className="bg-primary text-white px-2 py-1.5 rounded-lg hover:bg-primary/90 transition flex items-center gap-2 text-sm cursor-pointer"
+            type="button"
+            className="bg-primary hover:bg-primary-dull text-white px-3 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2 text-sm font-medium shadow-md hover:shadow-lg"
           >
             <Plus size={16} />
-            Add
+            <span>Add</span>
           </button>
         </div>
       </div>
@@ -54,4 +56,4 @@ const PlaylistSettings = ({ playlist, onPrivacyToggle, onAddVideos }) => {
   );
 };
 
-export default PlaylistSettings;
+export default React.memo(PlaylistSettings);

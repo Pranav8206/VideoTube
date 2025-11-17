@@ -1,4 +1,3 @@
-// VideoList.jsx
 import React from "react";
 import { GripVertical } from "lucide-react";
 import VideoCard from "../VideoCard";
@@ -25,27 +24,30 @@ const VideoList = ({
         // />
         return (
           <div
-            className={`group flex items-center gap-4 rounded-xl border  transition-shadow duration-200 ${
+            className={`group flex items-center gap-4 rounded-xl border transition-all duration-200 ${
               isPlaying
                 ? "bg-primary/10 border-primary shadow-md"
-                : "bg-white border-gray-100 hover:shadow-sm"
+                : "bg-white border-borderColor hover:shadow-sm"
             }`}
             key={video.id}
           >
-            <div className="flex max-s:flex-col-reverse items-center gap-3 cursor-pointer">
+            <div className="flex max-s:flex-col-reverse items-center gap-3 p-2">
               <GripVertical
-                size={16}
-                className="text-gray-300 opacity-0 group-hover:opacity-100 hover:scale-125 transition"
+                size={18}
+                className="text-gray-300 opacity-0 group-hover:opacity-100 hover:scale-125 transition-all duration-200 cursor-grab"
               />
               <span
-                className={`font-semibold text-sm ${
+                className={`font-semibold text-sm min-w-[1.5rem] text-center ${
                   isPlaying ? "text-primary" : "text-gray-600"
                 }`}
               >
+                {index + 1}
               </span>
             </div>
 
-            <VideoCard video={video}/>
+            <div className="flex-1">
+              <VideoCard video={video} />
+            </div>
           </div>
         );
       })}
@@ -53,4 +55,4 @@ const VideoList = ({
   );
 };
 
-export default VideoList;
+export default React.memo(VideoList);

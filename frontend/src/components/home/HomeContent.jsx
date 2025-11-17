@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-// import { videos } from "../../utils/videosData";
 import VideosGrid from "../VideosGrid";
 import CategoriesSlider from "./CategoriesSlider";
 import { AppContext } from "../../context/AppContext";

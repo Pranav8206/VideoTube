@@ -1,4 +1,3 @@
-// VideosGrid.jsx
 import React from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";

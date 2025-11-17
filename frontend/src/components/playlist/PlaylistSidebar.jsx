@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { X, List } from "lucide-react";
 import VideoCard from "../VideoCard";
 
@@ -9,30 +9,49 @@ const PlaylistSidebar = ({
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
+  // ✅ Fixed useEffect with proper dependencies
   useEffect(() => {
-    const handleResize = () => setIsOpen(window.innerWidth >= 768);
+    const handleResize = () => {
+      setIsOpen(window.innerWidth >= 768);
+    };
+
     handleResize();
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty dependency - only runs on mount/unmount
+
+  // ✅ Use useCallback for handlers
+  const handleToggleSidebar = useCallback(() => {
+    setIsOpen((prev) => !prev);
   }, []);
 
-  if (!playlist)
+  const handleVideoClick = useCallback(
+    (video) => {
+      onVideoSelect(video);
+    },
+    [onVideoSelect]
+  );
+
+  if (!playlist) {
     return (
       <div className="flex items-center justify-center p-4 text-sm text-gray-500">
         Playlist does not exist
       </div>
     );
+  }
 
   const headerHeight = 120;
 
   return (
     <>
-      {/* Mobile open button when collapsed */}
+      {/* Mobile open button */}
       {!isOpen && (
         <div className="mb-2">
           <button
-            onClick={() => setIsOpen(true)}
-            className="w-50 flex items-center gap-2 justify-center rounded-md text-sm text-gray-700 cursor-pointer p-1 mx-auto"
+            onClick={handleToggleSidebar}
+            type="button"
+            className="w-50 flex items-center gap-2 justify-center rounded-md text-sm text-gray-700 p-2 mx-auto hover:bg-gray-100 transition-colors"
             aria-label="Show playlist"
           >
             <List size={16} /> Show playlist
@@ -41,15 +60,15 @@ const PlaylistSidebar = ({
       )}
 
       <aside
-        className={`flex-shrink-0 z-30 pl-2 ${
+        className={`flex-shrink-0 z-30 pl-2 transition-all duration-300 ${
           isOpen ? "block" : "hidden"
         } w-full`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-1 border-b border-gray-200">
-          <div>
+        <div className="flex items-center justify-between p-3 border-b border-borderColor bg-white rounded-t-xl">
+          <div className="flex-1 min-w-0">
             <h2
-              className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 truncate"
+              className="text-sm sm:text-base md:text-lg font-semibold text-dark truncate"
               title={playlist.title}
             >
               {playlist.title}
@@ -59,18 +78,19 @@ const PlaylistSidebar = ({
             </p>
           </div>
 
-          {/* Mobile close */}
           <button
-            onClick={() => setIsOpen(false)}
-            className="p-2 rounded-md hover:bg-gray-100 text-gray-600 cursor-pointer"
+            onClick={handleToggleSidebar}
+            type="button"
+            className="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors ml-2"
+            aria-label="Hide playlist"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* List */}
+        {/* Video List */}
         <div
-          className="flex-1 "
+          className="overflow-y-auto bg-white"
           style={{ maxHeight: `calc(100vh - ${headerHeight}px)` }}
         >
           {playlist.videos.map((video) => {
@@ -81,15 +101,17 @@ const PlaylistSidebar = ({
                 key={video.id}
                 role="button"
                 tabIndex={0}
-                onClick={() => onVideoSelect(video)}
+                onClick={() => handleVideoClick(video)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    onVideoSelect(video);
+                    handleVideoClick(video);
                   }
                 }}
-                className={`rounded-lg transition-colors ${
-                  isActive ? "bg-primary/10 ring-1 ring-primary/40" : ""
+                className={`rounded-lg transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? "bg-primary/10 ring-2 ring-primary/40"
+                    : "hover:bg-gray-50"
                 }`}
               >
                 <VideoCard video={video} layout="list" inSidebar={true} />
@@ -98,13 +120,11 @@ const PlaylistSidebar = ({
           })}
         </div>
 
-        {/* Footer small info */}
-        <div className="p-3 sm:p-4 border-t border-gray-100">
+        {/* Footer */}
+        <div className="p-3 sm:p-4 border-t border-borderColor bg-white rounded-b-xl">
           <div className="flex items-center justify-between text-xs text-gray-500">
-            <span>Playlist</span>
-            <span className="hidden sm:inline">
-              {playlist.videos.length} items
-            </span>
+            <span className="font-medium">Playlist</span>
+            <span>{playlist.videos.length} items</span>
           </div>
         </div>
       </aside>
@@ -112,4 +132,4 @@ const PlaylistSidebar = ({
   );
 };
 
-export default PlaylistSidebar;
+export default React.memo(PlaylistSidebar);

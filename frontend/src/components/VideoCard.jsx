@@ -1,4 +1,3 @@
-// VideoCard.jsx
 import React, { useState, useRef, useContext } from "react";
 import {
   Download,
@@ -180,7 +179,7 @@ const VideoCard = ({
                 {video.owner?.avatar ? (
                   <img
                     src={video.owner?.avatar}
-                    alt={video.owner?.username}
+                    alt={video.owner?.username || "this is the problem"}
                     className="rounded-full  object-cover h-full w-full"
                   />
                 ) : (
@@ -204,7 +203,7 @@ const VideoCard = ({
               >
                 {inSubscription
                   ? video.channel?.name
-                  : video.owner.username}
+                  : video.owner?.username || "or this"}
               </p>
 
               <p
