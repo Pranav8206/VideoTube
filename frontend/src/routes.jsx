@@ -2,6 +2,7 @@ import { lazy } from "react";
 import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
 import VideoPlayerPage from "./pages/VideoPlayerPage.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 // Lazy-loaded pages
 const SearchResults = lazy(() => import("./pages/SearchResults.jsx"));
@@ -17,6 +18,7 @@ const routes = [
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorBoundary />,
     children: [
       { index: true, element: <Home /> }, // index means "default child route"
       { path: "v/:videoId", element: <VideoPlayerPage /> },

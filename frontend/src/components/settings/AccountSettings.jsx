@@ -284,7 +284,7 @@ const AccountSettings = () => {
           {/* Info icon and Message */}
           {showMessage && (
             <span
-              className="text-sm absolute top-12 s:top-15 right-0 text-white p-1 bg-gray-700 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line "
+              className="text-sm absolute top-12 s:top-15 right-0 text-gray-800/80 p-1 bg-purple-100 ml-6 s:ml-10 mr-1 rounded-md whitespace-pre-line border border-gray-400/50"
               aria-live="polite"
             >
               {" "}

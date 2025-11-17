@@ -184,9 +184,9 @@ export const videos = [
 export const menuItems = [
   { icon: Home, label: "Home", path: "/", active: true },
   { icon: Compass, label: "Trending", path: "/trending", active: false },
-  { icon: ListVideo, label: "Playlists", path: "/playlists", active: false },
+  { icon: ListVideo, label: "Playlists", path: "/p/your-playlists", active: false },
   { icon: Clock, label: "History", path: "/p/history", active: false },
-  { icon: Heart, label: "Liked", path: "/liked", active: false },
+  { icon: Heart, label: "Liked", path: "/p/liked", active: false },
 ];
 
 export const onePlaylist = {

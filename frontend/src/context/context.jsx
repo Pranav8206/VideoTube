@@ -16,7 +16,7 @@ const ContextProvider = ({ children }) => {
   const [showVoiceSearchBox, setShowVoiceSearchBox] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState(null);
-
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
   // Refs to prevent multiple simultaneous token refresh attempts
   const isRefreshingRef = useRef(false);
   const failedQueueRef = useRef([]);
@@ -97,6 +97,8 @@ const ContextProvider = ({ children }) => {
   const fetchCurrentUser = useCallback(async () => {
     try {
       console.log("fetchCurrentUser called");
+      setIsLoadingUser(true);
+
       const response = await axios.get("/api/v1/users/current-user", {
         withCredentials: true,
       });
@@ -117,6 +119,8 @@ const ContextProvider = ({ children }) => {
           "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       }
       return null;
+    } finally {
+      setIsLoadingUser(false);
     }
   }, []);
 
@@ -277,6 +281,8 @@ const ContextProvider = ({ children }) => {
     logout,
     getUserAllSubscribedChannels,
     toggleSubscribeChannel,
+    isLoadingUser,
+    setIsLoadingUser,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

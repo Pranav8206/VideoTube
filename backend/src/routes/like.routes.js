@@ -27,6 +27,6 @@ router
   .post(verifyJWT, toggleVideoLike)
   .get(getVideoLikeCount);
 
-router.route("/").get(getLikedVideos);
+router.route("/").get(verifyJWT, getLikedVideos);
 
 export default router;

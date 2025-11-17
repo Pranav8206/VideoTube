@@ -42,7 +42,6 @@ const VideoList = ({
                   isPlaying ? "text-primary" : "text-gray-600"
                 }`}
               >
-                {index + 1}
               </span>
             </div>
 

@@ -9,6 +9,7 @@ import {
   X,
   SendHorizonal,
   MoreVertical,
+  Loader2,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MobSearchNav from "./MobSearchNav";
@@ -26,6 +27,7 @@ const Navbar = () => {
     setShowingSearchResults,
     user,
     setShowVoiceSearchBox,
+    isLoadingUser,
   } = useContext(AppContext);
 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -81,6 +83,7 @@ const Navbar = () => {
           isVisible || searchQuery ? "translate-y-0" : "-translate-y-full"
         }`}
       >
+        {/*show while typing/ after search */}
         <MobSearchNav
           showMobileSearch={showMobileSearch}
           onClose={() => {
@@ -244,7 +247,9 @@ const Navbar = () => {
 
             <Link to="/setting">
               <button className="w-7 h-7  border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
-                {!user?.avatar ? (
+                {isLoadingUser ? (
+                  <Loader2 size={20} className="text-primary animate-spin" />
+                ) : !user?.avatar ? (
                   <User
                     size={24}
                     className="text-gray-100 bg-gray-400 h-full w-full rounded-full"

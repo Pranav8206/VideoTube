@@ -6,7 +6,7 @@ import VideoList from "./VideoList";
 import { onePlaylist, playlist } from "../../utils/videosData";
 import PlaylistSidebar from "./PlaylistSidebar";
 
-const PlaylistPage = () => {
+const PlaylistPage = ({ playlistId }) => {
   const [currentVideoId, setCurrentVideoId] = useState(1);
   const [watchedVideos, setWatchedVideos] = useState([1, 2, 3]);
   const [isLooping, setIsLooping] = useState(false);
@@ -39,6 +39,7 @@ const PlaylistPage = () => {
   setWatchedVideos([1, 2, 3]); // delete later
   return (
     <div className="min-h-screen bg-gray-50">
+      {playlistId}
       <div className="max-w-7xl mx-auto ">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           <main className="xl:col-span-3 space-y-3">
@@ -83,7 +84,6 @@ const PlaylistPage = () => {
         currentVideoId={
           onePlaylist.videos?.[currentVideoId]?.id || onePlaylist.videos[0].id
         }
-        onVideoSelect=""
       />
     </div>
   );

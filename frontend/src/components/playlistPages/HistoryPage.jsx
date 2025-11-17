@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import VideosGrid from "./VideosGrid"; // adjust path as needed
+import VideosGrid from "../VideosGrid"; // adjust path as needed
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
 

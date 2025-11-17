@@ -203,10 +203,8 @@ const VideoCard = ({
                 }}
               >
                 {inSubscription
-                  ? video.channel?.name?.charAt(0).toUpperCase() +
-                    video.channel?.name?.slice(1)
-                  : video.owner.username?.charAt(0).toUpperCase() +
-                    video.owner.username?.slice(1)}
+                  ? video.channel?.name
+                  : video.owner.username}
               </p>
 
               <p
