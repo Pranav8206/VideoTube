@@ -4,7 +4,7 @@ import {
   AlertTriangle,
   Camera,
   CheckCircle,
-  Loader2,
+  Loader,
   Lock,
   LogOut,
   User,
@@ -515,7 +515,7 @@ const AccountSettings = () => {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4 animate-spin" />
                   Saving....
                 </>
               ) : (

@@ -1,17 +1,17 @@
 // YourPlaylists.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 import {
-  Loader,
+  Loader as LoaderIcon,
   PlusCircle,
   Pencil,
   Trash2,
   PlayCircle,
-  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PlaylistModal from "./PlaylistModal";
+import ConfirmModal from "../ConfirmModal";
+import Loader from "../Loader";
 
 const YourPlaylists = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -19,6 +19,7 @@ const YourPlaylists = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
 
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ const YourPlaylists = () => {
 
       setPlaylists(res.data.data.userPlaylist || []);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to load playlists");
+      console.error(err?.response?.data?.message || "");
     } finally {
       setLoading(false);
     }
@@ -42,18 +43,14 @@ const YourPlaylists = () => {
   }, []);
 
   const deletePlaylist = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this playlist?"))
-      return;
-
     try {
       setDeleteLoading(id);
       await axios.delete(`/api/v1/playlists/${id}`, {
         withCredentials: true,
       });
-      toast.success("Playlist deleted successfully");
       fetchPlaylists();
     } catch (error) {
-      toast.error("Failed to delete playlist");
+      console.error(error?.message);
     } finally {
       setDeleteLoading(null);
     }
@@ -61,34 +58,31 @@ const YourPlaylists = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col justify-center items-center">
-        <Loader className="animate-spin text-primary" size={48} />
-        <p className="mt-4 text-gray-500">Loading your playlists...</p>
-      </div>
+      <>
+        <Loader />
+      </>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
       {/* Header Section */}
       <div className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-row sm:items-center justify-between gap-2">
           <div>
-            <h1 className="text-3xl font-bold text-dark flex items-center gap-2">
-              <Sparkles className="text-primary" size={32} />
+            <h1 className="text-2xl font-bold text-dark flex items-center gap-2">
               Your Playlists
             </h1>
-            <p className="text-gray-600 mt-1">
-              Manage and organize your video collections
-            </p>
           </div>
 
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dull text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+            className="flex items-center justify-center w-full max-sm:self-end border max-sm:max-w-25 gap-2 bg-primary cursor-pointer text-white px-0 sm:px-6 py-2 sm:py-3 rounded-lg font-medium"
           >
             <PlusCircle size={20} />
-            <span>Create Playlist</span>
+            <span>
+              Create <span className="max-sm:hidden">Playlist</span>
+            </span>
           </button>
         </div>
       </div>
@@ -99,28 +93,22 @@ const YourPlaylists = () => {
           {playlists.map((pl) => (
             <div
               key={pl._id}
-              className="group bg-white border border-borderColor rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+              className="group bg-white border border-borderColor rounded-xl overflow-hidden"
             >
               {/* Card Content - Clickable */}
               <div
                 onClick={() => navigate(`/p/${pl._id}`)}
                 className="p-6 cursor-pointer"
               >
-                {/* Playlist Icon/Thumbnail */}
                 <div className="w-full h-32 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg flex items-center justify-center mb-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-colors">
                   <PlayCircle className="text-primary" size={48} />
                 </div>
-
-                {/* Playlist Info */}
                 <h3 className="font-bold text-lg text-dark mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                   {pl.name}
                 </h3>
-
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
                   {pl.description || "No description"}
                 </p>
-
-                {/* Video Count Badge */}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-light rounded-full text-sm text-dark font-medium">
                   <PlayCircle size={14} className="text-primary" />
                   <span>{pl.videos?.length || 0} videos</span>
@@ -142,15 +130,17 @@ const YourPlaylists = () => {
                 </button>
 
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deletePlaylist(pl._id);
+                  onClick={() => {
+                    setConfirmModal({
+                      action: () => deletePlaylist(pl._id),
+                      message: `Are you sure you want to delete this playlist?`,
+                    });
                   }}
                   disabled={deleteLoading === pl._id}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {deleteLoading === pl._id ? (
-                    <Loader size={16} className="animate-spin" />
+                    <LoaderIcon size={16} className="animate-spin" />
                   ) : (
                     <Trash2 size={16} />
                   )}
@@ -162,7 +152,7 @@ const YourPlaylists = () => {
         </div>
       ) : (
         // Empty State
-        <div className="bg-white border-2 border-dashed border-borderColor rounded-2xl p-12 text-center">
+        <div className="bg-white border-2 border-dashed border-borderColor rounded-2xl p-5 py-10 text-center">
           <div className="w-20 h-20 bg-light rounded-full flex items-center justify-center mx-auto mb-4">
             <PlayCircle className="text-primary" size={40} />
           </div>
@@ -174,10 +164,10 @@ const YourPlaylists = () => {
           </p>
           <button
             onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dull text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dull text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
           >
             <PlusCircle size={20} />
-            <span>Create Your First Playlist</span>
+            <span>Create First Playlist</span>
           </button>
         </div>
       )}
@@ -191,6 +181,14 @@ const YourPlaylists = () => {
           }}
           refresh={fetchPlaylists}
           editData={editData}
+        />
+      )}
+
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.action}
+          onClose={() => setConfirmModal(null)}
         />
       )}
     </div>

@@ -12,12 +12,11 @@ const Loader = ({
 
   return (
     <div
-      className={`absolute inset-0 z-40 flex flex-col items-center bg-white/10 justify-center gap-4 ${className}`}
+      className={`absolute inset-0 z-30 flex flex-col items-center bg-white justify-center gap-4 ${className}`}
     >
       <div className={`relative ${sizeClasses[size]}`}>
-        <div className="absolute inset-0 border-[3px] border-gray-700 rounded-full"></div>
-        <div className="absolute inset-0 border-[3px] border-transparent border-t-primary border-r-primary/70 rounded-full animate-spin"></div>
-        <div className="absolute inset-[6px] border-[2px] border-transparent border-b-primary/50 border-l-primary/30 rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
+        <div className="absolute inset-0 border-[4px] rounded-full border-dashed border-l-primary border-b-primary/60 border-r-primary/30 border-t-white animate-[spin_2s_ease-in-out_infinite] "/>
+        <div className="absolute inset-[12px] border-[3px] border-transparent border-l-primary/50 border-r-primary/50 rounded-full animate-[spin_1s_ease-in-out_infinite_alternate] "/>
       </div>
     </div>
   );

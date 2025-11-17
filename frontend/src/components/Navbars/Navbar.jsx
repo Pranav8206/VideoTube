@@ -9,7 +9,7 @@ import {
   X,
   SendHorizonal,
   MoreVertical,
-  Loader2,
+  Loader,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MobSearchNav from "./MobSearchNav";
@@ -248,7 +248,7 @@ const Navbar = () => {
             <Link to="/setting">
               <button className="w-7 h-7  border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer">
                 {isLoadingUser ? (
-                  <Loader2 size={20} className="text-primary animate-spin" />
+                  <Loader size={20} className="text-primary animate-spin" />
                 ) : !user?.avatar ? (
                   <User
                     size={24}

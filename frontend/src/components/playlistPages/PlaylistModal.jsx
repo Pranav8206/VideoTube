@@ -11,7 +11,7 @@ const PlaylistModal = ({ close, refresh, editData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!name.trim()) {
       toast.error("Playlist name is required");
       return;
@@ -62,7 +62,7 @@ const PlaylistModal = ({ close, refresh, editData }) => {
           </div>
           <button
             onClick={close}
-            className="p-2 hover:bg-light rounded-full transition-colors"
+            className="p-2 hover:bg-light cursor-pointer rounded-full transition-colors"
             disabled={loading}
           >
             <X size={24} className="text-gray-500" />
@@ -116,14 +116,14 @@ const PlaylistModal = ({ close, refresh, editData }) => {
               type="button"
               onClick={close}
               disabled={loading}
-              className="flex-1 px-6 py-3 border border-borderColor hover:bg-light text-dark rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 border border-borderColor text-dark rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="flex-1 px-6 py-3 bg-primary hover:bg-primary-dull text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-primary cursor-pointer text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

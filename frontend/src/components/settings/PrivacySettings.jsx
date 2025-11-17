@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { CheckCircle, Loader2, Trash2 } from "lucide-react";
+import { CheckCircle, Loader, Trash2 } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -125,7 +125,7 @@ const PrivacySettings = () => {
               className="flex items-center  justify-end gap-2 mx-2 px-3 sm:px-6 py-2 sm:py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 cursor-pointer"
             >
               {isDeleting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader className="w-5 h-5 animate-spin" />
               ) : (
                 <Trash2 className="w-5 h-5" />
               )}
@@ -143,7 +143,7 @@ const PrivacySettings = () => {
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader className="w-5 h-5 animate-spin" />
                 Saving...
               </>
             ) : (

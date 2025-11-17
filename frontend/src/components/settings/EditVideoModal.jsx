@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader } from "lucide-react";
 import toast from "react-hot-toast";
 
 const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
@@ -215,7 +215,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
             >
               {updateLoading ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader size={14} className="animate-spin" />
                   Updating...
                 </>
               ) : (

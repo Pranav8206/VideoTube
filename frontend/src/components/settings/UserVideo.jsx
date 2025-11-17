@@ -11,7 +11,7 @@ import {
   Info,
   FilePenLine,
 } from "lucide-react";
-import ConfirmModal from "../ConfirmModel";
+import ConfirmModal from "../ConfirmModal";
 import toast from "react-hot-toast";
 
 const UserVideo = () => {

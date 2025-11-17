@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import {
   Lock,
   X,
-  Loader2,
+  Loader,
   AlertTriangle,
   Eye,
   EyeOff,
@@ -198,7 +198,7 @@ const PasswordSettings = ({ isOpen, onClose, onSubmit, isLoading }) => {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4 animate-spin" />
                   Updating...
                 </>
               ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
 import toast from "react-hot-toast";
 
@@ -97,7 +97,7 @@ const NotificationSettings = () => {
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader className="w-5 h-5 animate-spin" />
                 Saving...
               </>
             ) : (
