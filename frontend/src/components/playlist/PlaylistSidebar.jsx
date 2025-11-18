@@ -4,7 +4,7 @@ import VideoCard from "../VideoCard";
 import { AppContext } from "../../context/AppContext";
 
 const PlaylistSidebar = ({
-  playlistId,
+  // playlistId,
   currentVideoId,
   onVideoSelect = () => {},
 }) => {
@@ -59,6 +59,8 @@ const PlaylistSidebar = ({
     [onVideoSelect]
   );
 
+  if (isLoading || !playlistData) return null;
+
   if (!playlistSidebarInVideoPlayer?.playlistId) return null;
 
   const headerHeight = 120;
@@ -89,12 +91,12 @@ const PlaylistSidebar = ({
           <div className="flex-1 min-w-0">
             <h2
               className="text-sm sm:text-base md:text-lg font-semibold text-dark truncate"
-              title={playlist.title}
+              title={playlistData.title}
             >
-              {playlist.title}
+              {playlistData.title}
             </h2>
             <p className="text-xs text-gray-500">
-              {playlist.videos.length} videos
+              {playlistData.videos.length} videos
             </p>
           </div>
 
@@ -113,7 +115,7 @@ const PlaylistSidebar = ({
           className="overflow-y-auto bg-white"
           style={{ maxHeight: `calc(100vh - ${headerHeight}px)` }}
         >
-          {playlist.videos.map((video) => {
+          {playlistData.videos.map((video) => {
             const isActive = video.id === currentVideoId;
 
             return (
@@ -144,7 +146,7 @@ const PlaylistSidebar = ({
         <div className="p-3 sm:p-4 border-t border-borderColor bg-white rounded-b-xl">
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span className="font-medium">Playlist</span>
-            <span>{playlist.videos.length} items</span>
+            <span>{playlistData.videos.length} items</span>
           </div>
         </div>
       </aside>

@@ -109,6 +109,14 @@ const CommentsSection = ({ videoId }) => {
   return (
     <section className="lg:min-w-[70vh] w-full overflow-hidden">
       {/* Comment Form */}
+
+      {/* delete this later */}
+      <span className="hidden">
+        {page}
+        {totalPages}
+      </span>
+
+      
       <div className="px-4 sm:px-6 md:px-10 py-3 sm:py-4 shadow-xs">
         <div className="flex gap-3 sm:gap-5 items-start">
           {/* Avatar */}

@@ -31,7 +31,7 @@ const HomeContent = () => {
         setVideos(allVideos);
         console.log("vides", allVideos);
       } catch (error) {
-        setError("Failed to load videos. Please try again.");
+        setError("Failed to load videos. Please try again.", error);
       } finally {
         setLoading(false);
       }

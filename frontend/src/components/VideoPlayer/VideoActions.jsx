@@ -194,7 +194,7 @@ const VideoActions = ({ video }) => {
       toast.success("Download started");
     } catch (error) {
       toast.dismiss();
-      toast.error("Download failed");
+      toast.error(error?.message ||"Download failed");
     }
   };
 
