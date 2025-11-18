@@ -1,13 +1,39 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { X, List } from "lucide-react";
 import VideoCard from "../VideoCard";
+import { AppContext } from "../../context/AppContext";
 
 const PlaylistSidebar = ({
-  playlist,
+  playlistId,
   currentVideoId,
   onVideoSelect = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [playlistData, setPlaylistData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { playlistSidebarInVideoPlayer, axios } = useContext(AppContext);
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (playlistSidebarInVideoPlayer.playlistId) {
+        try {
+          setIsLoading(true);
+          const res = await axios.get(
+            `/api/v1/playlists/${playlistSidebarInVideoPlayer.playlistId}`,
+            {
+              withCredentials: true,
+            }
+          );
+          setPlaylistData(res?.data?.data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetch();
+  }, [playlistSidebarInVideoPlayer?.playlistId, axios]);
 
   // ✅ Fixed useEffect with proper dependencies
   useEffect(() => {
@@ -33,13 +59,7 @@ const PlaylistSidebar = ({
     [onVideoSelect]
   );
 
-  if (!playlist) {
-    return (
-      <div className="flex items-center justify-center p-4 text-sm text-gray-500">
-        Playlist does not exist
-      </div>
-    );
-  }
+  if (!playlistSidebarInVideoPlayer?.playlistId) return null;
 
   const headerHeight = 120;
 

@@ -2,11 +2,11 @@ import React, { useState, useRef, useContext } from "react";
 import {
   Download,
   Flag,
-  Clock,
   Minus,
   MoreVertical,
   Play,
   User,
+  BookmarkPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -25,7 +25,8 @@ const VideoCard = ({
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
   const nameRef = useRef(null);
-  const { timeAgo } = useContext(AppContext);
+  const { timeAgo, setShowAddToPlaylistModal } =
+    useContext(AppContext);
 
   const isList = layout === "list";
 
@@ -250,11 +251,14 @@ const VideoCard = ({
                   onClick={(e) => {
                     e.preventDefault();
                     setShowOptions(false);
-                    toast.success("Saved to Watch Later");
+                    setShowAddToPlaylistModal({
+                      videoId: video._id,
+                      show: true,
+                    });
                   }}
                 >
-                  <Clock size={16} />
-                  Watch later
+                  <BookmarkPlus size={16} />
+                  Save
                 </button>
                 <button
                   className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer transition-colors"

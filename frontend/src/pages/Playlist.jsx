@@ -11,8 +11,6 @@ const Playlist = () => {
   const { user } = useContext(AppContext);
   const { playlistId } = useParams();
   const navigate = useNavigate();
-  console.log("id",playlistId);
-  
 
   useEffect(() => {
     if (!user) {
@@ -43,7 +41,7 @@ const Playlist = () => {
 
   return (
     <div>
-      <PlaylistContent playlistId={playlistId} />
+      <PlaylistContent />
     </div>
   );
 };

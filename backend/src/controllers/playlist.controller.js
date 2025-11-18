@@ -62,7 +62,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
   const playlist = await Playlist.findById(playlistId)
     .populate("owner", "username fullName avatar")
-    .populate("videos", "thumbnail title description");
+    .populate("videos", "thumbnail title description duration views createdAt owner");
 
   if (!playlist) {
     throw new ApiError(404, "Playlist not exist or deleted");
@@ -83,7 +83,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
   }
 
   if (playlist.videos.some((id) => id.toString() === videoId)) {
-    throw new ApiError(404, "Video already exist in playlist");
+    throw new ApiError(404, "This video already exist in that playlist");
   }
 
   const video = await Video.findById(videoId);

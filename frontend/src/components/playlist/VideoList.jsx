@@ -1,17 +1,16 @@
-import React from "react";
-import { GripVertical } from "lucide-react";
+import React, { useEffect } from "react";
+import { CircleMinus, GripVertical } from "lucide-react";
 import VideoCard from "../VideoCard";
 
 const VideoList = ({
   videos,
   currentVideoId,
-  // watchedVideos,
   // onVideoPlay,
-  // onVideoRemove,
+  onVideoRemove,
 }) => {
   return (
     <div className="space-y-2">
-      {videos.map((video, index) => {
+      {videos?.map((video, index) => {
         const isPlaying = currentVideoId === video.id;
 
         return (
@@ -19,7 +18,7 @@ const VideoList = ({
             className={`group flex items-center rounded-xl border transition-all duration-200 ${
               isPlaying
                 ? "bg-primary/10 border-primary shadow-md"
-                : "bg-white border-borderColor hover:shadow-sm"
+                : "bg-white border-borderColor"
             }`}
             key={video.id}
           >
@@ -37,8 +36,18 @@ const VideoList = ({
               </span>
             </div>
 
-            <div className="flex-1 scale-y-110 hover:scale-y-105 transition-all duration-350">
-              <VideoCard video={video} />
+            <div className="flex-1 scale-y-105 transition-all duration-350">
+              <VideoCard video={video} showMoreIcon={false} />
+
+              <button
+                className="absolute top-1 right-0 p-0.5 bg-white text-gray-500 cursor-pointer rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onVideoRemove(video._id);
+                }}
+              >
+                <CircleMinus size={20} />
+              </button>
             </div>
           </div>
         );

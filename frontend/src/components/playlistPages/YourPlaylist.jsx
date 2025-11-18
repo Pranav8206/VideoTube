@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   Loader as LoaderIcon,
@@ -21,22 +21,22 @@ const YourPlaylists = () => {
   const [editData, setEditData] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(null); // tracks which card's menu is open
+  const [menuOpen, setMenuOpen] = useState(null);
   const navigate = useNavigate();
 
-  const fetchPlaylists = async () => {
+  const fetchPlaylists = useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/v1/playlists", {
         withCredentials: true,
       });
-      setPlaylists(res.data.data.userPlaylist || []);
+      setPlaylists(res?.data?.data?.userPlaylist || []);
     } catch (err) {
       console.error(err?.response?.data?.message || "");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchPlaylists();
@@ -82,7 +82,7 @@ const YourPlaylists = () => {
             return (
               <div
                 key={pl._id}
-                className="relative bg-white border border-gray-200 rounded-xl "
+                className="relative bg-white border border-gray-200 rounded-lg "
               >
                 <div
                   onClick={() => navigate(`/p/${pl._id}`)}
@@ -116,7 +116,7 @@ const YourPlaylists = () => {
                           setModalOpen(true);
                           setMenuOpen(null);
                         }}
-                        className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-2 text-sm"
+                        className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-2 text-sm rounded-t-lg cursor-pointer"
                       >
                         <Pencil size={16} /> Edit
                       </button>
@@ -130,7 +130,7 @@ const YourPlaylists = () => {
                           setMenuOpen(null);
                         }}
                         disabled={deleteLoading === pl._id}
-                        className="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 flex items-center gap-2 text-sm disabled:opacity-50"
+                        className="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 flex items-center gap-2 text-sm disabled:opacity-50 rounded-b-lg cursor-pointer"
                       >
                         {deleteLoading === pl._id ? (
                           <LoaderIcon size={16} className="animate-spin" />

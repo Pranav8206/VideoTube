@@ -1,106 +1,118 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import PlaylistHeader from "./PlaylistHeader";
-import PlaylistSettings from "./PlaylistSettings";
 import VideoList from "./VideoList";
-import { onePlaylist, playlist } from "../../utils/videosData";
-import PlaylistSidebar from "./PlaylistSidebar";
+import { AppContext } from "../../context/AppContext";
+import Loader from "../Loader";
+import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import { PlaySquare } from "lucide-react";
 
-const PlaylistPage = ({ playlistId }) => {
+const formatTotalDuration = (videos = []) => {
+  const totalSeconds = videos.reduce((sum, v) => sum + (v.duration || 0), 0);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+};
+
+const PlaylistPage = () => {
   const [currentVideoId, setCurrentVideoId] = useState(1);
-  const [watchedVideos] = useState([1, 2, 3]); // Removed setter if not used
-  const [isLooping, setIsLooping] = useState(false);
-  const [playlistData, setPlaylistData] = useState(playlist);
+  const [playlistData, setPlaylistData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ Use useCallback to memoize handlers
+  const { axios } = useContext(AppContext);
+  const { playlistId } = useParams();
+
   const handlePlayAll = useCallback(() => {
-    if (playlistData.videos.length > 0) {
-      setCurrentVideoId(playlistData.videos[0].id);
+    if (playlistData?.videos.length > 0) {
+      setCurrentVideoId(playlistData?.videos[0].id);
     }
-  }, [playlistData.videos]);
+  }, [playlistData?.videos]);
 
   const handleShuffle = useCallback(() => {
-    if (playlistData.videos.length > 0) {
-      const randomIndex = Math.floor(
-        Math.random() * playlistData.videos.length
-      );
-      setCurrentVideoId(playlistData.videos[randomIndex].id);
+    if (playlistData?.videos?.length > 0) {
+      const randomIdx = Math.floor(Math.random() * playlistData.videos.length);
+      setCurrentVideoId(playlistData.videos[randomIdx]._id);
     }
-  }, [playlistData.videos]);
+  }, [playlistData?.videos]);
 
   const handleVideoPlay = useCallback((id) => {
     setCurrentVideoId(id);
   }, []);
 
-  const handleVideoRemove = useCallback((id) => {
-    setPlaylistData((prev) => ({
-      ...prev,
-      videos: prev.videos.filter((v) => v.id !== id),
-      videoCount: prev.videoCount - 1,
-    }));
+  const handleVideoRemove = useCallback(async (id) => {
+    try {
+      console.log(playlistId, "videoid", id);
+
+      const res = await axios.patch(
+        `/api/v1/playlists/remove/${playlistId}/${id}`,
+        {},
+        { withCredentials: true }
+      );
+      fetchData();
+      console.log("Video remove from playlist:", res.data);
+      toast.success(res?.data?.message || "Video remove from playlist");
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+      toast.error(
+        error?.response?.data?.message || "Failed to remove video from playlist"
+      );
+    }
   }, []);
 
-  const handlePrivacyToggle = useCallback(() => {
-    setPlaylistData((prev) => ({ ...prev, isPublic: !prev.isPublic }));
-  }, []);
+  const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await axios.get(`/api/v1/playlists/${playlistId}`, {
+          withCredentials: true,
+        });
 
-  const handleLoopToggle = useCallback(() => {
-    setIsLooping((s) => !s);
-  }, []);
+        const fetchedPlaylist = res?.data?.data;
+        setPlaylistData(fetchedPlaylist || null);
+      } catch (error) {
+        console.error("Error fetching playlist:", error);
+        setPlaylistData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleAddVideos = useCallback(() => {
-    console.log("Add videos");
-  }, []);
+  useEffect(() => {
+    if (playlistId) fetchData();
+  }, [playlistId, axios]);
 
-  const watchedCount = useMemo(() => watchedVideos.length, [watchedVideos]);
+  const totalDuration = formatTotalDuration(playlistData?.videos);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto ">
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          <main className="xl:col-span-3 space-y-3">
-            <PlaylistHeader
-              playlist={playlistData}
-              onPlayAll={handlePlayAll}
-              onShuffle={handleShuffle}
-              onLoop={handleLoopToggle}
-              isLooping={isLooping}
-            />
-            <div className="px-4 sm:px-8 md:px-10 lg:px-56">
-              <PlaylistSettings
-                playlist={playlistData}
-                onPrivacyToggle={handlePrivacyToggle}
-                onAddVideos={handleAddVideos}
-              />
-            </div>
-
-            {/* All videos in playlist */}
-            <section className="px-0.5 sm:px-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-                  Videos ({playlistData.videoCount})
-                </h2>
-                <div className="text-sm text-gray-600">
-                  {watchedCount} of {playlistData.videoCount} watched
-                </div>
-              </div>
-
-              <VideoList
-                videos={playlistData.videos}
-                currentVideoId={currentVideoId}
-                watchedVideos={watchedVideos}
-                onVideoPlay={handleVideoPlay}
-                onVideoRemove={handleVideoRemove}
-              />
-            </section>
-          </main>
+    <main className=" space-y-3 min-h-screen max-w-7xl mx-auto gap-6">
+      <PlaylistHeader
+        playlist={playlistData}
+        onPlayAll={handlePlayAll}
+        onShuffle={handleShuffle}
+      />
+      {console.log("in the comp", playlistData)}
+      {/* All videos in playlist */}
+      <section className="px-0.5 sm:px-6 mt-4 mb-10">
+        <div className="flex items-center justify-between mb-4 px-5 sm:px-20">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+            Videos ({playlistData?.videos?.length})
+          </h2>
+          <div className="text-sm text-gray-600">
+            Total Duration: {totalDuration}
+          </div>
         </div>
-      </div>
-      {/* <PlaylistSidebar
-        playlist={onePlaylist}
-        currentVideoId={currentVideoId}
-        onVideoSelect={handleVideoPlay}
-      /> */}
-    </div>
+
+        <VideoList
+          videos={playlistData?.videos}
+          currentVideoId={currentVideoId}
+          onVideoPlay={handleVideoPlay}
+          onVideoRemove={handleVideoRemove}
+        />
+      </section>
+    </main>
   );
 };
 

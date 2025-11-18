@@ -17,6 +17,17 @@ const ContextProvider = ({ children }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState({
+    videoId: null,
+    show: false,
+  });
+
+  const [playlistSidebarInVideoPlayer, setPlaylistSidebarInVideoPlayer] =
+    useState({
+      playlistId: null,
+      currentVideo: 0,
+    });
+
   // Refs to prevent multiple simultaneous token refresh attempts
   const isRefreshingRef = useRef(false);
   const failedQueueRef = useRef([]);
@@ -103,7 +114,6 @@ const ContextProvider = ({ children }) => {
         withCredentials: true,
       });
       const { success, data: userData } = response.data || {};
-      console.log("fetchCurrentUser response:", success, userData);
 
       if (success && userData) {
         setUser(userData);
@@ -283,6 +293,10 @@ const ContextProvider = ({ children }) => {
     toggleSubscribeChannel,
     isLoadingUser,
     setIsLoadingUser,
+    showAddToPlaylistModal,
+    setShowAddToPlaylistModal,
+    playlistSidebarInVideoPlayer,
+    setPlaylistSidebarInVideoPlayer,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

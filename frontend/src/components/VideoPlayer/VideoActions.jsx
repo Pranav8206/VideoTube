@@ -16,6 +16,7 @@ import { AppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../ConfirmModal";
 
 const VideoActions = ({ video }) => {
   const [liked, setLiked] = useState(false);
@@ -28,6 +29,7 @@ const VideoActions = ({ video }) => {
   const [showDescription, setShowDescription] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [actionCooldown, setActionCooldown] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -35,6 +37,7 @@ const VideoActions = ({ video }) => {
     user,
     getUserAllSubscribedChannels,
     toggleSubscribeChannel,
+    setShowAddToPlaylistModal,
   } = useContext(AppContext);
 
   const moreRef = useRef();
@@ -159,8 +162,41 @@ const VideoActions = ({ video }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSave = () => toast.success("Video saved to playlist");
-  const handleDownload = () => toast.success("Preparing download...");
+  const handleSave = () => {
+    setShowMoreMenu(false);
+    setShowAddToPlaylistModal({
+      videoId: video._id,
+      show: true,
+    });
+  };
+
+  const handleDownload = async () => {
+    setShowMoreMenu(false);
+    try {
+      toast.loading("Starting download...");
+
+      const response = await fetch(video.videoFile);
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      console.log("res", response, "blob", blob, "url", url);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${video.title}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      console.log(document);
+
+      toast.dismiss();
+      toast.success("Download started");
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Download failed");
+    }
+  };
 
   const formatCount = (count) => {
     if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M`;
@@ -297,7 +333,13 @@ const VideoActions = ({ video }) => {
                   Save
                 </button>
                 <button
-                  onClick={handleDownload}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmModal({
+                      action: () => handleDownload(),
+                      message: "Do you want to download this video?",
+                    });
+                  }}
                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700"
                 >
                   <Download size={16} />
@@ -342,6 +384,14 @@ const VideoActions = ({ video }) => {
         <div className="w-full text-primary flex items-center justify-center">
           <Loader size={40} className="animate-spin" />
         </div>
+      )}
+
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.action}
+          onClose={() => setConfirmModal(null)}
+        />
       )}
     </div>
   );
