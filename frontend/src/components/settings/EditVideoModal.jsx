@@ -6,7 +6,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
   const [editForm, setEditForm] = useState({
     title: video.title || "",
     description: video.description || "",
-    category: video.category || "",
+    category: video.category || [],
     thumbnail: null,
   });
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -14,6 +14,18 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
 
   const handleUpdateVideo = async (e) => {
     e.preventDefault();
+
+    if (!editForm.category || editForm.category.length === 0) {
+      setError("Please select at least one category");
+      toast.error("Please select at least one category");
+      return;
+    }
+
+    if (editForm.category.length > 5) {
+      setError("Please select maximum 5 categories");
+      toast.error("Please select maximum 5 categories");
+      return;
+    }
     setUpdateLoading(true);
     setError("");
 
@@ -22,7 +34,9 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
       // Always send required fields
       formData.append("title", editForm.title);
       formData.append("description", editForm.description);
-      formData.append("category", editForm.category);
+      console.log(editForm.category);
+
+      formData.append("category", JSON.stringify(editForm.category));
 
       // Only send thumbnail if a new one is selected
       if (editForm.thumbnail) {
@@ -39,6 +53,9 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
           withCredentials: true,
         }
       );
+
+      console.log(formData);
+      console.log(res.data);
 
       // Use the response data if available, otherwise use form data
       const updatedVideoData = res?.data?.data || {
@@ -142,29 +159,59 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
 
           <div>
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-              Category <span className="text-red-500">*</span>
+              Categories <span className="text-red-500">*</span> (Select 1-5)
             </label>
-            <select
-              value={editForm.category}
-              onChange={(e) =>
-                setEditForm({ ...editForm, category: e.target.value })
-              }
-              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-xs sm:text-sm text-gray-900 bg-white cursor-pointer"
-              required
-              disabled={updateLoading}
-              aria-required="true"
-            >
-              <option value="">Select Category</option>
-              <option value="gaming">Gaming</option>
-              <option value="music">Music</option>
-              <option value="lifestyle">Lifestyle</option>
-              <option value="education">Education</option>
-              <option value="entertainment">Entertainment</option>
-              <option value="technology">Technology</option>
-              <option value="sports">Sports</option>
-              <option value="news">News</option>
-              <option value="science">Science</option>
-            </select>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: "music", label: "Music" },
+                { value: "animals", label: "Animals" },
+                { value: "education", label: "Education" },
+                { value: "entertainment", label: "Entertainment" },
+                { value: "technology", label: "Technology" },
+                { value: "news", label: "News" },
+                { value: "food", label: "Food" },
+              ].map((cat) => {
+                const isChecked = editForm.category?.includes(cat.value);
+                const isDisabled =
+                  updateLoading ||
+                  (!isChecked && editForm.category?.length >= 5);
+
+                return (
+                  <label
+                    key={cat.value}
+                    className={`flex items-center gap-2 p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-all text-xs sm:text-sm ${
+                      isDisabled ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={cat.value}
+                      checked={isChecked}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setEditForm({
+                          ...editForm,
+                          category: e.target.checked
+                            ? [...(editForm.category || []), value]
+                            : editForm.category.filter((c) => c !== value),
+                        });
+                      }}
+                      className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
+                      disabled={isDisabled}
+                    />
+                    <span>{cat.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            {editForm.category?.length === 0 && (
+              <p className="text-red-500 text-xs mt-1">
+                Select at least one category
+              </p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              {editForm.category?.length || 0}/5 categories selected
+            </p>
           </div>
 
           <div>
@@ -197,7 +244,7 @@ const EditVideoModal = ({ video, onUpdate, onClose, axios }) => {
             )}
           </div>
 
-          <div className="flex gap-2 pt-3 sm:pt-4">
+          <div className="flex gap-2 pt-3 pb-6 sm:pt-4">
             <button
               type="button"
               onClick={onClose}

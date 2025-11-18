@@ -50,6 +50,7 @@ const UploadContent = () => {
 
   const title = watch("title");
   const description = watch("description");
+  const selectedCategories = watch("category") || [];
 
   const onSubmit = async (data) => {
     if (!videoFile) {
@@ -145,7 +146,7 @@ const UploadContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 md:px-10 py-6 relative">
+    <div className="min-h-screen px-4 sm:px-6 md:px-10 py-6 relative">
       <div className="max-w-6xl mx-auto">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -249,26 +250,52 @@ const UploadContent = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
+                    Categories * (Select 1-5)
                   </label>
-                  <select
-                    {...register("category", {
-                      required: "Please select a category",
+                  <span className="text-xs text-gray-500">
+                    {selectedCategories.length}/5 selected
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {[
+                      { value: "music", label: "Music" },
+                      { value: "animals", label: "Animals" },
+                      { value: "education", label: "Education" },
+                      { value: "entertainment", label: "Entertainment" },
+                      { value: "technology", label: "Technology" },
+                      { value: "news", label: "News" },
+                      { value: "food", label: "Food" },
+                    ].map((cat) => {
+                      const isChecked = selectedCategories.includes(cat.value);
+                      const isDisabled =
+                        isLoading ||
+                        (!isChecked && selectedCategories.length >= 5);
+
+                      return (
+                        <label
+                          key={cat.value}
+                          className={`flex items-center gap-2 p-1   rounded-lg cursor-pointer border border-gray-50 transition-all ${
+                            isDisabled ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            value={cat.value}
+                            {...register("category", {
+                              required: "Select at least one category",
+                              validate: (value) =>
+                                (Array.isArray(value) &&
+                                  value.length > 0 &&
+                                  value.length <= 5) ||
+                                "Select 1-5 categories",
+                            })}
+                            className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
+                            disabled={isDisabled}
+                          />
+                          <span className="text-xs">{cat.label}</span>
+                        </label>
+                      );
                     })}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none cursor-pointer disabled:opacity-50"
-                    disabled={isLoading}
-                  >
-                    <option value="">Choose a category</option>
-                    <option value="gaming">Gaming</option>
-                    <option value="music">Music</option>
-                    <option value="lifestyle">Lifestyle</option>
-                    <option value="education">Education</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="technology">Technology</option>
-                    <option value="sports">Sports</option>
-                    <option value="news">News</option>
-                    <option value="science">Science</option>
-                  </select>
+                  </div>
                   {errors.category && (
                     <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
@@ -321,7 +348,7 @@ const UploadContent = () => {
               )}
               <button
                 type="submit"
-                className="bg-gradient-to-r from-primary to-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
+                className="bg-gradient-to-r from-primary to-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Uploading..." : "Publish Now"}

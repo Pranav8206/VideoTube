@@ -40,8 +40,14 @@ const videoSchema = new Schema(
       default: true,
     },
     category: {
-      type: String,
-      default: "all",
+      type: [String],
+      default: ["all"],
+      validate: {
+        validator: function (arr) {
+          return arr.length > 0;
+        },
+        message: "Video must have at least one category",
+      },
     },
   },
   { timestamps: true }

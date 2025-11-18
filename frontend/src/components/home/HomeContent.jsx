@@ -13,15 +13,13 @@ const HomeContent = () => {
 
   const categories = [
     { id: "all", label: "All" },
-    { id: "tech", label: "Technology" },
-    { id: "gaming", label: "Gaming" },
+    { id: "technology", label: "Technology" },
     { id: "music", label: "Music" },
-    { id: "lifestyle", label: "Lifestyle" },
+    { id: "animals", label: "Animals" },
     { id: "education", label: "Education" },
     { id: "entertainment", label: "Entertainment" },
-    { id: "sports", label: "Sports" },
     { id: "news", label: "News" },
-    { id: "science", label: "Science" },
+    { id: "food", label: "Food" },
   ];
 
   useEffect(() => {
@@ -31,6 +29,7 @@ const HomeContent = () => {
       try {
         const allVideos = await fetchAllVideos();
         setVideos(allVideos);
+        console.log("vides", allVideos);
       } catch (error) {
         setError("Failed to load videos. Please try again.");
       } finally {
@@ -39,6 +38,13 @@ const HomeContent = () => {
     };
     loadVideos();
   }, [fetchAllVideos]);
+  
+  const filteredVideos =
+    activeCategory === "all"
+      ? videos
+      : videos.filter(
+          (video) => video.category && video.category.includes(activeCategory)
+        );
 
   return (
     <div className="w-full min-h-screen py-0.5 s:py-2">
@@ -49,7 +55,7 @@ const HomeContent = () => {
             <CategoriesSlider
               categories={categories}
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              setActiveCategory={setActiveCategory}
             />
           </div>
         )}
@@ -65,7 +71,15 @@ const HomeContent = () => {
         </div>
       )}
       {error && <div className="text-center py-4 text-red-500">{error}</div>}
-      {!loading && !error && <VideosGrid videos={videos} layout="grid" />}
+      {!loading && !error && filteredVideos.length != 0 && (
+        <VideosGrid videos={filteredVideos} layout="grid" />
+      )}
+
+      {!loading && !error && filteredVideos.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No videos found in this category
+        </div>
+      )}
     </div>
   );
 };

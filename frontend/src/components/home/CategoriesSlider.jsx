@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const CategoriesSlider = ({ categories, activeCategory, onCategoryChange }) => {
+const CategoriesSlider = ({ categories, activeCategory, setActiveCategory }) => {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -55,7 +55,7 @@ const CategoriesSlider = ({ categories, activeCategory, onCategoryChange }) => {
         {categories.map((category) => (
           <button
             key={category.id}
-            onClick={() => onCategoryChange(category.id)}
+            onClick={() => setActiveCategory(category.id)}
             className={`flex-shrink-0 px-2 sm:px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap snap-center my-0.5 ${
               activeCategory === category.id
                 ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-md scale-105"

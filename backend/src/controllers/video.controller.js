@@ -57,7 +57,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       "Both a video and a thumbnail are required to proceed!"
     );
   }
-  
+
   const videoInfo = await uploadeOnCloudinary(VideoFilePath);
   const thumbnail = await uploadeOnCloudinary(ThumbnailFilePath);
 
@@ -107,17 +107,34 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  const { title, description, category } = req.body;
+  const { title, description } = req.body;
+  let { category } = req.body;
   const thumbnail = req.file?.path;
+
+  console.log(category);
 
   if (!title || !description) {
     throw new ApiError(400, "Title and description cannot be empty.");
   } else if (title.length < 10) {
     throw new ApiError(400, "Title must be at least 10 characters long.");
   }
-  if (!category) {
-    throw new ApiError(400, "Please select category");
+
+  if (typeof category === "string") {
+    try {
+      category = JSON.parse(category);
+    } catch (e) {
+      throw new ApiError(400, "Invalid category format");
+    }
   }
+
+  if (!Array.isArray(category) || category.length === 0) {
+    throw new ApiError(400, "Please select at least one category");
+  }
+
+  if (category.length > 5) {
+    throw new ApiError(400, "Maximum 5 categories allowed");
+  }
+
   const updateData = { title, description, category };
 
   if (thumbnail) {
@@ -170,7 +187,6 @@ const incrementVideoViews = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "View incremented" });
 });
 
-
 export {
   getAllVideos,
   publishAVideo,
@@ -178,5 +194,5 @@ export {
   getVideoById,
   deleteVideo,
   togglePublishStatus,
-  incrementVideoViews
+  incrementVideoViews,
 };
